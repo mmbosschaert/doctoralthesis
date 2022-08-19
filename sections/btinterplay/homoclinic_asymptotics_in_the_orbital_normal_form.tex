@@ -1,0 +1,943 @@
+\section{Homoclinic asymptotics in the orbital normal form}
+\label{sec:asymptotics}
+
+In this section, we derive third-order asymptotics to the homoclinic solution
+near the generic Bogdanov--Takens point using the orbital normal form \cref{eq:normal_form_orbital}. We revisited the standard regular
+perturbation method, but with a different phase condition. In
+\cref{sec:examples} we will show that this improves the accuracy of the
+homoclinic approximation in the normal form. Then, in
+\cref{sec:PolynomailLindstedtPoincare} we revisited the Lindstedt-Poincar\'e
+method. By an additional non-linear time transformation, we obtain a very simple
+algorithm to approximate the homoclinic solution.
+
+\subsection{The Regular Perturbation Method with norm minimizing phase condition}
+\label{sec:RPM_norm_minimizing_phase condition}
+For $\epsilon=0$, \cref{eq:second_order_nonlinear_oscillator} is a Hamiltonian
+system with the first integral
+\begin{equation*}
+    H(u,\dot u) = \frac12 \dot u^2+4u-\frac13 u^3.
+\end{equation*}
+The Hamiltonian system has the well-known explicit homoclinic solution
+$(u_0(s),\dot u_0(s))$ given by
+\[
+    u_{0}(s) = 6 \tanh^2(s) - 4.
+\]
+Thus, for $(u, \epsilon, \tau) = (u_0, 0, \tau)$ there exists a trivial branch
+of homoclinic orbits in \cref{eq:second_order_nonlinear_oscillator}.
+In~\cite{Beyn_1994} it is shown that there exists a bifurcation point at
+$\tau=\frac{10}{7}$ from which a smooth non-trivial branch emanates
+transversally. Parametrizing this branch by $\epsilon$, we formally have
+\begin{equation}
+    \label{eq:u_i_tau_i_RPM}
+    u(s,\epsilon) = \sum_{i\geq 0} u_i(s) \epsilon^i, 
+    \qquad 
+    \tau(\epsilon) = \sum_{i\geq 0} \tau_i \epsilon^i.
+\end{equation}
+Substituting \cref{eq:u_i_tau_i_RPM} into
+\cref{eq:second_order_nonlinear_oscillator} and collecting equal terms in
+$\epsilon$ yields the following differential equations to be solved:
+\begin{align}
+  &\ddot u_0 - u_0^2 +4 = 0, \label{eq:z0} \\
+  &\ddot u_i - 2 u_0 u_i
+    =
+    z_i, 
+        \label{eq:regular_perturbation_method_equation_epsilon_i} \\
+  &\dot u_i (\pm \infty) = \ddot u_i (\pm \infty) = 0,
+        \qquad i\in \mathbb N. \nonumber
+\end{align}
+Here $z_i$ dependents on the sums and products of $u_j, \dot u_j$ and $\tau_{j-1}$
+for $0\leq j < i$.  Multiplying equation
+\cref{eq:regular_perturbation_method_equation_epsilon_i} by $\dot u$ and
+integrating from $s_0$ to $s$ yields,
+\[
+  \int_{s_0}^s \dot u_0 \ddot u_i - 2 \dot u_0 u_0 u_i \;dx = \int_{s_0}^s \dot
+  u_0 z_i \; dx.
+\]
+Using integration by parts twice then gives
+\begin{equation}
+  \label{eq:regular_perturbation_method_integration_by_parts}
+  \left. \left( \dot u_0 \dot u_i - u_i \ddot u_0 \right)\right|_{s_0}^s = \int_{s_0}^s \dot
+  u_0 z_i \; dx.
+\end{equation}
+Notice that solutions $(\dot u_i(s),\ddot u_i(s))$ must vanish at plus and minus
+infinity. We obtain that the coefficients $\tau_{i-1}$ are given by the condition
+\begin{equation*}
+    0 = \int_{-\infty}^\infty \dot u_0 z_i \; dx.
+\end{equation*}
+To simplify the equations that follow below we would like to
+use~\cite[Proposition 4.2]{Beyn_1994}. 
+
+However, we noticed that the proposition is not precise enough for the
+conclusion to hold. Indeed, the proof relies on the uniqueness of the
+non-trivial branch of homoclinic orbits. However, we see that the left-hand
+side \cref{eq:regular_perturbation_method_equation_epsilon_i} is invariant
+under the transformation
+\[
+u_i \to u_i + \gamma \dot u_0, \qquad \gamma \in\mathbb R, \; i\in\mathbb N.
+\]
+We, therefore, slightly modify the proposition with an additional assumption.
+
+\begin{proposition}
+    \label{proposition:symmetry}
+    Assume that the perturbed Hamiltonian system
+    \cref{eq:second_order_nonlinear_oscillator} is obtained from the normal form
+    \cref{eq:normal_form_orbital} by the singular rescaling
+    \cref{eq:blowup}. Then the non-trivial branch of homoclinic solutions 
+    \[
+        (u(s,\epsilon), \dot u(s, \epsilon), \epsilon, \tau(\epsilon)),
+            \qquad \epsilon<|\epsilon_0|,
+    \]
+    for some $\epsilon_0>0$ satisfies
+    \begin{equation}
+        \label{eq:tau}
+        \tau(\epsilon) = \tau(-\epsilon).
+    \end{equation}
+    Furthermore, if the solutions $u_i$ are even functions for $i$ even, then 
+    the solution $u$ contains the additional symmetry
+    \[
+        u(s,-\epsilon) = u(-s,\epsilon)
+    .\] 
+\end{proposition}
+\begin{proof}
+    The proof follows almost entirely~\cite[Proposition 4.2]{Beyn_1994}. Thus,
+    it can be shown that the transformation \cref{eq:blowup} induces the
+    symmetry
+    \[
+        \varphi(s, D_0 (u^0, \dot u^0)^T, -\epsilon, \tau)
+        =
+        D_0 \varphi(-s, (u^0, \dot u^0)^T, \epsilon, \tau)
+    \] 
+    on the flow $\varphi$ of \cref{eq:second_order_nonlinear_oscillator}, where 
+    \[
+        D_0 = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}.
+    \] 
+    From this relation one can then conclude that if $(u(s,\epsilon), \dot
+    u(s,\epsilon), \epsilon, \tau(\epsilon))$ is a homoclinic solution to
+    \cref{eq:second_order_nonlinear_oscillator} then so is $(\tilde
+    u(-s,\epsilon), -\dot{\tilde{u}}(-s,\epsilon), -\epsilon, \tau(\epsilon))$.
+    The proof in~\cite{Beyn_1994} then finishes with the remark that these two
+    homoclinic solutions must be equal by the uniqueness of the non-trivial
+    branch. However, by the \emph{non-uniqueness} of the non-trivial branch, we
+    obtain the relation
+    \[
+        (u(s,\epsilon), \epsilon, \tau(\epsilon))
+        =
+        (u(-s,-\epsilon), \epsilon, \tau(-\epsilon))
+        +
+        (\gamma(\epsilon) \dot u_0(s), \epsilon, 0),
+    \]
+    where
+    \begin{equation}
+        \label{eq:gamma}
+        \gamma(\epsilon) = \sum_{i\geq 1} \gamma_i \epsilon^i,
+        \qquad
+        \gamma_i \in \mathbb R.
+    \end{equation}
+    Thus, $\tau$ is indeed an even function of $\epsilon$. Using the expansion
+    for $u$ from \cref{eq:u_i_tau_i_RPM} we see that by inspecting the
+    coefficients of equal powers in $\epsilon$ we only need to impose that
+    $\gamma_i=0$ for $i$ even, then the assertion follows.
+\end{proof}
+
+It, therefore, follows from \cref{proposition:symmetry} together with equality
+\cref{eq:regular_perturbation_method_integration_by_parts} that the condition for
+solving $\tau_{i-1}$ in \cref{eq:tau_condition_RP} simplifies to
+\begin{equation}
+    \label{eq:tau_condition_RP}
+    0 = \int_0^\infty \dot u_0 z_i \; dx.
+\end{equation}
+for $i$ even, whereas $\tau_i=0$ for $i$ odd.
+
+From \cref{eq:regular_perturbation_method_integration_by_parts} we obtain the
+solution
+\begin{equation}
+    \label{eq:u_i_RP}
+    u_i = \dot u_0 \int \frac{1}{\dot u_0^2} \int \dot u_0 z_i \; dx \; dx,
+        \qquad i \in \mathbb N,
+\end{equation}
+or
+\begin{equation*}
+    u_i = \left( \dot u_0 \int \frac{1}{\dot u_0^2} \, dx \right) \int \dot u_0 z_i(u,\dot u,\tau) \, dx
+-  \dot u_0 \int \left( \int \frac{1}{\dot u_0^2} \, dx \right) \dot u_0 z_i(u,\dot u,\tau) \, dx. 
+\end{equation*}
+From \cref{eq:u_i_RP} we see that there are two integration constants involved.
+The first integration constant, originating from the inner integral, is needed
+to ensure the boundedness of the solution. The second integration constant
+introduces precisely the freedom 
+\begin{equation*}
+    u_i \rightarrow u_i + \gamma_i \dot u_0,  \qquad i\in\mathbb N,
+\end{equation*}
+with arbitrary constants $\gamma_i\in\mathbb{R}$. In~\cite{Kuznetsov2014improved} the
+condition
+\begin{equation}
+    \label{eq:RP_phase_condtion_unnatural}
+    \dot u_i(0) = 0
+\end{equation}
+is imposed to ensure the uniqueness of the solution.  This phase condition is also
+used in~\cite{Beyn_1994} in a theoretical setting. However, a more natural phase
+condition would be to minimize the $L^2$-distance between the current and
+previous solution obtained from the regular perturbation method. This
+phase condition is also used in~\cite{Doedel1986auto, Champneys1996,
+DeWitte2012,Doedel@1989} for numerical continuation of heteroclinic and
+homoclinic orbits. Using the $L^2$ phase condition yields
+\begin{equation*}
+  \int_{-\infty}^\infty 
+        \langle 
+            (\dot u_0(s), \ddot u_0(s)) (u_{i}(s) + \gamma_i \dot u_0(s),
+            \dot u_{i}(s) + \gamma_i \ddot u_0(s)) 
+        \rangle
+        \, ds = 0,
+    \qquad i \in \mathbb{N}.
+\end{equation*}
+By \cref{proposition:symmetry} this phase condition is
+equivalent to the condition that
+\begin{equation}
+     \label{eq:u_i_L2_phase_condition}
+  \int_0^\infty 
+        \langle
+        (\dot u_0(s), \ddot u_0(s)) (u_{i}(s) + \gamma_i \dot u_0(s),
+        \dot u_{i}(s) + \gamma_i \ddot u_0(s)) 
+        \rangle
+        \, ds = 0,
+    \qquad i \in \mathbb{N},
+\end{equation}
+for $i$ odd and $\gamma_i=0$, for $i$ even, if we ensure that $u_i$ is even for $i$
+even. By using integration by parts together with \cref{eq:z0} and subsequently
+solving \cref{eq:u_i_L2_phase_condition} for $\gamma_i$ we obtain
+\begin{equation}
+    \label{eq:c_i}
+    \gamma_i = -\frac{35}{2592} 
+            \int_0^\infty \dot u_0(1 - 2 u_0)u_{i}(s) \, ds,
+        \qquad i \in \mathbb{N}.
+\end{equation}
+In~\cite{Kuznetsov2014improved}, the phase condition
+\begin{equation}
+     \label{eq:u_i_L2_phase_condition_u_only}
+     \int_{-\infty}^\infty \left( u(s) - u_0(s) \right) \dot u_0(s) \, ds
+     = 0,
+    \qquad i \in \mathbb N,
+\end{equation}
+was also tested. This phase condition only minimizes the $L_2$-distance of the
+$u$-component between the current and the zeroth-order solution obtained from
+the regular perturbation method. It is reported in~\cite{Kuznetsov2014improved}
+that for \cref{eq:u_i_L2_phase_condition_u_only} no substantial superiority
+over using phase condition \cref{eq:RP_phase_condtion_unnatural} was found.
+Our findings show that, at least for \cref{eq:u_i_L2_phase_condition}, this is
+only partially true.  Indeed, the numerical simulations in
+\cref{sec:topological_normal_form} show that, as one would expect, using the
+phase condition \cref{eq:u_i_L2_phase_condition} does indeed improve the
+approximation to the homoclinic orbit. However, when the homoclinic
+approximations are lifted from the normal form to the center manifold of the
+Bogdanov--Takens point, the phase conditions are, in general, not preserved, and
+the improvements are no longer observed.
+
+As we will see below, the $L_2$ phase condition
+\cref{eq:u_i_L2_phase_condition} is more difficult to solve. It is, therefore,
+more efficient to use the orbital normal form \cref{eq:universal_unfolding}
+instead of the smooth normal form \cref{eq:BT_smooth_nf}.
+
+\subsubsection{Third-order homoclinic approximation}
+\label{sec:third_order_homoclinic_approximation_RP}
+For $i=1$ we obtain the equation
+\begin{equation*}
+    z_1(s) = (u_0(s)+\tau_0) \dot u_0(s).
+\end{equation*}
+Condition \cref{eq:tau_condition_RP} yields
+\begin{equation*}
+    \tau_0 = \frac{10}{7}.
+\end{equation*}
+Then from \cref{eq:u_i_RP} we obtain the solution
+\begin{equation*}
+    u_1(s) = -\frac{6}{7} \dot u_0(s) \log (\cosh (s)).
+\end{equation*}
+The $L_2$ phase condition then yields that
+\[
+\gamma_1 = -\frac{3}{245} (70 \log (2)-59)
+.\] 
+Note that the integral to be evaluated in \cref{eq:c_i} is labor-intensive and
+prone to error.  Therefore, we used the (freely available) Wolfram
+Engine~\cite{WolframEngine} (although not open source).  Correcting the
+previous solution $u_1$ leads to the solution
+\begin{equation*}
+    u_1(s) = \frac{3}{245} (59-70 \log (2 \cosh (s))) \dot u_0(s).
+\end{equation*}
+
+Continuing with the second-order system we have the equation
+\[
+    z_2 = (u_0+\tau_0) \dot u_1+u_1 \dot u_0+u_1^2.
+\] 
+Here we directly used that $\tau_1=0$ by the symmetry as explained above.
+From \cref{eq:u_i_RP} we obtain
+\begin{align*}
+    u_2(s) ={}& 
+    \frac{1}{60025} 36 \sech^2 s  \left[3 \sech^2 s  \left\{70 \log (2 \cosh  s )
+        (105 \log (2 \cosh s )-247) \right.\right. \\ 
+              &{} \left.\left. +6289\right\}-2(3675 s \tanh  s +210 \log (2 \cosh  s )
+              (35 \log (2 \cosh  s )-94)+7129)\right].
+\end{align*}
+Notice that, since $u_2$ is an even function, we automatically have that
+$\gamma_2$ vanishes.
+
+For $i=3$ we have
+\begin{equation*}
+    z_3 = (u_2+\tau _2) \dot u_0+(u_0+\tau _0) \dot u_2+u_1 \left(\dot u_1+2 u_2\right).
+\end{equation*}
+Condition \cref{eq:tau_condition_RP} yields
+\begin{equation*}
+    \tau_2 = \frac{288}{2401}.
+\end{equation*}
+
+Then from \cref{eq:u_i_RP} we obtain the solution
+\begin{align*}
+    u_3(s) ={}&
+    \frac{216 \sech^2 s}{14706125}  
+    \left[\sech^2 s  \left\{3675 s (210 \log (2 \cosh  s )-247) \right. \right. \\
+              & +\tanh  s  \left(-171500 (\cosh (2 s)- 5) \log ^3(2 \cosh  s )+7350 (129 \cosh (2 s)-470) \right. \\
+              & \left.\left. \log^2(2 \cosh  s )+4456830 \log (2 \cosh s)-966242\right)\right\} \\
+              & \left.-70 \{210 s (35 \log (2 \cosh  s )-47)+30673 \tanh  s \log (\cosh  s )\}\right]
+.\end{align*}
+
+Trying to solve the integral in \cref{eq:c_i} with the Wolfram Engine yields
+\begin{align}
+    \label{eq:c_i_integral}
+    \int_0^\infty \dot u_0(1 - 2 u_0)u_3(s) \, ds ={}& 
+    \frac{16 \left(-5234558923+331676100 \pi^2+6260972760 \log (2)\right)}{514714375} \\
+    &{} -\frac{155520}{343}\int_0^\infty 
+                \log^3(2\cosh s )\sech^6 s \tanh^2 s  \, ds \nonumber \\ 
+    &{}  \frac{31104}{343}
+                \int_0^\infty \log^3(2\cosh s )\sech^6 s \tanh^2 s \cosh(2s) 
+                \, ds \nonumber \\
+    &{}  \frac{622080}{343}
+            \int_0^\infty \log^3(2\cosh s )\sech^8 s \tanh^2 s  
+            \, ds \nonumber \\ 
+    &{} -\frac{124416}{343}
+            \int_0^\infty \log^3(2\cosh s )\sech^8 s \tanh^2 s \cosh(2s) 
+            \, ds, \nonumber
+\end{align}
+i.e., the Wolfram Engine was unable to solve the integral. We observe that, in
+order to solve \cref{eq:c_i_integral}, it is sufficient to solve integrals of
+the form
+\begin{equation}
+    \label{eq:I_n}
+    I_n := \int_0^{\infty} \log^3 (2 \cosh s) \sech^n s \, ds,
+\end{equation}
+with $n=4,6,8$ and $n=10$. After a lengthy calculation, see \cref{sec:I_n}, we
+obtain the closed form expression
+\begin{multline*}
+I_n = 2^{n-3} 3 \sum_{k=0}^{\frac{n}{2}-1} \binom{\frac{n}{2}-1}k 
+            (-1)^k  \\
+        \left[\frac1{(\frac{n}{2}+k)^4} +
+            \frac{8}{2k+n} \left(\frac{H_{\frac{n}{2} + k}}{(2k+n)^2}
+                + \frac{H^{(2)}_{\frac{n}{2}+k} - \zeta(2)}{2(2k+n)}
+            + \frac{H^{(3)}_{\frac{n}{2}+k} - \zeta(3)}{4}
+        \right)\right].
+\end{multline*}
+where $\zeta$ is the Riemann zeta function and $H_n^{(m)}$ is the $n$th
+generalized harmonic number of order $m$. Explicitly we obtain
+\begin{align*}
+    I_4 ={}& \frac{82}{27}-\frac{5 \pi ^2}{36}-\zeta (3), \\
+    I_6 ={}& \frac{38342}{16875}-\frac{47 \pi ^2}{450}-\frac{4 \zeta (3)}{5}, \\
+    I_8 ={}& \frac{25545482}{13505625}-\frac{319 \pi ^2}{3675}-\frac{24 \zeta (3)}{35}, \\
+    I_{10} ={}& \frac{5428830032}{3281866875}-\frac{7516 \pi ^2}{99225}-\frac{64 \zeta (3)}{105}.
+\end{align*}
+From the above integrals, we deduce that
+\begin{equation*}
+    \gamma_3 = \frac{264 \zeta(3)}{343}-\frac{884895199}{7147176750}
+            -\frac{100 \pi^2}{3087}-\frac{1104228 \log 2}{420175}.
+\end{equation*}
+Since, by the symmetry, $\tau_3=0$, we obtain the third-order homoclinic predictor 
+\begin{equation}
+\label{eq:third_order_predictor_RPM_tau}
+\begin{cases}
+\begin{aligned}
+w_0(\eta)  &= \frac{a}{b^2} \left( \sum_{i=0}^3 u_i(\frac{a}{b}\epsilon\eta) \epsilon^i +
+\mathcal{O}(\epsilon^4) \right)   \epsilon^2, \\
+w_1(\eta)  &= \frac{a^2}{b^3} \left( \sum_{i=0}^3 \dot u_i(\frac{a}{b}\epsilon\eta) \epsilon^i +
+\mathcal{O}(\epsilon^4) \right)   \epsilon^3, \\
+\beta_1    &= -4 \frac{a^3}{b^4}\epsilon^4, \\
+\beta_2    &= \frac{a}{b}\epsilon^2 \left( \frac{10}{7} + \frac{288}{2401} \epsilon^2 + \mathcal{O}(\epsilon^4) \right),
+\end{aligned}
+\end{cases}
+\end{equation}
+for the smooth orbital normal form \cref{eq:normal_form_orbital}.
+
+
+\begin{remark}
+In~\cite{Kuznetsov2014improved} there is the remark that the
+author~\cite{Beyn_1994} was unable to find a tangent predictor due to the
+(normalized) form. The system in~\cite[Equation (4.5)]{Beyn_1994} to be solved
+is given by
+\begin{equation}
+  \label{eq:Beyn_tangent_system}
+  \begin{cases}
+  \begin{aligned}
+  \dot x  - y &= \frac12 a_1 \hat x^2 + a_2 \tau_0 \hat x + a_3 \tau_0^2, \\
+  \dot y -2\hat x x &=  b_1 \hat x \hat y + b_2 \tau_0 \hat y,
+  \end{aligned}
+  \end{cases}
+\end{equation}
+here $(\hat x, \hat y)$ is the zeroth-order solution $(u_0, \dot u_0)$. The
+coefficients $a_1,a_2,b_1,b_2$ are different normal form coefficients than used
+in this paper, but $\tau_0$ is identical to the $\tau_0$ used in this paper.
+Using the same technique as above it is easy to derive that
+\begin{align*}
+x(s) ={}& \left(a -\frac{1}{16} a_3 s  \tau _0^2-\frac{1}{96} a_3 \tau _0^2
+	\sinh (2 s ) -\frac{1}{48} a_2 \tau _0 \sinh (2 s )+\frac{1}{24} a_3 \tau _0^2
+	\coth (s ) \right . \\ 
+					&-\frac{1}{24} a_2 \tau _0 \coth (s )+\frac{a_1 s
+	}{8}-\frac{1}{48} a_1 \sinh (2 s ) +\frac{1}{12} a_1 \coth (s )+\frac{1}{15}
+	b_2 \tau_0 \cosh (2 s ) \\ 
+	&+\frac{1}{240} b_2 \tau _0 \cosh (4 s
+	)-\frac{2}{21} b_1 \cosh (2 s )-\frac{1}{168} b_1 \cosh (4 s ) \\ 
+	&\left.  -\frac{6}{7} b_1 \log (\cosh (s )) \right) \hat y(s)
+\end{align*}
+is a solution to \cref{eq:Beyn_tangent_system}. Therefore,
+by~\cite{Keller1977} the convergence of the homoclinic solution in
+the perturbed Hamiltonian system follows. Although the author
+in~\cite{Beyn_1994} was unable to provide a tangent approximation in
+phase-space, the author did prove, by refining the convergence cones
+from~\cite{JepsonDecker1986}, the convergence of the zeroth-order approximation in
+phase-space in the perturbed Hamiltonian system.
+\end{remark}
+
+
+\subsection{A polynomial Lindstedt-Poincar\'e method}
+\label{sec:PolynomailLindstedtPoincare}
+
+The Lindstedt-Poincar\'e method considers a nonlinear time transformation
+defined implicitly through the relation 
+\begin{equation}
+  \label{eq:first_non_linear_time_transformation}
+  \frac{d\xi}{ds}=\omega(\xi),
+\end{equation}
+which can be used to remove the so-called \emph{secular terms}, i.e., terms
+growing without bound, appearing in the process of approximating periodic
+orbits in weakly nonlinear oscillators using the regular perturbation approach.
+
+The Lindstedt-Poincar\'e method is also used to approximate homoclinic
+solutions in nonlinear oscillators, referred to as the generalized
+Lindstedt-Poincar\'e method,
+see~\cite{Chen2009,Chen@2009A,Chen@2009B,Chen@2010,Chen@2012}. In this case,
+there are no terms growing without bound when applying the regular perturbation
+approach. Instead, there are so-called \emph{parasitic turns}, see~\cite[Figure
+1]{Kuznetsov2014improved}.  The nonlinear transformation
+\cref{eq:first_non_linear_time_transformation} can then be used to remove the
+parasitic turns. In fact, using the nonlinear transformation, one can obtain a
+very simple form for the solution of the homoclinic orbit in phase-space,
+see~\cite[Equation 35]{Chen2009} and~\cite{Algaba_2019}.
+
+In both cases, i.e., when approximating periodic orbits or homoclinic orbits,
+we do the same: a nonlinear time transformation is used to obtain a uniform
+approximation of the orbit in time. 
+
+\subsubsection{General polynomial method}
+\label{sec:PolynomailLindstedtPoincareMethod}
+Substituting the parameterization of time $\omega$
+\cref{eq:first_non_linear_time_transformation} into
+\cref{eq:second_order_nonlinear_oscillator} yields
+\begin{equation}
+\label{eq:secondorder_gBT_omega}
+\omega\dfrac{d}{d\xi}\left(\omega \hat u^\prime\right)-\hat u^2+4
+  =\epsilon\omega \hat u^\prime (\hat u+\tau) + \mathcal O(\epsilon^4),
+\end{equation}
+were $\hat u(\xi(s)) = u(s)$.
+
+We now introduce a new time $\zeta$ via the transformation
+\begin{equation}
+  \label{eq:second_time_transformation}
+  \frac{d\zeta}{d\xi} = 1 - \zeta^2
+\end{equation}
+to simplify the solutions obtained below. Note that this transformation implies
+that $\zeta = \tanh(\xi + c_1)$, where $c_1$ is some constant. Without loss of
+generality, we can assume that $c_1=0$ since $c_1$ just shifts the homoclinic
+solution in time. Substituting \cref{eq:second_time_transformation} into
+\cref{eq:secondorder_gBT_omega} yields
+\begin{equation}
+\label{eq:secondorder_gBT_zeta}
+(1 - \zeta^2)\tilde\omega\dfrac{d}{d\zeta}\left((1-\zeta^2)\tilde\omega \tilde
+u^\prime\right)-\tilde u^2+4
+  =\epsilon\tilde\omega (1-\zeta^2)\tilde u^\prime(\tilde u+\tau) +\mathcal{O}(\epsilon^4),
+\end{equation}
+where the prime ${}^\prime$ now represents the derivative with respect to the
+variable $\zeta$, $\tilde u(\zeta(\xi(s))) = u(s)$, and $\tilde \omega
+(\zeta) = \omega(\xi(\zeta))$.
+
+Expanding $\tilde u$, $\tilde \omega$ and $\tau$ in $\epsilon$ 
+\begin{equation}
+  \label{eq:u_tilde_expansion_tau_expansion}
+  \tilde u(\zeta) = \sum_{i=0} \tilde u_i(\zeta) \epsilon^i,  \qquad
+  \tilde \omega(\zeta) = \sum_{i=0} \tilde \omega_i(\zeta) \epsilon^i,  \qquad
+  \tau = \sum_{i=0} \tau_i \epsilon^i,
+\end{equation}
+substituting into \cref{eq:secondorder_gBT_omega}, and collecting terms of equal
+power in $\epsilon$, we obtain the following systems to be solved:
+\begin{align}
+  &(1-\zeta^2)\tilde\omega_0
+    \left((1-\zeta^2)\tilde\omega_0 \tilde u_0^\prime\right)^\prime-\tilde u_0^2 +4 
+        {}= 0, \label{eq:0th_order_equation} \\
+  &(1-\zeta^2)\left((1-\zeta^2) \tilde u_i^\prime\right)^\prime-2 \tilde u_0
+  \tilde u_i   
+    + 2 (1 - \zeta^2)\tilde\omega_i \left( (1 - \zeta^2) \tilde u_0^\prime \right)^\prime 
+    + (1 - \zeta^2)^2 \tilde u_0^\prime \tilde\omega_i^{\prime}
+    \label{eq:ith_order_equation} \\ 
+  &\qquad = \tau_{i-1} \left(1- \zeta^2\right) \tilde u_0^\prime 
+         + z_i, \qquad i \in \mathbb{N}. \nonumber
+\end{align}
+Here $z_i$ contains the sums and products of terms in $\tilde u_j,\tilde
+\omega_j$ and $\tau_{j-1}$ with $0 \leq j \leq i-1$, with $\tau_{-1}$ is
+defined to be zero.
+
+\begin{theorem}
+  \label{thm:i_order_solution}
+  Equations \cref{eq:0th_order_equation,eq:ith_order_equation} are
+  solvable for every $i\in\mathbb N_{0}$, with
+  \begin{equation}
+    \label{eq:u_i_form}
+    \tilde u_i(\zeta) = \sigma_i \zeta^2 + \delta_i,
+  \end{equation}
+	where $\sigma_i$ and $\delta_i$ are constants to be determined.
+\end{theorem}
+\begin{proof}
+It is easy to see that equation \cref{eq:0th_order_equation} is solvable with
+$\sigma_0=6$, $\delta_0=-4$, and $\tilde\omega_0(\zeta) = 1$.
+
+Assume that for $i=1,\dots,n-1$, the systems given by
+\cref{eq:ith_order_equation} are solvable for $\tilde\omega_i$ and $\tilde u_i$.
+Furthermore, also assume that for $i=1,\dots,n$, $\tilde u_i$ is of the form
+\cref{eq:u_i_form}.  We will show that the system \cref{eq:ith_order_equation}
+with $i=n$ is solvable for $\tilde \omega_n$.
+
+First notice that \cref{eq:ith_order_equation} is just a first order ordinary
+differential equation in $\tilde \omega_i$:
+\begin{equation}
+\label{eq:omegap_i_as_ode}
+  \tilde\omega_i^{\prime} + \frac{2 \left( (1 - \zeta^2) \tilde u_0^\prime \right)^\prime}
+				{(1 - \zeta^2) \tilde u_0^\prime} \tilde\omega_i
+  = \frac{2 \tilde u_0\tilde u_i - (1-\zeta^2)\left((1-\zeta^2)\tilde u_i^\prime\right)^\prime
+    + \tau_{i-1} \left(1- \zeta^2\right) \tilde u_0^\prime + z_i}
+				{(1 - \zeta^2)^2 \tilde u_0^\prime}.
+\end{equation}
+Multiplying by the integrating factor 
+\begin{equation}
+    \label{eq:integrating_factor}
+    (1-\zeta^2)^2\left( \tilde u_0^\prime \right)^2
+\end{equation}
+and subsequently integrating with respect to $\zeta$ yields the
+identity
+\begin{align}
+  \tilde\omega_i  &=  \frac{ (1-\zeta^2)\left((1-\zeta^2)\tilde u_0^\prime\right)^\prime \tilde u_i 
+      - (1-\zeta^2)^2\tilde u_0^\prime \tilde u_i^\prime + (g_i(\zeta)-g_i(1)) }
+          { \left( \left(1 -\zeta^2\right) \tilde u_0^\prime \right)^2} \nonumber \\
+        &=  -\frac{\sigma_i}{12} 
+            - \frac{ (1-\zeta^2)\left((1-\zeta^2)\tilde u_0^\prime\right)^\prime \tilde u_i 
+            + (g_i(\zeta)-g_i(1)) }
+          { \left( \left(1 -\zeta^2\right) \tilde u_0^\prime \right)^2}
+          \label{eq:omega_i_explicit}
+\end{align}
+where
+\begin{align*}
+  g_i(\zeta) &= \tau_{i-1} \int \left(1- \zeta^2\right) \left(
+               \tilde u_0^\prime \right)^2 \; d\zeta + \int \tilde u_0^\prime z_i \; d\zeta.
+\end{align*}
+Here we used the identity 
+\[
+\left((1-\zeta^2)\left((1-\zeta^2)\tilde u_0^\prime\right)^\prime \right)' 
+=2 \tilde u_0 \tilde u_0^\prime,
+\]
+obtained from differentiating equation \cref{eq:0th_order_equation} and then
+using integrating by parts.  Furthermore, we have chosen the integration
+constant $g_i(1)$ such that numerator in \cref{eq:omega_i_explicit} vanishes
+for $\zeta=1$. Indeed, for $\tilde\omega_i$ to be well-defined, the numerator in
+\cref{eq:omega_i_explicit} must have roots of at least multiplicity two at
+$\zeta=0$ and $\zeta=\pm 1$. By setting $\zeta=-1,0$ in the numerator of
+\cref{eq:omega_i_explicit}, we obtain the equations
+\begin{align}
+  0 & = g_i(-1) - g_i(1), \\
+  0 & = 12 \delta_i - (g_i(0) - g_i(1)),
+\end{align}
+respectively. The first equation can be solved explicitly for $\tau_i$. Since
+$g_i(0)=0$, it follows that $\delta_i = \frac{g_i(1)}{12}$. To show that the
+roots $\zeta=0$ and $\zeta=\pm1$ have multiplicity two, we notice that
+differentiation of the numerator in \cref{eq:omega_i_explicit} with respect to
+$\zeta$ is equal to multiplying the right-hand side of \cref{eq:omegap_i_as_ode}
+with the integrating factor
+\cref{eq:integrating_factor}, i.e.,
+\begin{equation}
+    \label{eq:vanishing_condition_for_double_root}
+    \tilde u_0' \left( 2 \tilde u_0\tilde u_i - (1-\zeta^2)\left((1-\zeta^2)\tilde u_i^\prime\right)^\prime
+    + \tau_{i-1} \left(1- \zeta^2\right) \tilde u_0^\prime - z_i \right).
+\end{equation}
+Since $\tilde u_0^\prime = 12 \zeta$, we can factor out $\zeta=0$. Then substituting
+$\zeta=\pm1$ into \cref{eq:vanishing_condition_for_double_root}, the following
+equation needs to be satisfied
+\begin{equation*}
+    2 \tilde u_0(\pm1)\tilde u_i(\pm1) + z_i(\pm1) = 0.
+\end{equation*}
+Notice that this condition is equivalent to the condition obtained by
+substituting $\zeta=\pm1$ into \cref{eq:ith_order_equation}. Therefore, by
+solving the above equation for either $\pm 1$, yields
+\begin{equation}
+    \label{eq:sigma_i}
+    \sigma_i = -\delta_i - \frac{z_i(1)}{4}.
+\end{equation}
+
+Lastly, notice that for $i=1$ we have the solution
+\[
+\tau_0 = \frac{10}{7}, \quad \sigma_1=0, \quad \delta_1=0,
+				\quad \tilde\omega_1(\zeta) = \frac{6}{7} \zeta.
+\]
+\end{proof}
+
+\begin{corollary}
+    \label{corllary:rational_coefficients}
+    For $i\in \mathbb N_0$ the polynomials $\tilde \omega_i$ 
+    \cref{eq:omega_i_explicit} have rational
+    coefficients. Also, the $\tau_i, \sigma_i$ and  $\delta_i$ are rational.
+\end{corollary}
+
+\begin{proof}
+    The proof follows from a simple induction argument taking into account to
+    structure of $z_i$, $i\in\mathbb N$, in \cref{eq:ith_order_equation}.
+\end{proof}
+
+\begin{corollary}
+\label{corollary:delta_i_sigma_i}
+The following relation holds
+\[
+\sigma_i = \delta_i = \tau_i = 0, \qquad \text{for $i$ odd}.
+\]
+\end{corollary}
+\begin{proof}
+From \cref{proposition:symmetry} we have that the branch of non-trivial
+homoclinic orbits has the following symmetry
+\[
+u(-s, \epsilon)=u(s, -\epsilon)
+    + \gamma \dot u_0(s),
+\quad \tau(\epsilon) = \tau(-\epsilon),
+\]
+for $s \in \mathbb{R}$ and some open neighborhood of $\epsilon=0$.  Since
+$u(s, \epsilon) = \tilde u(\zeta(\xi(s))), \epsilon)$ and
+\begin{equation*}
+    \tilde u(\zeta(\xi(s)), \epsilon) = \sigma(\epsilon) \zeta^2(\xi(s)) +
+    \delta(\epsilon),
+\end{equation*}
+where $\sigma(\epsilon) = \sum_i \sigma_i \epsilon^i$ and $\delta(\epsilon) =
+\sum_i \delta_i \epsilon^i$, it follows that
+\begin{multline*}
+    \sigma(\epsilon) \zeta^2(\xi(-s)) + \delta(\epsilon) = u(-s, \epsilon)
+    = u(s, -\epsilon) + \gamma \dot u_0(s) \\
+    = \sigma(-\epsilon) \zeta^2(\xi(s)) + \delta(-\epsilon)
+    + \gamma(\epsilon) \left[1-\zeta^2(\xi(s))\right] 12 \zeta(\xi(s)).
+\end{multline*}
+Therefore, $\sigma, \delta$, and $\tau$ are even functions in $\epsilon$, from
+which the assertion follows.
+\end{proof}
+
+
+\begin{corollary}
+    \label{corollary:quadraticBTsigma_delta_relation}
+    For the quadratic Bogdanov--Takens normal form \cref{eq:universal_unfolding}
+    we have the relation that 
+    \begin{equation}
+        \label{eq:relation_sigma_delta}
+        \sigma_i = -\delta_i, \qquad \text{for } i\geq 1.
+    \end{equation}
+\end{corollary}
+
+\begin{proof}
+    Applying the singular rescaling \cref{eq:blowup} to the normal form
+    \cref{eq:universal_unfolding}, and consecutive applying the nonlinear time
+    transformations \cref{eq:first_non_linear_time_transformation} and
+    \cref{eq:second_time_transformation}, we obtain
+    \cref{eq:secondorder_gBT_zeta} without the higher-order terms in $\epsilon$.
+    After some calculations we obtain the explicit expression for $z_i$ with
+    $i\geq 1$ in \cref{eq:ith_order_equation}, namely
+    \begin{align*}
+    z_i(\zeta) = 
+         \sum_{k=1}^{i-1} u_k u_{i-k} 
+         + (1-\zeta^2) \left\{ \sum_{l=1}^{i-1} 
+          u_l^\prime \tau_{i-1-l}
+         + \sum_{k=1}^{i-1} \sum_{l=0}^{i-1-k} 
+           \omega_k u_l^\prime \tau_{i-1-l-k} + \right. \\
+           \left. 
+           \sum_{k=0}^{i-1} \sum_{l=0}^{i-1-k}
+           \omega_k u_l^\prime u_{i-1-l-k} 
+         - \sum_{l=1}^{i-1}
+           \omega_l \left((1-\zeta^2)
+           u_{i-l}^\prime \right)^\prime
+         - \sum_{k=1}^{i-1} \sum_{l=0}^{i-k}
+           \omega_l \left((1-\zeta^2)\omega_k u_{i-l-k}^\prime
+           \right)^\prime \right\}. \nonumber \\
+    \end{align*}
+    From \cref{corollary:delta_i_sigma_i}, we have that $z_1(1)=0$. By
+    assuming that the relation \cref{eq:relation_sigma_delta} holds for
+    $i=1,2,\dots,n-1$,  $n\in\mathbb N$, we see directly that  $z_i(1)=0$. The
+    assertion now follows by \cref{eq:sigma_i}, with $i=n$.
+\end{proof}
+
+\begin{remark}
+    From \cref{corollary:delta_i_sigma_i} it follows that the solution $\tilde
+    u$ for the quadratic Bogdanov--Takens normal form
+    \cref{eq:universal_unfolding} can be represented by the single parameter
+    $\sigma$
+    \begin{equation*}
+        \tilde u(\zeta) = 2 - (1-\zeta^2)\sum_{i\geq 0} \sigma_i \epsilon^i.
+    \end{equation*}
+    Consequently, $\hat u$ becomes
+    \begin{equation*}
+        \hat u(\xi) = 2 - \sech^2(\xi) \sum_{i\geq 0} \sigma_i \epsilon^i.
+    \end{equation*}
+\end{remark}
+
+
+\subsubsection{Third-order orbital homoclinic approximation}
+\label{sec:third_order_homoclinic_approximation_LP}
+For the third-order homoclinic predictor we obtain
+\begin{align}
+				\sigma &= 6 + \frac{18}{49}\epsilon^2 + \mathcal{O}(\epsilon^4),
+				\nonumber \\
+				\delta &=-4 - \frac{18}{49}\epsilon^2 + \mathcal{O}(\epsilon^4),
+				\nonumber \\
+				\label{eq:tau_orbital}
+				\tau   &= \frac{10}{7} + \frac{288}{2401} \epsilon^2 +
+								\mathcal{O}(\epsilon^4), \\
+				\tilde \omega(\zeta) &= 1 - \frac{6}{7}\zeta \epsilon	+ 
+				\left(\frac{9}{98} + \frac{27}{98}\zeta^2 \right) \epsilon^2 +
+				\left( -\frac{198}{2401}\zeta + \frac{18}{343}\zeta^3 \right)\epsilon^3+
+								\mathcal{O}(\epsilon^4). \nonumber
+\end{align}
+From which it follows that
+\begin{align}
+    \label{eq:third_order_uhat}
+    \tilde {u}(\zeta) 
+    ={}& 2 - \left(1-\zeta^2\right) \left(6 + \frac{18}{49}\epsilon^2 \right) 
+        + \mathcal{O}(\epsilon^4), \\
+    \label{eq:third_order_vhat}
+	\tilde  v(\zeta) 
+  ={}& -2 \tilde\omega(\zeta) \sigma (1-\zeta^2)\zeta
+	= -\left[ -12 + \frac{72}{7} \zeta \epsilon
+			 - \left( \frac{90}{49} + \frac{162 }{49} \zeta^2 \right)\epsilon^2
+		 \right. \\
+		 & + \left. \left( \frac{3888}{2401} \zeta -
+     \frac{216}{343}\zeta^3 \right) \epsilon^3 \right]
+     (1-\zeta^2) \zeta + \mathcal{O}(\epsilon^4) \nonumber.
+\end{align}
+
+The relation $\xi(s)$ is obtained by solving the ODE
+\begin{equation}
+				\label{eq:third_order_dxi_ds}
+				\frac{d\xi}{ds}(s) = \tilde \omega(\tanh(\xi(s))).
+\end{equation}
+Thus, we substitute 
+\begin{equation*}
+				\xi(s) = s + \xi_1(s)\epsilon + \xi_2(s)\epsilon^2
+				+ \xi_3(s)\epsilon^3 + \mathcal{O}(\epsilon^4),
+\end{equation*}
+into \cref{eq:third_order_dxi_ds} and expand the resulting equation in
+$\epsilon$ to obtain
+\begin{align}
+				\frac{d\xi_1}{ds}(s) &= -\frac{6\tanh(s)}{7}, 
+            \label{eq:xi_1} \\
+				\frac{d\xi_2}{ds}(s) &= \frac{18+54\tanh^2(s)
+				-168\xi_1(s)+168\tanh^2(s)\xi_1(s)}{196},
+            \label{eq:xi_2} \\
+				\frac{d\xi_3}{ds}(s) &= -\frac{198 \tanh(s)}{2401}+
+				\frac{18 \tanh^3(s)}{343}-\frac{27}{49}
+				(-\tanh(s) \xi_1(s)+\tanh^3(s) \xi_1(s)) \nonumber \\
+						& \qquad-\frac{6}{7} (-\tanh(s)
+				\xi_1^2(s)+\tanh^3(s) \xi_1^2(s)+\xi_2(s)-\tanh^2(s) \xi_2(s)).
+            \nonumber
+\end{align}
+Here we directly used that $\xi_0(s)=s$. By solving these equations recursively,
+we obtain
+\begin{equation*}
+\begin{aligned}
+    \xi_1(s) ={}& c_1 - \frac{6}{7}\log(\cosh(s)), \\
+    \xi_2(s) ={}& c_2 -\frac{18 s}{49}+\frac{45 \tanh (s)}{98}-\frac{6}{7} c_1
+             \tanh (s)+\frac{36}{49} \tanh (s) \log (\cosh(s)), \\
+    \xi_3(s) ={}& c_3 + \frac{1}{4802}\left( 3 \sech^2(s) \left(-504 \log^2(\cosh
+            (s))-276 \cosh (2 s) \log (\cosh (s)) \right.\right. \\
+            {}& + 102 \log (\cosh (s))+14 (18 s-49 c_2) \sinh (2 s)+1176
+                c_1 \log (\cosh (s)) \\
+            {}& \left. \left. + 546-686 c_1{}^2-441 c_1\right) \right).
+\end{aligned}
+\end{equation*}
+The constants $c_i (i=1,2,3)$ lead to different phase conditions.  A
+computationally simple phase condition is given by
+\begin{equation}
+    \label{eq:xi_i}     
+    \xi_i(0)=0,\qquad \mbox{for } i=1,2,3.
+\end{equation}
+These results in the constraint $v(0)=0$, i.e., the phase condition used
+in~\cite{Kuznetsov2014improved}. Solving \cref{eq:xi_i} leads to the solution
+\begin{equation}
+    \label{eq:c_i_first_phase_condition}
+     c_1=0, \qquad c_2=0, \qquad c_3=-\frac{117}{343}.
+\end{equation}
+Substituting the above expression for $\xi$ into \cref{eq:blowup} we obtain the
+third-order predictor
+\begin{equation}
+\label{eq:third_order_predictor_LP_tau}
+\begin{cases}
+\begin{aligned}
+w_0(\eta)  &= \frac{a}{b^2} 
+\tilde {u}\left(\tanh\left(\xi\left(\frac{a}{b}\epsilon\eta\right)\right)\right) \epsilon^2, \\
+w_1(\eta)  &= \frac{a^2}{b^3}
+\tilde {v}\left(\tanh\left(\xi\left(\frac{a}{b}\epsilon\eta\right)\right)\right) \epsilon^3, \\
+\beta_1    &= -4 \frac{a^3}{b^4}\epsilon^4, \\
+\beta_2    &= \frac{a}{b}\epsilon^2\tau,
+\end{aligned}
+\end{cases}
+\end{equation}
+where $\tau,\tilde{u}$ and $\tilde{v}$ are given by
+\cref{eq:tau_orbital,eq:third_order_uhat,eq:third_order_vhat}, respectively.
+
+\begin{remark}
+By expanding $\tilde {u}\left(\tanh\left(\xi(s)\right)\right)$ in $\epsilon$ up
+to third-order we obtain
+\[
+    u(s) = u_0(s) + u_1(s) \epsilon + u_2(s) \epsilon^2 + u_3(s) \epsilon^3,
+\]
+where
+\begin{equation}
+\label{eq:u_orbital}    
+\begin{aligned}
+    u_0(s) ={}& 6 \tanh^2(s) - 4, \quad
+    u_1(s) = -\frac{72 b \tanh(s) \sech^2(s) \log(\cosh(s))}{7 a}, \\
+    u_2(s) ={}& \frac{18}{49} \sech^2(s) \left(-12 s \tanh (s)-24 (\log(\cosh(s))-1) \log(\cosh(s)) \right. \\
+              &  \left. +3 \sech^2(s) (32 \log(\sech(s))+12 \log(\cosh(s)) (\log(\cosh(s))+2)-5)+14\right), \\
+    u_3(s) ={}& -\frac{27 \sech^5(s)}{2401}  \left(-273 \sinh(s)+91 \sinh(3 s)+84 s \cosh(3 s) (2 \log(\cosh(s))-1) \right. \\
+              & -84 s \cosh(s) (6 \log(\cosh(s))-1)-1232 \sinh(s) \log^3(\cosh(s)) \\
+              & +112 \sinh(3 s) \log^3(\cosh(s))+2016 \sinh(s) \log^2(\cosh(s)) \\
+              & -336 \sinh(3s) \log^2(\cosh(s))+904 \sinh(s) \log(\cosh(s)) \\
+              & \left. -104 \sinh(3 s) \log(\cosh(s))\right).
+\end{aligned}
+\end{equation}
+Together with \cref{eq:tau_orbital}, this is precisely the solution obtained
+by using the regular perturbation method to
+\cref{eq:second_order_nonlinear_oscillator} with phase condition $\dot u(0)=0$.
+
+Note that for the conjecture in~\cite[Section 7]{Al-Hdaibat2016} to
+hold, the phase condition \cref{eq:xi_i} must be satisfied.
+\end{remark}
+
+\subsubsection{Non-uniqueness of homoclinic solution}
+\label{sec:phase_condition}
+Note that in \cref{thm:i_order_solution} we could have assumed the solutions of
+\cref{eq:ith_order_equation} to be of the form
+\begin{equation}
+    \label{eq:u_zeta_second_form}
+    \tilde u(\zeta)  = \sum_{i\geq 0} \left(\sigma_i \zeta^2 + \delta_i + \gamma_i (1-\zeta^2)
+    \tilde u_0^\prime(\zeta) \right) \epsilon^i,
+\end{equation}
+where $\gamma_0=0$ and $\gamma_i\in\mathbb{R}$ are constants to
+be determined by some phase condition. Thus, we have freedom in \cref{eq:xi_i}
+and in \cref{eq:u_zeta_second_form} both originating from the non-uniqueness
+of the homoclinic orbit. The solutions \cref{eq:xi_1,eq:xi_2} together with
+\begin{align*}
+    \xi_3(s) =&{}
+    \frac{1}{4802} \left(18 \left[49 \gamma_1 (7 \gamma_1+4)+84 s \tanh (s)+92 \log
+        (\sech(s))-105\right] \right. \\
+        & -7 \sech^2(s) \left[-7 \gamma_1 (7 \gamma_1-3) (35 \gamma_1+9)+18 (7 \gamma_1 \
+(7 \gamma_1+4)+9) \log (\sech(s)) \right. \\
+        & \left.\left. +216 \log ^2(\cosh (s))-234\right] \right)
+\end{align*}
+and
+\begin{equation*}
+    \gamma_1 = \frac{1}{35} \left(-4-\frac{59}{\sqrt[3]{836+15
+                \sqrt{4019}}}+\sqrt[3]{836+15 \sqrt{4019}}\right)
+\end{equation*}
+also leads to the phase condition $\xi_i(0)=0$ for $i=1,2,3$. However,
+$v_3(0)=0$ no longer holds. The solutions $\tilde u$ and $\tilde v$ are now
+given by
+\begin{align*}
+\tilde{u}(\zeta) 
+={}& 2 + \left(1-\zeta^2\right) \left( -6 + 12 \gamma_1 \zeta  \epsilon
+    + \left(6 \gamma_1^2-\frac{18}{49}\right)\epsilon^2 
+    + \mathcal{O}(\epsilon^4) \right), \\
+\tilde v(\zeta) 
+    ={}& (1-\zeta^2) \tilde \omega (\zeta) u'(\zeta) 
+    = (1-\zeta^2) \tilde \omega(\zeta) \sum_{i=0} \left( \sigma_i \zeta   +
+         12 \gamma_i \left( 1 - 3 \zeta^2 \right) \right) \epsilon^i \\
+	  ={}& (1-\zeta^2)\left[12\zeta + 
+        \left(12\gamma_1 - 36\frac{2 + 7 \gamma_1\zeta^2}{7}\right) \epsilon +
+        \nonumber \right.\\
+       & 6\zeta\frac{15 - 168\gamma_1 - 245\gamma_1^2 + 
+         3(9 + 7 \gamma_1(16 + 7 \gamma_1))\zeta^2}{49} \epsilon^2 + \nonumber \\
+     {}& \left( 216\zeta^2\frac{-18 + 7\zeta^2}{2401} 
+        + 6\gamma_1^3(-3 + 2\zeta^2 + \zeta^4) -
+      72\gamma_1^2\frac{1 - 6\zeta^2 + 4\zeta^4}7  \right. \nonumber \\
+     {}& \left. \left. - 54 \gamma_1\frac{-1 - 6\zeta^2 + 15\zeta^4}{49}
+        \right)\epsilon^3 
+        + \mathcal{O}(\epsilon^4) \right] \nonumber.
+\end{align*}
+The numerical simulations in \cref{sec:topological_normal_form} show that for
+the normal form \cref{eq:universal_unfolding} these asymptotics are more
+accurate than the asymptotics derived in
+\cref{sec:third_order_homoclinic_approximation_LP}.
+
+\subsubsection{Comparison with the nonlinear periodic time-reparametrization}
+In~\cite{Algaba_2019} a different approach is used to approximate the homoclinic
+solution near the quadratic normal form of a generic codimension 2
+Bogdanov--Takens bifurcation. The approach there is an application of the
+so-called Perturbation-Incremental Method described in~\cite{Xu_1996}. Consider
+strongly nonlinear oscillators of the form
+\begin{equation}
+  \label{eq:nonlinear_oscillator}
+  \ddot x + g(x) = \lambda f(x,\dot x, \mu) \dot x, \qquad \
+\end{equation}
+where $g$ and $f$ are arbitrary nonlinear functions, and
+$\lambda$ and $\mu$ are parameters.
+
+The authors in~\cite{Xu_1996} perform a  nonlinear periodic time-reparametrization
+of the form
+\begin{equation}
+\label{eq:nonlinear_periodic_reparametrization}  
+\frac{d\phi}{dt} =\Phi(\phi), \qquad \Phi(\phi+2\pi)=\Phi(\phi)
+\end{equation}
+to the system \cref{eq:nonlinear_oscillator}. Then it is assumed that there is a
+homoclinic orbit present which can be approximated by the solution
+\[
+u(\phi) = p \cos(2\phi) + q,
+\]
+where $p$ and $q$ are constants to be approximated. In~\cite[Theorem
+1]{Algaba_2019} it is shown that the solutions $u(\phi)$ and $u(s)$ are related
+to each other through
+\[
+    \Phi(\phi) = \frac{\sqrt 2}{2} \omega(\xi) \sin\phi
+.\] 
+
+It follows that one should be able to factor out the term
+$\sin{\phi}$ in \cref{eq:nonlinear_periodic_reparametrization}. This is
+indeed precisely what we see in the transformation $\Phi$
+in~\cite[(41)]{Algaba_2019}. Thus, although the nonlinear periodic time- reparametrization
+is analytically equivalent to the polynomial generalized
+Lindstedt-Poincar\'e method, it is geometrically \emph{less intuitive} than
+using hyperbolic functions and computationally \emph{more expensive} than using
+polynomials.
+
+We also would like to point out that the singular rescaling
+\begin{equation*}
+    w_0 = u \epsilon^2, \quad
+    w_1 = v \epsilon^3, \quad
+    \beta_1 = -\epsilon^4, \quad 
+    \beta_2 = \tau \epsilon^2, \quad 
+    s = \epsilon \eta, \quad (\epsilon \neq 0),
+\end{equation*}
+used in~\cite{Algaba_2019} applied to the quadratic Bogdanov--Takens normal form
+with coefficient $a=1$ and $b=1$ results in the $\sqrt 2$ turning up in the
+calculations of homoclinic approximation. From a computational point of view,
+this is less ideal to work with.
+
+\begin{remark}
+    Note that the polynomial generalized Lindstedt-Poincar\'e method described
+    above only depends on the existence of the zeroth-order solution.
+    Therefore, this method can be applied in similar situations where
+    homoclinic orbits emanate from codimension two Bogdanov--Takens bifurcation
+    points. For example, the transcritical codimension two bifurcation treated
+    in~\cite{Hirschberg_1991}, see also~\cite[Appendix C.2]{Bosschaert@2016}.
+    Furthermore, under certain symmetry present in the ODE heteroclinic
+    solutions can also emanate from codimension two Bogdanov--Takens points
+    which can be approximated using the polynomial Lindstedt-Poincar\'e method
+    as described above.
+\end{remark}

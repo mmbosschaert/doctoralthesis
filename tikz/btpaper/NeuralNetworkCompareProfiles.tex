@@ -1,0 +1,104 @@
+%! TeX program = lualatex
+\ifdefined\issiam
+    \documentclass[class=../siamonline220329]{standalone}
+\fi
+\ifdefined\isarXiv
+    \documentclass[class=../myarticle]{standalone}
+\fi
+\ifdefined\isthesis
+    \documentclass[class=../siamonline220329]{standalone}
+    \usepackage[textwidth=13cm,top=1in]{geometry}
+    \setlength{\oddsidemargin}{0pt}
+\fi
+\input{./mycolors.tex}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{groupplots}
+\usepackage{environ}
+
+\NewEnviron{groupwidth}[1]{% #1 = number of groupplots per row
+    \tikzset{/pgfplots/width={\dimexpr \textwidth/#1}}%
+    \sbox0{\BODY}%
+    \tikzset{/pgfplots/width={\dimexpr 2\textwidth/#1 - \wd0/#1}}%
+\BODY}
+
+\newcommand\pathToCSVFiles{../data/neuralNetworkModel}
+\pgfplotsset{
+    axis on top,
+    xminorticks=true,
+    yminorticks=true,
+    every tick label/.append style={font=\footnotesize},
+    label style = {font = \small},
+    tick label style={font=\footnotesize},
+    legend style={font=\small},
+}
+
+\begin{document}
+\noindent\begin{groupwidth}{2}
+\begin{tikzpicture} 
+\begin{groupplot}[group style={
+        group size= 2 by 2,
+        horizontal sep = 2.5em,
+        vertical sep = 3em},
+        every axis y label/.style={
+                at={(ticklabel* cs:1.05)},
+                    anchor=south,
+                },
+        grid={both}, 
+        grid style={{line width=.1pt, draw=gray!10}}, 
+        ]
+% -------------------------------------------------------------------------------------------------------------------
+%-----------
+% Plot [1, 1]
+%-----------
+\nextgroupplot[
+    title={First order asymptotics},
+    title style={at={(0,0.5)},anchor=north, xshift=-10ex, rotate=90},
+    ylabel = {$u_1$},
+    legend style={at={($(0,0)+(1cm,1cm)$)},legend
+    columns=2,fill=none,draw=black,anchor=center,align=center,
+    column sep=2ex},
+    legend to name=neuralNetworkCompareProfilesLegend,
+]
+% (Relative) Coordinate at top of the first plot
+\coordinate (c1) at (rel axis cs:0,1);
+\addplot [color=bittersweet, smooth] table {\pathToCSVFiles/homoclinicorbit_corr_t_vs_u1_firstorder.csv};
+\addlegendentry{predicted};
+\addplot [color=royalblue, mark=*, only marks, mark size=0.6] table {\pathToCSVFiles/homoclinicorbit_pred_t_vs_u1_firstorder.csv};
+\addlegendentry{corrected};
+
+%-----------    
+% Plot [1, 2]
+%-----------
+\nextgroupplot[ ylabel = {$u_2$}]
+\addplot [color=bittersweet, smooth] table {\pathToCSVFiles/homoclinicorbit_corr_t_vs_u2_firstorder.csv};
+\addplot [color=royalblue, mark=*, only marks, mark size=0.6] table {\pathToCSVFiles/homoclinicorbit_pred_t_vs_u2_firstorder.csv};
+
+%-----------    
+% Plot [2, 1]
+%-----------
+\nextgroupplot[
+    xlabel = {$t$}, ylabel = {$u_1$}, 
+    title={Third order asymptotics},
+    title style={at={(0,0.5)},anchor=north, xshift=-10ex, rotate=90},
+]
+\addplot [color=bittersweet, smooth] table {\pathToCSVFiles/homoclinicorbit_corr_t_vs_u1_thirdorder.csv};
+\addplot [color=royalblue, mark=*, only marks, mark size=0.6] table {\pathToCSVFiles/homoclinicorbit_pred_t_vs_u1_thirdorder.csv};
+
+%-----------    
+% Plot [2, 2]
+%-----------
+\nextgroupplot[ xlabel = {$t$}, ylabel = {$u_2$}]
+\addplot [color=bittersweet, smooth] table {\pathToCSVFiles/homoclinicorbit_corr_t_vs_u2_thirdorder.csv};
+\addplot [color=royalblue, mark=*, only marks, mark size=0.6] table {\pathToCSVFiles/homoclinicorbit_pred_t_vs_u2_thirdorder.csv};
+
+% (Relative) Coordinate at top of the second plot
+\coordinate (c2) at (rel axis cs:1,1);% I moved this to the upper right corner
+\end{groupplot}
+\coordinate (c3) at ($(c1)!.5!(c2)$);
+\node[below] at (c3 |- current bounding box.south)
+  {\pgfplotslegendfromname{neuralNetworkCompareProfilesLegend}};
+\end{tikzpicture}%
+\end{groupwidth}
+\end{document}

@@ -1,0 +1,27 @@
+\begin{tikzpicture}
+\begin{groupplot}[group style={
+	group name=left plots1,
+	group size= 1 by 3, vertical sep=0.0cm},
+    % ylabsh=-4em,
+	height=0.11\textwidth,width=0.33\textwidth,scale only axis,
+	scale only axis,
+	every tick label/.append style={font=\footnotesize},
+	scaled ticks=false, tick label style={/pgf/number format/fixed}]
+\nextgroupplot[ylabel={$x$},xtick=\empty]
+	\addplot [royalblue,very thin,each nth point=10] table [x index=0,y index=1] {\datadir/vdpo_torus1.csv};
+\nextgroupplot[ylabel={$y$},xtick=\empty]
+	\addplot [royalblue,very thin,each nth point=10] table [x index=0,y index=2] {\datadir/vdpo_torus1.csv};
+\nextgroupplot[xlabel={$t$}, ylabel={$x(t-\tau_0)$}, xtick={36000,38000,40000}]
+	\addplot [royalblue,very thin,each nth point=10] table [x index=0,y index=1] {\datadir/vdpo_torus2.csv};
+\end{groupplot}
+%
+\begin{groupplot}[group style={
+	group size= 1 by 1},
+	every tick label/.append style={font=\footnotesize},
+	height=0.33\textwidth,width=0.33\textwidth,scale only axis,ytick pos=right]
+\nextgroupplot[xlabel={$x$}, ylabel={$x(t-\tau_0)$},%
+anchor=north west, at={($(left plots1 c1r1.north east) + (1.6cm,0)$)}],
+\addplot [royalblue,only marks, mark size=0.5]%
+ table [x index=0,y index=1] {\datadir/vdpo_torus_poincare.csv};
+\end{groupplot}
+\end{tikzpicture}

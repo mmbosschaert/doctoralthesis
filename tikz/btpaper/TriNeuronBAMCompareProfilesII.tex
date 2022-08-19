@@ -1,0 +1,142 @@
+%! TeX program = lualatex
+\ifdefined\issiam
+    \documentclass[class=../siamonline220329]{standalone}
+\fi
+\ifdefined\isarXiv
+    \documentclass[class=../myarticle]{standalone}
+\fi
+\ifdefined\isthesis
+    \documentclass[class=../siamonline220329]{standalone}
+    \usepackage[textwidth=13cm,top=1in]{geometry}
+    \setlength{\oddsidemargin}{0pt}
+\fi
+\input{./mycolors.tex}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usepgfplotslibrary{groupplots}
+\usepackage{environ}
+
+\NewEnviron{groupwidth}[1]{% #1 = number of groupplots per row
+    \tikzset{/pgfplots/width={\dimexpr \textwidth/#1}}%
+    \sbox0{\BODY}%
+    \tikzset{/pgfplots/width={\dimexpr 2\textwidth/#1 - \wd0/#1}}%
+\BODY}
+
+ \pgfplotsset{
+        every axis plot/.append style={line width=0.3pt},
+        every tick label/.append style={font=\footnotesize},
+        title style = {font = \small},
+        label style = {font = \small},
+        tick label style={font= \small},
+        legend style={font=\small},
+     }
+
+\begin{document}
+\noindent\begin{groupwidth}{3}
+\newcommand\pathToCSVFiles{../data/triNeuronBAMNeuralNetworkModel}
+\begin{tikzpicture}[mark size = 1] 
+%
+pgfplotsset{
+    axis on top,
+    xminorticks=true,
+    yminorticks=true,
+    ylabel shift=-3pt,
+    ylabel style={anchor=south},
+    font=\tiny,
+}
+%       
+\begin{groupplot}[ 
+    group style={
+        group size= 3 by 2,
+        horizontal sep=20pt,
+        vertical sep=40pt,
+    },
+    xlabel = {$t$},
+    every axis y label/.style={
+            at={(ticklabel* cs:1.05)},
+                anchor=south,
+            },
+]
+% -------------------------------------------------------------------------------------------------------------------
+%-----------
+% Plot [1, 1]
+%-----------
+\nextgroupplot[
+    title=first order,
+    title style={at={(0,0.5)},anchor=north, xshift=-10ex, rotate=90},
+    ylabel = {$u_1$},
+    legend style={at={($(0,0)+(1cm,1cm)$)},legend
+    columns=2,fill=none,draw=black,anchor=center,align=center,font=\small,
+    column sep=2ex},
+    legend to name=triNeuralBAMCompareProfilesLegendII,
+    scaled y ticks = base 10:2
+]
+\coordinate (c0) at (rel axis cs:0,1);
+\addplot [color=bittersweet, smooth] table {\pathToCSVFiles/homoclinicorbit2_pred_t_vs_u1_firstorder.csv};
+\addlegendentry{predected};
+\addplot [color=royalblue, mark=*, only marks, mark size=0.6] table {\pathToCSVFiles/homoclinicorbit2_corr_t_vs_u1_firstorder.csv};
+\addlegendentry{corrected};
+
+%-----------    
+% Plot [1, 2]
+%-----------
+\nextgroupplot[ ylabel = {$u_2$}]
+\addplot [color=bittersweet, smooth] table {\pathToCSVFiles/homoclinicorbit2_pred_t_vs_u2_firstorder.csv};
+\addplot [color=royalblue, mark=*, only marks, mark size=0.6] table {\pathToCSVFiles/homoclinicorbit2_corr_t_vs_u2_firstorder.csv};
+
+%-----------    
+% Plot [1, 3]
+%-----------
+\nextgroupplot[
+    ylabel = {$u_3$}, 
+    %title=First order asymptotics,
+    title style={at={(0,0.5)},anchor=north, xshift=-10ex, rotate=90},
+]
+\coordinate (c1) at (rel axis cs:1,1);
+\addplot [color=bittersweet, smooth] table {\pathToCSVFiles/homoclinicorbit2_pred_t_vs_u3_firstorder.csv};
+\addplot [color=royalblue, mark=*, only marks, mark size=0.6] table {\pathToCSVFiles/homoclinicorbit2_corr_t_vs_u3_firstorder.csv};
+
+%-----------
+% Plot [2, 1]
+%-----------
+\nextgroupplot[
+    title=third order,
+    title style={at={(0,0.5)},anchor=north, xshift=-10ex, rotate=90},
+    ylabel = {$u_1$},
+    scaled y ticks = base 10:2
+]
+\coordinate (c2) at (rel axis cs:0,1);
+\addplot [color=bittersweet, smooth] table {\pathToCSVFiles/homoclinicorbit2_pred_t_vs_u1_thirdorder.csv};
+\addplot [color=royalblue, mark=*, only marks, mark size=0.6] table {\pathToCSVFiles/homoclinicorbit2_corr_t_vs_u1_thirdorder.csv};
+
+%-----------    
+% Plot [2, 2]
+%-----------
+\nextgroupplot[ 
+    ylabel = {$u_2$}
+    ]
+\addplot [color=bittersweet, smooth] table {\pathToCSVFiles/homoclinicorbit2_pred_t_vs_u2_thirdorder.csv};
+\addplot [color=royalblue, mark=*, only marks, mark size=0.6] table {\pathToCSVFiles/homoclinicorbit2_corr_t_vs_u2_thirdorder.csv};
+
+%-----------    
+% Plot [2, 3]
+%-----------
+\nextgroupplot[
+    ylabel = {$u_3$}, 
+    title style={at={(0,0.5)},anchor=north, xshift=-10ex, rotate=90},
+]
+\coordinate (c3) at (rel axis cs:1,1);
+\addplot [color=bittersweet, smooth] table {\pathToCSVFiles/homoclinicorbit2_pred_t_vs_u3_thirdorder.csv};
+\addplot [color=royalblue, mark=*, only marks, mark size=0.6] table {\pathToCSVFiles/homoclinicorbit2_corr_t_vs_u3_thirdorder.csv};
+
+\end{groupplot}
+\coordinate (c4) at ($(c0)!.5!(c1)$);
+\node[below,yshift=0.8cm] at (c4 |- current bounding box.north)
+  {Homoclinic orbit II};
+\coordinate (c5) at ($(c2)!.5!(c3)$);
+\node[below] at (c5 |- current bounding box.south)
+  {\pgfplotslegendfromname{triNeuralBAMCompareProfilesLegendII}};
+\end{tikzpicture}%
+\end{groupwidth}
+\end{document}

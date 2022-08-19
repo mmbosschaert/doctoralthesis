@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+    \begin{axis}[
+        width=\textwidth*0.45,
+        height=\textwidth*0.45,
+        xlabel={$u$},
+        ylabel={$v$},
+        zlabel={$x$},
+        grid=both,
+        grid style={line width=.1pt, draw=gray!10},
+        tick style={draw=none}
+        ]
+        \addplot3 [color=royalblue] file {./data/3pulse.csv};
+    \end{axis}
+\end{tikzpicture}

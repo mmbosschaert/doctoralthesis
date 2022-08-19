@@ -1,0 +1,125 @@
+\section[Integrals from section 2.3.1]{Integrals from
+\texorpdfstring{\cref{sec:third_order_homoclinic_approximation_RP}}{subsection 2.3.1}}%
+%TODO : check is the hard coded reference is up-to-date.
+\label{sec:I_n}
+Making the substitution $s=\log(u)$ in \cref{eq:I_n} yields
+\begin{equation*}
+    I_n = 2^n \int_1^\infty \log^3\left(\frac{u^2+1}{u}\right) \frac{u^{n-1}}{(u^2+1)^n} \, du.
+\end{equation*}
+Then, by making the reciprocal substitution $u \to \frac{1}{u}$, we can show
+that
+\begin{equation*}
+    I_n = 2^{n-1} \int_0^\infty \log^3\left(\frac{u^2+1}{u}\right)
+            \frac{u^{n-1}}{(u^2+1)^n} \, du.
+\end{equation*}
+The last integral can be separated into the four following integrals
+\begin{align}
+    I_n^{(1)} =& \int_0^\infty \log^3(u^2+1) \frac{u^{n-1}}{(u^2+1)^n} du
+              \label{eq:In1}, \\
+    I_n^{(2)} =& \int_0^\infty \log^2(u^2+1)\log u \frac{u^{n-1}}{(u^2+1)^n} du 
+              \label{eq:In2}, \\
+    I_n^{(3)} =& \int_0^\infty \log(u^2+1)\log^2 u \frac{u^{n-1}}{(u^2+1)^n} du 
+              \label{eq:In3}, \\
+    I_n^{(4)} =& \int_0^\infty \log^3 u \frac{u^{n-1}}{(u^2+1)^n} du
+              \label{eq:In4}.
+\end{align}
+The integral \cref{eq:In1} can easily be solved by first applying the
+substitutions $u\to u^2+1$ and $u\to\frac1u$ consecutively to obtain
+\begin{align*}
+    I_n^{(1)} 
+    &{}= - \frac12 \int_0^1 \log^3 (u) 
+        \left(1-u\right)^{\frac{n}{2}-1}u^{\frac{n}{2}-1} \, du.
+\end{align*}
+Then using the binomial theorem yields
+\begin{equation*}
+    I_n^{(1)} 
+= - \frac12 \sum_{k=0}^{\frac{n}{2}-1} \binom{\frac{n}{2}-1}k (-1)^k 
+            \int_0^1 \log^3 (u) u^{\frac{n}{2}-1+k} \, du
+    = \frac12 \sum_{k=0}^{\frac{n}{2}-1} \binom{\frac{n}{2}-1}k
+    \frac{(-1)^k 3!}{({\frac{n}{2}+k})^4},
+\end{equation*}
+where in the last equality we used the well-know identity
+\begin{equation}
+    \label{eq:int01umlogn}
+    \int_0^1 u^m \log^n (u) \, du = (-1)^n \frac{n!}{(m+1)^{n+1}},
+\end{equation}
+for $n$ and $m$ natural numbers.
+
+To solve the integral \cref{eq:In2} we make three consecutive
+substitutions: $u\to u^2$, $u\to u-1$, and $u\to\frac{1}{u}$. This gives
+\[
+    I_n^{(2)}=
+    -\frac{1}{4} \int_0^1 
+        \left(\log^3(v)-\log^2(v)\log(1-v) \right) 
+        (1-v)^{\frac{n}2-2} v^{\frac{n}2-1} dv. \\
+\]
+Then, by using the binomial theorem and expanding the logarithm we obtain
+\ifsiam
+\begin{multline*}
+    I_n^{(2)}={}
+\frac{1}{4} \sum_{k=0}^{\frac{n}{2}-1} \binom{\frac{n}{2}-1}k
+        (-1)^k \left[ 
+          \int_0^1 \log^3(v) (1-v)^{\frac{n}2-2} v^{\frac{n}2-1} dv \right. \\
+        \left. 
+        -\sum_{l=1}^\infty \frac1l \int_0^1 \log^2(v) v^{\frac{n}2-1+k+l} dv 
+    \right].
+\end{multline*}
+\else
+\begin{multline*}
+    I_n^{(2)}={}
+\frac{1}{4} \sum_{k=0}^{\frac{n}{2}-1} \binom{\frac{n}{2}-1}k
+        (-1)^k \left[ 
+          \int_0^1 \log^3(v) (1-v)^{\frac{n}2-2} v^{\frac{n}2-1} dv
+        -\sum_{l=1}^\infty \frac1l \int_0^1 \log^2(v) v^{\frac{n}2-1+k+l} dv 
+    \right].
+\end{multline*}
+\fi
+Using equality \cref{eq:int01umlogn} once more yields
+\begin{equation*}
+    I_n^{(2)}={}
+\frac{1}{4} \sum_{k=1}^{\frac{n}{2}-1} \binom{\frac{n}{2}-1}k
+    (-1)^k \left[ \frac{3!}{(\frac{n}{2}+k)^4}
+     -2\sum_{l=1}^\infty \frac1{l(\frac{n}2+k+l)^3}\right].
+\end{equation*}
+Fractional decomposition shows that the innermost summation in the last
+equation is equal to 
+\begin{equation*}
+    \sum_{l=1}^\infty \frac1{l(\frac{n}2+k+l)^3}
+        = \frac{8}{2k+n} \left(\frac{H_{\frac{n}{2} + k}}{(2k+n)^2} +
+            \frac{H^{(2)}_{k+\frac{n}{2}} - \zeta(2)}{2(2k+n)} +
+            \frac{H^{(3)}_{k+\frac{n}{2}} - \zeta(3)}4 
+        \right).
+\end{equation*}
+%
+Thus, the integral in \cref{eq:In2} is equal to
+\begin{multline*}
+    I_n^{(2)} = \frac{1}{4} \sum_{k=1}^{\frac{n}{2}-1} 
+        \binom{\frac{n}{2}-1}k (-1)^k 
+        \left[ \frac{3!}{(\frac{n}{2}+k)^4} \right.  
+        - \frac{2}{2k+n} 
+            \left(\frac{4}{(2k+n)^2} H_{\frac{n}{2}+k} \right. \\ 
+            \left.\left. + \frac{2}{(2k+n)} H^{(2)}_{\frac{n}{2}+k} 
+            + H^{(3)}_{\frac{n}{2}+k} - \frac{2\zeta(2)}{2k+n} - 4\zeta(3)
+    \right)\right].
+\end{multline*}
+%
+Now most work is done, since subtracting two times \cref{eq:In2} from
+\cref{eq:In3} is equal to
+\begin{equation*}
+    \int_0^\infty \log^2(u^2+1)\log (u) \log\left(1+\frac{1}{u^2}\right)
+        \frac{u^{n-1}}{(u^2+1)^n} du.
+\end{equation*}
+The reportorial substitution $u\to\frac{1}{u}$ shows that this integral
+vanishes. The same substitution also shows that the integral in  \cref{eq:In4}
+vanishes.  We thus obtain the closed-form expression 
+\begin{multline*}
+    I_n = 2^{n-3} 3 \sum_{k=0}^{\frac{n}{2}-1} \binom{\frac{n}{2}-1}k  
+            (-1)^k  \\
+        \left[\frac1{(\frac{n}{2}+k)^4} +
+            \frac{8}{2k+n} \left(\frac{H_{\frac{n}{2} + k}}{(2k+n)^2}
+                + \frac{H^{(2)}_{\frac{n}{2}+k} - \zeta(2)}{2(2k+n)}
+            + \frac{H^{(3)}_{\frac{n}{2}+k} - \zeta(3)}{4}
+        \right)\right],
+\end{multline*}
+where $\zeta$ is the Riemann zeta function and $H_n^{(m)}$ is the $n$-th
+generalized harmonic number of order $m$.

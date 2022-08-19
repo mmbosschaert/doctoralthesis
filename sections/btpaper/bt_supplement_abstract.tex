@@ -1,0 +1,32 @@
+In this supplement, we will provide a full walk-through of the examples given
+in \cref{btdde:sec:Examples} with
+\DDEBIFTOOL\footnote{\url{http://ddebiftool.sourceforge.net/}}
+\cite{2014arXiv1406.7144S}. Additionally, the Julia code, used for the
+numerical simulation, with the package {\tt
+DifferentialEquations.jl}\footnote{\url{https://github.com/SciML/DifferentialEquations.jl}}
+\cite{rackauckas2017differentialequations} is shown. Some new results were
+obtained while studying these models.
+
+This allows other researchers to fully replicate the findings in the main text.
+Other DDE models, undergoing generic or transcritical Bogdanov--Takens
+bifurcations treated in this paper, can easily be studied by simply modifying
+the given code. The code here has also been included into the \DDEBIFTOOL
+package on the source-forge repository and can be executed without the need to
+copy and paste. In this supplement we mainly focus on the initialization and
+continuation of the various codim-1 equilibrium and homoclinic bifurcation
+curves emanating from the Bogdanov--Takens points and also on numerical
+simulation near the bifurcation points. For a more complete overview of the
+capabilities and functionality for \DDEBIFTOOL we refer to the online tutorials
+files and also the manual and the references therein.
+
+Note that reading this supplement may feel at times somewhat repetitive. We see
+this as a positive sign. Indeed, our predictors need little adjustment
+before starting continuation of the codimension one curves emanating from the
+generic and transcritical Bogdanov--Takens bifurcation.
+
+To follow the examples below, we recommend using the \DDEBIFTOOL package
+supplied with the article. Also note that the \MATLAB code has been tested on 
+\MATLAB 2020b and \OCTAVE 6.4.0 using \OCTAVE symbolic
+package version 2.9.0. Different results may occur on other version of 
+\MATLAB or \OCTAVE.
+

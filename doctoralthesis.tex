@@ -1,0 +1,101 @@
+%! TeX program = lualatex
+\documentclass[twoside]{report}
+\usepackage[fontsize=9pt]{scrextend}
+
+\input{preamble}
+
+\begin{document}
+
+\newif\ifsiam
+\siamfalse
+\siamtrue
+
+\newif\ifcompileimages%
+\compileimagestrue%
+\compileimagesfalse%
+
+\input{./sections/titlepage}
+\input{./sections/abstract}
+\newif\ifthesis
+\thesistrue
+
+{\hypersetup{linkcolor=siamblue} \tableofcontents }
+
+%% Introduction
+\chapter{Introduction}
+\input{./sections/introduction}
+
+%% Interplay Chapter
+\chapter[BT normal forms and center manifold reduction]
+        {Interplay between normal forms and center manifold reduction for homoclinic predictors near Bogdanov-Takens bifurcation}
+\label{chapter:interplay}
+\newcommand\imagesdir{./images/btinterplay}
+\newcommand\datadir{./data/btinterplay}
+\paragraph{{\color{header1}Abstract}}\input{./sections/btinterplay/abstract}
+\input{./sections/btinterplay/introduction}
+\input{./sections/btinterplay/center_manifold_reduction_ODE}
+\input{./sections/btinterplay/homoclinic_asymptotics_in_the_orbital_normal_form}
+\input{./sections/btinterplay/homoclinic_asymptotics_in_n_dimensional_systems}
+\input{./sections/btinterplay/examples}
+\input{./sections/btinterplay/discussion}
+\input{./sections/btinterplay/acknowledgments}
+
+\begin{subappendices}
+\input{./sections/btinterplay/incorrect_predictor}
+\input{./sections/btinterplay/integrals}
+\input{./sections/btinterplay/homoclinic_asymptotics_in_smooth_normal_form}
+\input{./sections/btinterplay/case_study_of_the_quadratic_bogdanov-takens}
+\end{subappendices}
+
+%% Switching Chapter
+\tikzsetexternalprefix{images/switching/} 
+\renewcommand\tikzdir{tikz/switching}
+\renewcommand\imagedir{images/switching}
+\chapter[Switching to nonhyperbolic cycles in DDEs]
+        {Switching to nonhyperbolic cycles from codimension two bifurcations of equilibria of delay differential equations}
+\label{chapter:switching}
+\input{./sections/switching/switching}
+
+%% Switching Supplement 
+\chapter[Supplementary materials]
+        {Supplementary materials to 
+         Switching to nonhyperbolic cycles from codimension two bifurcations of equilibria of delay differential equations}
+\label{chapter:switching_supplement}
+\renewcommand\datadir{data/switching}
+\input{./sections/switching/switching_supplement}
+
+%% DDE BT Chapter
+\tikzsetexternalprefix{./images/btpaper/} 
+\renewcommand\tikzdir{./tikz/btpaper}
+\renewcommand\imagedir{./images/btpaper/}
+\renewcommand\datadir{./data/btpaper}
+\chapter[Bifurcation analysis of BT points in DDEs]
+        {Bifurcation analysis of Bogdanov-Takens bifurcations in delay differential equations}
+\label{chapter:BT_DDE}
+\paragraph{{\color{header1}Abstract}}\input{./sections/btpaper/abstract}
+\input{./sections/btpaper/maintext}
+
+%% DDE BT Supplement 
+\chapter[Supplementary materials]
+        {Supplementary materials to Bifurcation analysis of Bogdanov-Takens bifurcations in delay differential equations}
+\label{chapter:BT_DDE_supplement}
+\paragraph{{\color{header1}Abstract}}\input{./sections/btpaper/bt_supplement_abstract}
+\input{./sections/btpaper/bt_supplement_maintext}
+
+%% CHAOS Paper
+\tikzsetexternalprefix{./images/chaoticRGflow/} 
+\renewcommand\tikzdir{./tikz/chaoticRGflow}
+\renewcommand\imagedir{./images/chaoticRGflow/}
+\renewcommand\datadir{./data/chaoticRGflow}
+\chapter{Chaotic RG Flow in Non-Unitary Tensor Models}
+\label{chapter:chaoticRGFlow}
+\input{./sections/chaoticRGflow/main.tex}
+
+%% Discussion
+\chapter{Concluding remarks}
+\input{./sections/discussion}
+
+\bibliographystyle{siamplain}
+\bibliography{references}
+
+\end{document}

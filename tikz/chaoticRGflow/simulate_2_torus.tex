@@ -1,0 +1,17 @@
+\tikzsetnextfilename{simulate_2_torus}
+\begin{tikzpicture}
+    \begin{axis}[
+        width=\textwidth*0.45,
+        height=\textwidth*0.45,
+        view={25}{20},
+        xlabel={$u$},
+        ylabel={$v$},
+        zlabel={$x$},
+        grid=both,
+        grid style={line width=.1pt, draw=gray!10},
+        % axis line style={draw=none},
+        tick style={draw=none},
+        ]
+        \addplot3 [color=royalblue, line width=.1pt] file {data/simulate_2_torus.csv};
+    \end{axis}
+\end{tikzpicture}

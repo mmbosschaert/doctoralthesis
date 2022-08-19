@@ -1,0 +1,1098 @@
+\section[CMR and normalization]{Parameter-dependent center manifold reduction combined with normalization and time-reparametrization}
+\label{sec:Center_manifold_reduction_ODE}
+
+Without loss of generality, we may
+assume that the system \cref{eq:ODE} has a codimension two bifurcation of the equilibrium $x_0 = 0$ at $\alpha_0 = 0$. Let the normal form on the
+$n_c$-dimensional center manifold be given by
+\begin{equation}
+    \label{eq:G}
+    \frac{d}{d\eta} w(\eta) = G(w(\eta), \beta),
+                    \qquad G\colon\mathbb R^{n_c} \times \mathbb
+                    R^2 \to \mathbb R^{n_c}.
+\end{equation}
+Here $G$ is assumed to be one of the (known) equivalent normal forms, i.e.,
+it is known which terms are in $G$ are which are not there. Thus $G$ admits a series expansion of the form
+\begin{equation}
+    \label{eq:G_expansion}
+    G(w(\eta), \beta) = \sum_{|\nu|+|\mu| \geq 1} \frac{1}{\nu!\mu!} g_{\nu\mu} w^\nu \beta^\mu,
+\end{equation}
+where the multi-indices $\nu$ and $\mu$ have lengths $n_0$ and 2,
+respectively, and the coefficients $g_{\nu\mu}\in\mathbb R^{n_c}$.
+
+Similarly, $f$ admits the series expansion given by
+\begin{equation}
+    \label{eq:f_expansion}
+    f(x,\alpha) = A x + J_1 \alpha 
+    + \sum_{k,l \geq 0, \; k+l>1} \frac{1}{k!l!} D_1^k D_2^l f_{(0,0)}( x^{(k)}, \alpha^{(l)}).
+\end{equation}
+Here $A:=D_1 f_{(0,0)}$ is the Jacobian matrix of \cref{eq:ODE} evaluated at
+$(x,\alpha)=(0,0)$. Likewise, $J_1 := D_2 f_{(0,0)}$ and 
+$D_1^k D_2^l f_{(0,0)} \colon \left(\mathbb R^n \right)^k \times \left(\mathbb R^2\right)^l \rightarrow \mathbb R^n$ 
+are the mixed Fr\'echet derivatives of order $k+l$. Lastly, $x^{(k)} := (x,\dots,x) \in \left(\mathbb R^n\right)^k$,
+with $x\in\mathbb R^n$ repeated $k$ times and similarly for $\alpha^{(l)}$.
+
+Now suppose that a parameter-dependent approximation to an emanating
+codimension one bifurcation curve in the normal form \cref{eq:G} is known and given by
+\begin{equation}
+    \label{eq:general_approximation} 
+    \epsilon \mapsto (w_\epsilon(\eta), \beta_\epsilon).
+\end{equation}
+We assume here that $w_\epsilon(\eta)$ and $\beta_\epsilon$ have been derived
+up to a certain (not necessarily similar) order in $\epsilon$. Let $\Phi$
+be a basis for the center subspace of $A$ and $\Psi$ a basis for the center
+subspace of the adjoint $A^T$, normalized such that $\Psi^T \Phi$ is the
+identity matrix on $\mathbb R^n$. Then 
+%by the reduction principle of Shoshitaishvili 
+the solutions on the parameter-dependent center manifold can be
+parametrized by 
+\begin{align}
+    \label{eq:H}
+    x(t(\eta)) &= \Phi w(\eta) + H(w(\eta), \beta), 
+               & H\colon\mathbb R^{n_c} \times \mathbb R^2 \to \mathbb R^n, \\
+               \label{eq:K}
+    \alpha &= K(\beta), 
+           & K\colon\mathbb R^2 \to \mathbb R^2,
+\end{align}
+where $H$ describes a correction to the critical center subspace and $K$ provides a correspondence between the original parameters in \cref{eq:ODE} and those of the normal form \cref{eq:G}.
+Next, let the time $t$ in the ODE \cref{eq:ODE} and the time $\eta$ in the normal form
+\cref{eq:G} be related through the parameter-dependent time-rescaling
+\begin{equation}
+				\label{eq:theta}
+				\frac{dt}{d\eta} = \theta(w, \beta), \qquad 
+								\theta\colon \mathbb R^{n_c} \times \mathbb R^2 \to \mathbb R.
+\end{equation}
+
+Then the invariance of the center manifold implies the \emph{homological
+equation}
+\begin{equation}
+    \label{eq:homological_equation}
+    \tag{HOM}
+    f(\Phi w + H(w,\beta), K(\beta)) \theta(w, \beta) = (\Phi + H_w(w, \beta)) G(w,\beta).
+\end{equation}
+
+The mappings $H$, $K$, and $\theta$ can be expanded as
+\begin{equation}
+    \label{eq:HK_expansion}
+    H(w, \beta) = \sum_{\substack{|\nu|+|\mu| \geq 1, \\ |\nu|\neq 1 \wedge |\mu|=0}} \frac{1}{\nu!\mu!} H_{\nu\mu} w^\nu \beta^\mu,
+    \qquad
+    K(\beta) = \sum_{|\mu|\geq 1} \frac1{\mu!} K_\mu \beta^\mu,
+\end{equation}
+and
+\begin{equation}
+    \label{eq:theta_expansion}
+    \theta(w, \beta) = \sum_{|\nu|+|\mu| \geq 0} \frac1{\nu!\mu!} \theta_{\nu\mu} w^\nu \beta^\mu.
+\end{equation}
+
+Substituting
+\cref{eq:G_expansion,eq:f_expansion,eq:HK_expansion,eq:theta_expansion} into
+\cref{eq:homological_equation} and collecting terms of equal power in $(w,\beta)$, we
+obtain linear systems which can be solved at each order recursively. However,
+these solutions may be non-unique.
+
+The question now is which coefficients are needed to include in the expansion of
+\cref{eq:f_expansion,eq:HK_expansion,eq:theta_expansion} in order to translate the 
+approximation \cref{eq:general_approximation} obtained up to a certain order,
+to the parameter-dependent center manifold of the codimension two point in such
+a way that the approximation order of \cref{eq:general_approximation} is maintained.
+
+The first task here is to determine which terms in the expansion of the 
+system restricted to the center manifold of \cref{eq:ODE} at the bifurcation
+point alter the approximation \cref{eq:general_approximation}.  It is
+important here to not only take into account the terms that alter the
+approximation that are present in the normal form $G$, but also terms that are
+\emph{not present in the normal form}, as long as the approximation
+\cref{eq:general_approximation} is affected by the terms. 
+
+The coefficients $g_{\nu\mu}$ corresponding to these terms, i.e., the terms that
+alter the predictor, which components consequently may vanish, can be computed
+by reconstructing the normal form from \cref{eq:H,eq:K}, or equivalently from
+\cref{eq:homological_equation}. Indeed, by multiplying the homological equation
+\cref{eq:homological_equation} by $\Psi$, using \cref{eq:G_expansion}, and
+rearranging terms we obtain
+\begin{align*}
+\frac{d}{d\eta} w(\eta) &=  \sum_{|\nu|+|\mu| \geq 1} \frac{1}{\nu!\mu!} g_{\nu\mu} v^\nu \beta^\mu \\ 
+                        &= \Psi (f(\Phi w + H(w,\beta), K(\beta)) \theta(w, \beta) - D_wH(w, \beta)G(w,\beta)).
+\end{align*}
+
+% The terms of the
+% second type, i.e., not in the normal form, but do alter the approximation
+% \cref{eq:general_approximation} must be transformed into higher order terms.
+
+The next observation is that the coefficient $g_{\mu\nu}$ first appears in the
+system obtained from the homological equation \cref{eq:homological_equation} by
+considering the coefficient corresponding to the term $w^\mu\beta^\nu$.
+Using the expansion \cref{eq:f_expansion} we see that this system has the
+following form
+\begin{equation}
+    \label{eq:general_form_system}
+    \theta_{00} (A H_{\nu\mu} + J K_\mu) = \Phi g_{\nu\mu} + \Pi_{\nu\mu}.
+\end{equation}
+Here $\Pi_{\nu\mu}$ contains the remaining terms. The exact representation
+$\Pi_{\nu\mu}$  is not important here. What is important, however, is that it
+only depends on coefficients $g_{rs}, H_{rs}$, $K_{rs}$, and $\theta_{\nu\mu}$ such
+that $|r| \leq |\nu|$ and $|s| \leq |\mu|$, except for the
+coefficient $g_{\nu\mu}$ itself. Note that, depending on the normal form under
+consideration, the coefficient $H_{\nu\mu}$ and $K_{\nu\mu}$ may also be
+present in $\Pi_{\nu\mu}$. 
+
+Thus, in order to compute the coefficient $g_{\nu\mu}$, we need to solve the
+system \cref{eq:general_form_system}. Only then we are able to reconstruct the
+normal form on the center manifold at the bifurcation point such that the terms
+$g_{\nu\mu}$, which alter the predictor, are either present, or transformed
+away into higher order terms. Therefore, we conclude with the following
+statement.
+
+\begin{proposition}
+\label{thm:coefficients}
+Consider the normal form \cref{eq:G} for a codimension two bifurcation point at
+$(x,\alpha) \equiv (0,0)$ of \cref{eq:ODE}. Let the asymptotic approximation 
+\cref{eq:general_approximation} for a codimension one bifurcation curve
+emanating from the bifurcation point be determined up to a certain order.
+Suppose that the asymptotics are affected by terms with the coefficients
+$g_{\nu\mu}$ of the ODE restricted to the center manifold of the bifurcation
+point, which may or may not be present in the normal form. 
+
+Then in order to
+lift the available asymptotics in the normal form to the full system, such that
+the approximation order of \cref{eq:general_approximation} in maintained, it is
+generically necessary and sufficient to include the coefficients $H_{rs}$ and $K_{rs}$,
+with $|r| \leq |\nu|$ and $|s| \leq |\mu|$, into the expansion of $H$ and $K$
+in \cref{eq:HK_expansion}, in such a way that the systems
+\cref{eq:general_form_system} are solvable. The systems to be solved reveal
+simultaneously which higher-order derivatives must be included in the Taylor
+expansion of $f$ in \cref{eq:f_expansion}.
+\end{proposition}
+
+Although the above statement may look obvious, it has not been understood correctly
+in all previous attempts to derive a higher order approximation of the homoclinic
+bifurcation curve emanating from the generic codimension two Bogdanov--Takens in
+$n$-dimensional systems, see \cite{Al-Hdaibat2016,Kuznetsov2014improved,Gray-Scott2015}.
+
+The word \emph{generically} in \cref{thm:coefficients} refers to the exclusion
+of special cases in which the system \cref{eq:ODE} contains certain symmetry or
+other restrictions, see, for example, \cite[2.3.3 Symetries and
+Reversibility]{Iooss@2011}. In such situations, certain coefficients and
+higher-order derivatives are known to vanish beforehand.
+
+In \cref{subsec:center_manifold_tranformation_orbital} we will show how to
+determine which coefficients in the ODE restricted to the center manifold of a
+generic codimension two Bogdanov--Takens bifurcation point in \cref{eq:ODE}
+alter the homoclinic asymptotics up to order three. Based on this, and
+using \cref{thm:coefficients}, we are able to rigorously determine which
+coefficients to include in the parameter-dependent center manifold
+transformation $H$ and parameter transformation $K$.
+
+\begin{remark}
+The construction outlined above is applicable not only to codimension two
+bifurcations and emanating codimension one bifurcation curves. The same
+construction also holds when considering, e.g., codimension three
+bifurcation points and emanating sheets of codimension two, and the natural
+extensions of this.
+\end{remark}
+
+\begin{remark}
+We have not discussed yet which coefficients of the time-reparametrization $\theta$ are
+needed to include. These terms are determined by the requirement that the systems in
+\cref{eq:general_form_system} are solvable for the by now known, multi-indices
+$\nu$ and $\mu$. We know that this is indeed possible by the existence of the
+considered normal form. Furthermore, the determined coefficients $H_{\nu\mu}$ and
+$K_{\mu}$ are left unchanged if a reparametrization of time is not allowed.
+Indeed, the time-reparametrization $\theta$ only simplifies the normal form,
+but does not change which terms, in, and not in, the normal form affected
+by the asymptotic approximation.
+\end{remark}
+
+\begin{remark}
+Note that the in practice when studying truncated normal forms up to a
+relatively low order, it is common not to include the factorials in the normal
+form expansion \cref{eq:G_expansion}.
+\end{remark}
+
+\subsection{Parameter-dependent normal form}%
+%
+Suppose that the ordinary differential equation \cref{eq:ODE} undergoes a
+generic codimension two Bogdanov--Takens bifurcation at $(x,\alpha) \equiv
+(x_0,\alpha_0)$. That is, the linearization of \cref{eq:ODE} has a double, but
+not semisimple, zero eigenvalue, while all other eigenvalues are away from the
+imaginary axis. The critical smooth normal form on the two-dimensional center
+manifold of $(x_0, \alpha_0)$ is given
+by~\cite{Arnold_1983,guckenheimer1983nonlinear}
+\begin{equation*}
+\begin{aligned}
+\begin{cases}
+\dot w_0 = w_1, \\
+\dot w_1 = a w_0^2 + b w_0 w_1 + \mathcal O(\|w\|^3),
+\end{cases}
+\end{aligned}
+\end{equation*}
+where 
+\begin{equation*}
+ab \neq 0,
+\end{equation*}
+$w_i$ is a shorthand notation for $w_i(\eta)$ for $i=0,1$, and the dot is
+the derivative with respect to $\eta$.
+
+Under these non-degeneracy and certain transversality conditions, the
+\emph{topological normal form} for the codimension two Bogdanov--Takens
+bifurcation is given by  
+\begin{equation}
+\label{eq:universal_unfolding}
+\begin{aligned}
+\begin{cases}
+\dot w_0 = w_1, \\
+\dot w_1 = \beta_1 + \beta_2 w_1 + a w_0^2 + b w_0 w_1,
+\end{cases}
+\end{aligned}
+\end{equation}
+see~\cite{bogdanov1975zeroEigenvalues,Bogdanov1976,Takens1974,guckenheimer1983nonlinear,Kuznetsov2004}. 
+It is well-known that in system (\ref{eq:universal_unfolding}) three codimension one
+bifurcation curves emanate from $(\beta_1,\beta_2)=(0,0)$: a saddle-node, a Hopf,
+and a saddle-homoclinic bifurcation curve. 
+
+By using either the regular perturbation or the Lindstedt-Poincar\'e method,
+an approximation to the homoclinic bifurcation curve and the corresponding
+solution can, theoretically, be obtained up to any order in the
+singular-rescaling parameter $\epsilon$,
+see~\cite{Kuznetsov2014improved,Gray-Scott2015, Al-Hdaibat2016, Algaba_2019}.
+
+To obtain the second-order homoclinic approximation to the homoclinic solutions
+on the center manifold in \cref{eq:ODE}, it is, in general, insufficient to
+only consider the topological normal form \cref{eq:universal_unfolding},
+see~\cite{Broer1991}.  One way to deal with this problem is to consider the
+smooth parameter-dependent normal form 
+\begin{equation}
+\label{eq:BT_smooth_nf}
+\begin{cases}
+\begin{aligned}
+\dot{w}_0 = & w_1,\\
+\dot{w}_1 = & \beta_1+\beta_2 w_1+\left(a+a_1\beta_2\right)w_0^{2}
+ +\left(b+b_1\beta_2\right) w_0w_1+ew_0^{2}w_1+dw_0^{3} + g(w,\beta),
+\end{aligned}
+\end{cases}
+\end{equation}
+with
+\[
+    g(w,\beta) = \mathcal O(|\beta_1|\|w\|^2 + |\beta_2| w_1^2 + \|\beta\|^2\|w\|^2
+					 + \|\beta\|\|w\|^3 + \|w\|^4)
+\] 
+as in~\cite{Gray-Scott2015,Al-Hdaibat2016}. Here $w_i=w_i(t)(i=0,1)$ now
+depends explicitly on $t$ as in the original ODE \cref{eq:ODE}.
+
+However, in this paper, we will allow for a time-reparametrization and use the
+$C^\infty$-equivalent normal form 
+\begin{equation}
+\label{eq:normal_form_orbital}
+\begin{cases}
+\begin{aligned}
+	\dot w_0 &= w_1, \\
+	\dot w_1 &= \beta_1 + \beta_2 w_1 + aw_0^2 + b w_0 w_1 + w_0^2 w_1
+								h(w_0,\beta) + w_1^2 Q(w_0,w_1,\beta),
+\end{aligned}
+\end{cases}
+\end{equation}
+where $h$ is $C^\infty$ and $Q$ is $N$-flat for an a priori given $N$,
+see~\cite{Broer1991}. Here, the dot represents the derivative with respect to
+the new time $\eta$ of $w_i(\eta)(i=0,1)$.  Furthermore, we will show that we
+can assume $h(0,0)=0$. Note that we do not impose the coefficients to be $a=1$
+and $b=\pm 1$ as in~\cite{Broer1991}. This simplifies the systems to be solved
+in the next section without complicating the solutions for the homoclinic
+corrections. Indeed, we can scale away the coefficients $a$ and $b$ in the
+singular-rescaling. Also note that the normal form
+\cref{eq:normal_form_orbital} was used in~\cite{Broer1991} to study degenerate
+(codimension 3) Bogdanov--Takens bifurcations, while we found it to be essential
+for constructing homoclinic predictors in the case of generic codimension two
+Bogdanov--Takens bifurcations.
+
+To approximate the homoclinic solutions emanating from the Bogdanov--Takens point
+we apply the singular rescaling
+\begin{equation}
+\label{eq:blowup}				
+w_0 = \frac a{b^2} u \epsilon^2, \quad
+w_1 = \frac{a^2}{b^3} v \epsilon^3, \quad
+\beta_1 = -4 \frac{a^3}{b^4} \epsilon^4, \quad 
+\beta_2 = \frac a b \tau \epsilon^2, \quad 
+s = \frac ab \epsilon \eta, \quad (\epsilon \neq 0),
+\end{equation}
+to \cref{eq:normal_form_orbital} with $h(0,0)=0$ to obtain the second-order
+nonlinear oscillator
+\begin{equation}
+\label{eq:second_order_nonlinear_oscillator}
+				\ddot u = -4 + u^2 + \dot u \left( u + \tau \right)\epsilon + \mathcal
+								O(\epsilon^4).
+\end{equation}
+Here the dot represents the derivative with respect to $s$.
+
+\subsection{Center manifold reduction for smooth orbital normal form}
+\label{subsec:center_manifold_tranformation_orbital}
+We want to relate the third-order homoclinic approximation in the smooth
+orbital normal form \cref{eq:normal_form_orbital} to the homoclinic solutions
+of \cref{eq:ODE} near $(x_0,\alpha_0)$. The third-order $\epsilon$-expansion
+of the homoclinic solution depends on the coefficients in $\epsilon$ up to order
+three in the perturbed Hamiltonian system
+\cref{eq:second_order_nonlinear_oscillator}, see
+\cref{sec:PolynomailLindstedtPoincare}.  By inspecting the blowup
+transformation \cref{eq:blowup}, we can determine exactly which coefficients
+must be included in the expansion of $H$ and $K$, and which multilinear forms
+to include in the expansion of $f$. Indeed, we search for those terms 
+\begin{equation}
+\label{eq:bt_general_term_ode_cm}
+\beta_1^i\beta_2^jw_0^kw_1^l, \qquad \text{with }  i,j,k,l \in \mathbb N_0,
+\end{equation}
+in the expansion of the reduced system restricted to the center manifold of
+$(x_0,\alpha_0)$ in \cref{eq:ODE} that alter the coefficients in $\epsilon$ up
+to order three in the nonlinear oscillator
+\cref{eq:second_order_nonlinear_oscillator}. Thus, by substituting
+\cref{eq:blowup} into \cref{eq:bt_general_term_ode_cm}, inspecting the
+resulting exponents, and taking into account
+\cref{eq:second_order_nonlinear_oscillator}, we obtain that these terms are
+determined by solving the linear Diophantine equation
+\begin{equation}
+    \label{eq:diophantine}
+    4i + 2j + 2k + 3l - 4 = n, \qquad n\in\{-2,-1,0,1,2,3\},
+\end{equation}
+for $i,j,k,l \in \mathbb N_0$. From \cref{eq:diophantine} we obtain the
+solutions listed in \cref{fig:terms_affecting_predicor}.
+%
+\begin{table}
+\begin{center}
+\begingroup
+\renewcommand*{\arraystretch}{1.4}
+\begin{tabular}{rl}
+\hline
+order in $\epsilon$ & affected terms \\
+\hline%
+\(\epsilon^{-2}\) & \(w_0,\; \beta_2\)\\
+\(\epsilon^{-1}\) & \(w_1\)\\
+\(\epsilon^0\)  & \(w_0^2,\; w_0 \beta_2,\; \beta_2^2,\; \beta_1\)\\
+\(\epsilon^1\)  & \(w_0w_1,\;  w_1\beta_2\) \\
+\(\epsilon^2\)  & \(w_1^2,\; w_0^3,\; w_0^2 \beta_2 ,\; w_0 \beta_2^2 ,\; \beta_2^3,\; 
+									w_0\beta_1 ,\; \beta_1 \beta_2\)\\
+\(\epsilon^3\)  & \(w_0^2 w_1,\; w_0 w_1 \beta_2,\;  w_1 \beta_2^2,\;  w_1 \beta_1\) \\[0.2cm]
+\hline
+\end{tabular}
+\endgroup
+\caption{\label{fig:terms_affecting_predicor}
+        Terms in the reduced system restricted to the parameter-dependent center manifold of the
+        codimension two Bogdanov--Takens point in \cref{eq:ODE} that alter the third-order homoclinic predictor.} 
+\end{center}
+\end{table}
+%
+To be concrete, suppose the term $\alpha_2^3$ is present in the system
+restricted to the center manifold of the Bogdanov--Takens point obtain by a
+standard center manifold reduction, i.e., without simultaneously transforming
+the reduced system into normal form. Then, by applying the blowup
+transformation \cref{eq:blowup}, the coefficient of the term $\alpha_2^3$ will
+show up in the coefficient of $\epsilon^2$ in the perturbed Hamiltonian
+system \cref{eq:second_order_nonlinear_oscillator}. Since we will derive a
+third-order approximation for \cref{eq:second_order_nonlinear_oscillator} in
+which the corresponding coefficient of the term $\alpha_2^3$ is not present,
+this term needs to be transformed away. In \cref{app:incorrect_predictor} this
+example, is workout in detail to show that the transformation
+in~\cite{Al-Hdaibat2016} leads to an incorrect predictor for the parameters.
+
+Thus, we expand the mappings $H$, $K$, and $\theta$, including precisely those
+coefficients needed to transfer the homoclinic predictor in the normal form to
+the center manifold maintaining the approximation order. Using
+\cref{fig:terms_affecting_predicor} we write:
+%
+\begin{align}
+f(x,\alpha) ={}&
+Ax+J_1\alpha+\frac12 B(x,x)+A_1(x,\alpha)+\frac12 J_2(\alpha,\alpha) 
++\frac16 C(x,x,x) \label{eq:f_expansion_bt} \\
+& +\frac12 B_1(x,x,\alpha)+\frac12 A_2( x,\alpha, \alpha)
+	+ \frac16 J_3(\alpha, \alpha, \alpha)  
+  +\mathcal{O}\left(\|(x,\alpha)\|^4\right), \nonumber \\
+H(w,\beta)={}& H_{0010}\beta_1 + H_{0001} \beta_2 
+  + \frac12 H_{2000}w_0^2 + H_{1100}w_0w_1 + \frac12 H_{0200}w_1^2 
+  \label{eq:H_expansion} \\
+  & + H_{1010}w_0\beta_1 + H_{1001}w_0\beta_2 + H_{0110}w_1\beta_1 
+  + H_{0101}w_1\beta_2 + \frac12 H_{0002}\beta_2^2\nonumber \\
+  & + H_{0011}\beta_1\beta_2 + \frac16 H_{3000}w_0^3 + \frac12 H_{2100}w_0^2w_1 
+  + H_{1101}w_0w_1\beta_2 + \frac12 H_{2001}w_0^2\beta_2\nonumber \\
+  & + \frac{1}{6}H_{0003}\beta_2^3 + \frac12 H_{1002}w_0\beta_2^2 
+  + \frac12 H_{0102}w_1\beta_2^2 \nonumber \\
+  & + \mathcal{O}(|w_1|^3+|w_0w_1^2|+|\beta_2w_1^2|+|\beta_1|\|w\|^2
+  +|\beta_1^2|\|w\| + |\beta_1^2| + \|(w,\beta)\|^4), \nonumber \\
+K(\beta)={}& K_{10}\beta_1 + K_{01}\beta_2 + \frac{1}{2}K_{02}\beta_2^{2} 
+	+ K_{11}\beta_1\beta_2 + \frac16 K_{03} \beta_2^3
+  \label{eq:K_expansion} \\
+  &+ \mathcal{O}(|\beta_1|^2+|\beta_1||\beta_2|^2 + |\beta_1|^2|\beta_2|  
+	+ |\|\beta\|^4), \nonumber \\
+\label{eq:theta_expansion_bt}
+\theta(w,\beta) ={}& 1 + \theta_{1000}w_0 + \theta_{0001} \beta_2 
+    + \mathcal O\left(|w_1| + |\beta_2| + \|(w,\beta)\|^2\right).
+\end{align}
+%
+where $A=D_1 f(x_0,\alpha_0)$, $J_1=D_2 f_{\alpha}(x_0,\alpha_0)$, and
+$B,J_2,J_3,C,A_1,A_2$ and $B_1$ are the standard multilinear forms, introduced
+for readability.
+\begin{figure}
+\renewcommand{\qtreeunaryht}{4ex}
+\Tree%
+[.{$q_0, q_1, p_1, p_0$} 
+[.{$\theta_{1000}, \gamma_1, \gamma_2, H_{2000}, H_{1100}, H_{0200}, H_{3000}, H_{2100}$} 
+		[.{$\gamma_3, \delta_1, \gamma_4, \delta_2, H_{0010}, H_{0001}, K_{10}, K_{01}$}
+			{$H_{1010}, H_{0110}$} 
+			[.{$(\gamma_5, \theta_{0001}), H_{1001}, H_{0101}, H_{2001}, H_{1101}$}
+				{$K_{11}, H_{0011}$} 
+				[.{$\gamma_6, \delta_3, K_{02}, H_{0002}, H_{1002}, H_{0102}$} 
+					{$K_{03},H_{0003}$} ] ] ] ] ]
+\caption{\label{fig:coefficients} Schematic overview is which order the coefficients in the expansion of
+$H$, $K$ and $\theta$ are derived.}
+\end{figure}
+%
+In \crefrange{subsubsection:generalized_eigenvectors}{subsubsection:K03_H0003},
+we will solve the unknowns in
+\cref{eq:H_expansion,eq:K_expansion,eq:theta_expansion_bt}. For this it might
+be useful to consult \cref{fig:coefficients}. There a schematic overview is
+given in which order the coefficients are solved. Notice, in particular, that
+of course the critical normal form coefficients can be solved independently
+of the parameter-dependent normal form coefficients. Also, due to the
+interdependence of the normal form coefficients, it is convenient not to solve
+order by order. 
+
+\begin{remark}
+Notice that compared with~\cite{Al-Hdaibat2016} there are four additional terms
+in the expansion of $H$, i.e. with  coefficients $H_{0011},H_{1002},H_{0102}$,
+and $H_{0003}$, and two additional terms in the expansion of $K$, with
+coefficients $K_{11}$ and $K_{03}$. Also, there are two additional higher-order
+derivatives, namely $A_2$ and $J_3$, included in the Taylor expansion of $f$
+previously not taking into account. By \cref{thm:coefficients}, we know that
+the coefficients \cref{eq:H_expansion,eq:K_expansion,eq:theta_expansion_bt} and
+the higher-order derivatives in \cref{eq:f_expansion_bt}, are both necessary
+and sufficient. The coefficients in the time-reparametrization \cref{eq:theta_expansion_bt}
+are determined by the requirement that the systems obtained from the homological
+equation are solvable.
+\end{remark}
+
+\subsubsection{(Generalized) eigenvectors}
+\label{subsubsection:generalized_eigenvectors}
+
+We assume that the equilibrium $(x_0, \alpha_0)$ has a double (but not
+semisimple) zero eigenvalue, while all other eigenvalues are away from the
+imaginary axis. Thus, there exist two real linearly independent (generalized)
+eigenvectors, $q_0, q_1 \in \mathbb{R}^{n}$, of $A$, such that 
+\begin{equation}
+\label{eq:eigenvectors}
+Aq_0=0,\qquad Aq_1=q_0,
+\end{equation}
+and two left (generalized) eigenvectors $p_1^T, p_0^T \in\mathbb{R}^{n}$,
+of $A$, such that
+\[
+p_1 A=0,\qquad p_0 A=p_1.
+\]
+These vectors can be normalized to satisfy
+\[
+p_i q_j=\delta_{ij},\qquad i=0,1,\,j=0,1.
+\]
+%
+As in~\cite{Kuznetsov2005practical}, we impose the condition
+\begin{equation}
+\label{eq:q0} 
+q_0^T q_0=1,\qquad q_1^T q_0=0,
+\end{equation}
+to uniquely define the vectors $\{q_0,q_1,p_1,p_0\}$ up to a plus or minus sign.
+
+Note that collecting the coefficients of the linear terms in $w$ in the
+homological \cref{eq:homological_equation} equation are precisely the systems
+defining the (generalized) eigenvectors \cref{eq:eigenvectors}. 
+
+
+\subsubsection{Critical coefficients}%
+
+Collecting the quadratic coefficients in $w$ from the homological
+\cref{eq:homological_equation} yields the systems
+%
+\begin{align}
+-AH_{2000} &= B(q_{0,}q_0) - 2aq_1, \label{eq:AH2000} \\
+-AH_{1100} &= B(q_0,q_1) - bq_1 + \theta_{1000}q_0 - H_{2000},  \label{eq:AH1100} \\
+-AH_{0200} &= B(q_1,q_1) - 2H_{1100}. \label{eq:AH0200} 
+\end{align}
+
+The Fredholm solvability condition for the first two systems yields the well-known expressions
+\begin{align*}
+a &= \frac12 p_1 B(q_0,q_0), \\
+b &= p_1 B(q_0, q_1) + p_0 B(q_0, q_0),
+\end{align*}
+for the critical coefficients, see for example~\cite{Kuznetsov1999}. By the
+non-degeneracy conditions, we have that $ab \neq 0$.
+
+\begin{remark}
+Since we assume that $p_1 B(q_0,q_0) \neq 0$ we can use the freedom in the
+eigenvectors,
+\[
+(q_0, q_1) \to c_1 (q_0,q_1), \qquad
+(p_1, p_0) \to \frac1{c_1} (p_1, p_0),
+\]	
+to normalize the critical coefficient
+\[
+a= \frac12 p_1 B(q_0, q_0),
+\]
+to one. Solving for $c_1$ then gives
+\[
+c_1=\frac2{p_1 B(q_0, q_0)}.
+\]
+Alternatively, the freedom could have been used to set $b=1$. To have the
+situation $a=1$ and $b=\pm1$, as in~\cite{Broer1991}, the coefficient in front
+of the constant term in the expansion of $\theta$, i.e., $\theta_{0000}$, should
+be used. For convenience, we fixed the constant $\theta_{0000}$ to $1$.
+\end{remark}
+
+Now that \cref{eq:AH2000,eq:AH1100} are solvable, we can define
+\begin{align*}
+\hat H_{2000} &= -\AINV \left( B(q_0,q_0) - 2aq_1 \right), \\
+\hat H_{1100} &= -\AINV \left( B(q_0,q_1) - bq_1 - \hat H_{2000} \right).
+\end{align*}
+The expression $x=\AINV y$ is defined by solving the non-singular
+bordered system
+\begin{equation*}
+\begin{pmatrix}
+A & p_1^T \\ q_0^T & 0
+\end{pmatrix}
+\begin{pmatrix}
+x\\ s
+\end{pmatrix}
+=
+\begin{pmatrix}
+y\\ 0
+\end{pmatrix},
+\end{equation*}
+for the unknown $(x,s) \in \mathbb R^{n+1}$ that necessarily satisfies $s = 0$.
+While this uniquely defines $x$, the solutions to system $Ax=y$, are of course
+still non-unique. The properties of bordered linear systems and their role in
+numerical bifurcation analysis are discussed in~\cite{Keller1987Numerical}
+and~\cite[Chapter 3]{govaerts2000numerical}.
+
+It follows that the general solutions of the systems \cref{eq:AH2000,eq:AH1100}
+are given by
+\begin{align*}
+H_{2000} &= \hat H_{2000} + \gamma_1 q_0, \\
+H_{1100} &= \hat H_{1100} + \gamma_1 q_1 - \theta_{1000} q_1 + \gamma_2 q_0.
+\end{align*}
+The constant $\gamma_1$ is determined by the solvability condition from
+\cref{eq:AH0200}, which gives
+\begin{equation*}
+\gamma_1 = p_0  \left( B(q_0,q_1) -\hat H_{2000} \right) 
+								+ \frac12 p_1 B(q_1,q_1) + \theta_{1000}.
+\end{equation*}
+
+To determine the constant $\gamma_2$ and the coefficient $\theta_{1000}$ we
+consider the $w_0^3$ and $w_0^2w_1$ terms in the homological equation. After
+some simplification, we obtain the systems
+\begin{align}
+\label{eq:AH3000}
+-A H_{3000} ={}& 3 B(H_{2000},q_0) + C(q_0,q_0,q_0) + 6a \theta_{1000} q_1
+									- 6a H_{1100}, \\
+\label{eq:AH2100}
+-A H_{2100} ={}& 2 B(H_{1100},q_0) + B(H_{2000},q_1) + C(q_0,q_0,q_1) - 2 a H_{0200} - 2 b H_{1100}  \\
+				& -H_{3000} + 2 \theta_{1000} (bq_1 - \theta_{1000}q_0 +H_{2000}). \nonumber
+\end{align}
+The solvability condition of the first equation determines $\theta_{1000}$ as
+\begin{equation}
+\label{eq:theta1000}
+\theta_{1000} = -\frac1{12a} p_1 \left\{ 
+			3B(\hat H_{2000},q_0) + C(q_0,q_0,q_0)
+			\right\} + \frac12 p_1 \hat H_{1100}.
+\end{equation}
+The solvability condition for the system in \cref{eq:AH2100} yields, after a
+rather lengthy calculation, that $\gamma_2$ is determined by 
+\begin{align}
+\label{eq:gamma_2}
+\gamma_2 &= \frac1{6a} 
+\bigg[ p_1\left\{ 2 B(\hat H_{1100},q_0)+B(\hat H_{2000},q_1)
++ C(q_0,q_0,q_1) \right\} \\
+  & \qquad +2a p_0 B(q_1,q_1) + 2b p_0 \left( B(q_0,q_1) 
+    - \hat H_{2000} \right) \nonumber \\
+	& \qquad + p_0 \left( 3B(\hat H_{2000},q_0) 
+	  + C(q_0,q_0,q_0) \right) \nonumber \\
+	& \qquad + \gamma_1 b - 10 a p_0 \hat H_{1100} + 2 b \theta_{1000} \bigg].
+				\nonumber 
+\end{align}
+Since the systems in \cref{eq:AH0200,eq:AH2100,eq:AH3000} are now all consistent,
+we are allowed to take the bordered inverses to obtain
+\begin{align}
+	H_{0200} ={} & -\AINV \left[B(q_1,q_1) - 2H_{1100} \right], \nonumber          \\
+  \label{eq:H3000}
+	H_{3000} ={} & -\AINV \left[ 3B(H_{2000},q_0) + C(q_0,q_0,q_0) +
+		6a\theta_{1000}q_1 - 6a H_{1100} \right],                            \\
+  \label{eq:H2100}
+	H_{2100} ={} & -\AINV \left[ -2 a H_{0200}-2 b H_{1100}-H_{3000} + 2
+	B(H_{1100},q_0) \right.                                              \\
+	             & \left. \quad + B(H_{2000},q_1) + 2 \theta_{1000}
+	(bq_1 - \theta_{1000}q_0 +H_{2000})+C(q_0,q_0,q_1) \right]. \nonumber
+\end{align}
+
+\subsubsection{Parameter-dependent linear coefficients}
+The coefficients of the linear terms in $\beta$ give the
+systems
+%
+\begin{equation}
+\label{eq:AH0010}
+\begin{aligned}
+-AH_{0001} &= J_1K_{01}, \\
+-AH_{0010} &= J_1K_{10} - q_1.
+\end{aligned}
+\end{equation}
+Since $p_1$ and $J_1$ are known, we can calculate 
+\begin{equation*}
+    \nu := (p_1 J_1)^T.
+\end{equation*}
+By the transversality condition, the vector $\nu$ is nonzero. It then follows
+from the Fredholm alternative that
+\begin{equation*}
+\begin{aligned}
+K_{01}   &= \delta_1\hat K_{01}, \\
+H_{0001} &= \delta_1 \left( \hat H_{0001} + \gamma_3 q_0 \right), \\
+K_{10}   &= \hat K_{10} + \delta_2 K_{01}, \\
+H_{0010} &= \hat H_{0010} + \delta_2 H_{0001} + \gamma_4 q_0,
+\end{aligned}
+\end{equation*}
+where
+\begin{equation*}
+\begin{aligned}
+\hat K_{10} &= \frac1{\|\nu\|^2}\nu, \\
+\hat H_{0010} &= -\AINV \left(J_1\hat K_{10} - q_1 \right), \\
+\hat K_{01} &=
+\begin{pmatrix}
+	0 & -1 \\ 1 & 0
+\end{pmatrix} \hat K_{10}, \\
+\hat H_{0001} &= -\AINV J_1\hat K_{01},
+\end{aligned}
+\end{equation*}
+and $\delta_{1,2}$, $\gamma_{3,4}$ are real constants determined by the
+solvability condition of the $w\beta$ terms in the homological equation.
+Collecting the corresponding systems in the homological equation yields 
+\begin{equation*}
+\begin{aligned}
+-AH_{1001} &= B(H_{0001},q_0)+A_1(q_0,K_{01}), \\
+-AH_{0101} &= B(H_{0001},q_1)+A_1(q_1,K_{01})-H_{1001}-q_1+\theta_{0001}q_0, \\
+-AH_{1010} &= B(H_{0010},q_0)+A_1(q_0,K_{10})-H_{1100} +\theta_{1000}q_1,\\
+-AH_{0110} &= B(H_{0010},q_1)+A_1(q_1,K_{10})-H_{0200}-H_{1010}.
+\end{aligned}
+\end{equation*}
+The solvability condition for the first two systems yields
+\begin{equation*}
+\begin{aligned}
+\gamma_3 &= -\frac{p_1 \left( 
+				B(\hat H_{0001},q_0)+A_1(q_0,\hat K_{01}) \right)}{2a}, \\
+\delta_1 &= \frac{1}{p_1 \left(
+			B(\hat H_{0001},q_1)+A_1(q_1,\hat K_{01}) \right) + p_0
+      \left( B(\hat H_{0001},q_0)+A_1(q_0,\hat K_{01}) \right) + \gamma_3 b},
+\end{aligned}
+\end{equation*}
+while the solvability condition for the latter two systems yields
+\begin{equation*}
+\begin{aligned}
+\gamma_4 &= \frac{p_1H_{1100} - \theta_{1000} - p_1 \left( B(\hat
+				H_{0010},q_0)+A_1(q_0,\hat K_{10})\right)}{2a} ,\\
+\delta_2 &= -p_1 \left( B(\hat H_{0010},q_1) + A_1(q_1,\hat K_{10}) \right)
+				- \gamma_4 b + p_1 H_{0200} \\
+	& \quad - p_0 \left( B(\hat H_{0010},q_0)+A_1(q_0,\hat K_{10})-H_{1100}
+	\right). \\
+\end{aligned}
+\end{equation*}
+Note that the denominator in $\delta_1$ is nonzero by the transversality
+condition.
+
+
+\subsubsection{Coefficients \texorpdfstring{$H_{1010} \text{ and }
+								H_{0110}$}{H1010 and H0110}}
+
+Since we do not need to use the non-uniqueness in the systems for the
+coefficients $H_{1010}$ and $H_{0110}$ to simplify higher-order systems we
+let
+\begin{equation*}
+\begin{aligned}
+H_{1010} &= -\AINV \left[ B(H_{0010},q_0)+A_1(q_0,K_{10})-H_{1100}
+								+\theta_{1000}q_1 \right],\\
+H_{0110} &= -\AINV \left[B(H_{0010},q_1)+A_1(q_1,K_{10})-H_{0200}-H_{1010}
+\right].
+\end{aligned}
+\end{equation*}
+
+\subsubsection{Coefficients \texorpdfstring{$(\theta_{0001},\gamma_5),H_{1001},
+H_{0101}, H_{2001}, H_{1101}$}{(theta0001,gamma5),H1001,H0101,H2001,H1101}}
+
+Define
+\begin{equation*}
+\begin{aligned}
+\hat H_{1001} &= -\AINV \left[ B(H_{0001},q_0)+A_1(q_0,K_{01}) \right], \\
+\hat H_{0101} &= -\AINV \left[
+				B(H_{0001},q_1)+A_1(q_1,K_{01})-\hat H_{1001}-q_1 \right], \\
+\end{aligned}
+\end{equation*}
+so that
+\begin{equation*}
+\begin{aligned}
+H_{1001} &= \hat H_{1001} + \gamma_5 q_0, \\
+H_{0101} &= \hat H_{0101} + \gamma_5 q_1 - \theta_{0001} q_1. \\
+\end{aligned}
+\end{equation*}
+
+In order to determine $\gamma_5$ and $\theta_{0001}$, we consider the systems
+corresponding to the $w_0^2\beta_2$ and $w_0w_1\beta_2$ terms in the homological
+equation. These are given by
+\begin{equation}
+\label{eq:AH2001_AH1101}
+\begin{aligned}
+-AH_{2001} &= -2 a H_{0101} + A_1(H_{2000},K_{01}) +
+	B(H_{0001},H_{2000}) + 2 B(H_{1001},q_0) \\
+				& \qquad + 2 a \theta_{0001} q_1 +
+				B_1(q_0,q_0,K_{01}) + C(H_{0001},q_0,q_0), \\
+-AH_{1101} &= -b H_{0101} - H_{1100} - H_{2001} + A_1(H_{1100},K_{01}) + \\
+				& \qquad \theta_{1000} (H_{1001} + q_1 - \theta_{0001} q_0) + 
+				B(H_{0001},H_{1100}) + B(H_{0101},q_0) + \\
+				& \qquad B(H_{1001},q_1) + \theta_{0001} (H_{2000} + b q_1 -
+				\theta_{1000} q_0) + B_1(q_0,q_1,K_{01}) \\
+				& \qquad + C(H_{0001},q_0,q_1).
+\end{aligned}
+\end{equation}
+The Fredholm solvability condition leads to the following system to be solved
+\begin{equation}
+\label{eq:gamma_5_theta0001}
+\begin{pmatrix}
+				 2a &  4a \\
+				  b &   b 
+\end{pmatrix}
+\begin{pmatrix}
+				\gamma_5 \\
+				\theta_{0001}
+\end{pmatrix}
+=
+\begin{pmatrix}
+				\zeta_1 \\
+				\zeta_2 
+\end{pmatrix},
+\end{equation}
+where
+\begin{equation}
+\label{eq:zeta1_zeta2}
+\begin{aligned}
+\zeta_1 &=  -p_1 \left[ -2 a\hat h_{0101}  
+			+ A_1(h_{2000},K_{01}) + B(h_{0001},h_{2000}) \right.  \\
+			& \left. \qquad + 2 B(\hat h_{1001},q_0)
+			+ B_1(q_0,q_0,K_{01}) + C(h_{0001},q_0,q_0) \right], \\
+\zeta_2 &= -p_1 \left[ -b \hat h_{0101} - h_{1100}  +
+				A_1(h_{1100},K_{01}) \right. \\
+				& \qquad + \theta_{1000} (\hat h_{1001} + q_1) + 
+				B(h_{0001},h_{1100}) + B(\hat h_{0101},q_0) \\
+				& \qquad \left. + B(\hat h_{1001},q_1) + B_1(q_0,q_1,K_{01})
+				+ C(h_{0001},q_0,q_1) \right]  \\
+				& \quad -p_0 \left[ -2 a \hat h_{0101} + A_1(h_{2000},K_{01}) +
+				B(h_{0001},h_{2000}) \right. \\
+				& \qquad + \left. 2 B( \hat h_{1001},q_0) +
+				B_1(q_0,q_0,K_{01}) + C(h_{0001},q_0,q_0) \right] .
+\end{aligned}
+\end{equation}	
+Notice that the matrix is invertible by the non-degeneracy condition. Now that
+the systems in \cref{eq:AH2001_AH1101} are solvable, we obtain
+\begin{equation}
+\label{eq:H2001_H1101}
+\begin{aligned}
+H_{2001} &= -\AINV \left[ -2 a H_{0101} + A_1(H_{2000},K_{01}) +
+	      B(H_{0001},H_{2000})  \right. \\
+				& \qquad \left. + 2 B(H_{1001},q_0) + 2 a \theta_{0001} q_1 +
+				B_1(q_0,q_0,K_{01}) + C(H_{0001},q_0,q_0) \right], \\
+H_{1101} &= -\AINV \left[ -b H_{0101} - H_{1100} - H_{2001} +
+				A_1(H_{1100},K_{01}) + \right. \\
+				& \qquad \theta_{1000} (H_{1001} + q_1 - \theta_{0001} q_0) + 
+				B(H_{0001},H_{1100}) + B(H_{0101},q_0) + \\
+				& \qquad B(H_{1001},q_1) + \theta_{0001} (H_{2000} + b q_1 -
+								\theta_{1000} q_0) + B_1(q_0,q_1,K_{01}) \\
+				& \qquad  \left. + C(H_{0001},q_0,q_1) \right].
+\end{aligned}
+\end{equation}
+
+\subsubsection{Coefficients \texorpdfstring{$K_{11} \text{ and } H_{0011}$}{K11
+				and H0011}}
+
+Collecting the systems corresponding to the $\beta_1 \beta_2$ term in the
+homological equation yields
+\begin{equation}
+\label{eq:AH0011}
+\begin{aligned}
+-A H_{0011} &= J_1 K_{11} + A_1(H_{0001},K_{10}) + A_1(H_{0010},K_{01}) \\
+						& \qquad +
+						B(H_{0001},H_{0010})+J_2(K_{01},K_{10})+\theta_{0001}q_1-H_{0101}.
+\end{aligned}
+\end{equation}
+Using the identity 
+%
+\begin{equation*}
+   p_1J_1K_{10}=1 
+\end{equation*}
+from the second system in \cref{eq:AH0010} combined with the solvability
+condition yields
+\begin{equation}
+\begin{aligned}
+K_{11}={}& -p_1\left[A_1(H_{0001},K_{10})+A_1(H_{0010},K_{01}) \right. \nonumber\\
+				 &\left. + B(H_{0010},H_{0001}) +
+				 J_2(K_{10},K_{01}) + \theta_{0001} q_1 - H_{0101} \right]K_{10}.
+\end{aligned}
+\end{equation}
+It follows that 
+\begin{equation}
+\begin{aligned}
+H_{0011} &= -\AINV \left[ J_1 K_{11} + A_1(H_{0001},K_{10}) +
+				A_1(H_{0010},K_{01}) \right. \\
+				 & \qquad \left. +
+                    B(H_{0001},H_{0010})+J_2(K_{01},K_{10})+\theta_{0001}q_1-H_{0101}
+				 \right].
+\end{aligned}
+\end{equation}
+
+\subsubsection{Coefficients
+				\texorpdfstring{$K_{02},H_{0002},H_{1002},H_{0102}$}
+				{H0002,K02,H1002,H0102}}
+
+The systems corresponding to the $\beta_2^2, w_0\beta_2^2$ and $w_1\beta_2^2$,
+terms in the homological equation yields
+\begin{equation}
+\label{eq:AH0002_AH1002_AH0102}
+\begin{aligned}
+-A H_{0002}={}&  J_1K_{02} + 2A_1(H_{0001},K_{01})
+							 + B(H_{0001},H_{0001}) + J_2(K_{01},K_{01}), \\
+-A H_{1002}={}& 2A_1(H_{1001},K_{01}) + A_1(q_0,K_{02}) + A_2(q_0,K_{01},K_{01})
+					 \\ & + B(q_0,H_{0002}) + 2B(H_{0001},H_{1001}) +
+					 2B_1(q_0,H_{0001},K_{01}) \\
+  & + C(q_0,H_{0001},H_{0001}), \\
+-A H_{0102}={}& 2A_1(H_{0101},K_{01}) + A_1(q_1,K_{02}) + A_2(q_1,K_{01},K_{01}) \\
+  & + B(q_1,H_{0002}) + 2B(H_{0001},H_{0101}) + 2B_1(q_1,H_{0001},K_{01}) \\
+	& + C(q_1,H_{0001},H_{0001}) +2\theta_{0001} (H_{1001} + q_1 -
+	  \theta_{0001}q_0)  \\
+  & - 2H_{0101} - H_{1002}.
+\end{aligned}
+\end{equation}
+The first system is solved similarly as \cref{eq:AH0011}. In order to make the second and third systems
+consistent, define
+\begin{equation*}
+\begin{aligned}
+\hat K_{02}={}&-p_1\left[2A_1(H_{0001},K_{01})+B(H_{0001},H_{0001})
+				+J_2(K_{01},K_{01})\right]K_{10}, \\
+\hat H_{0002}={}& -\AINV\left[ J_1 \hat K_{02} + 2A_1(H_{0001},K_{01})
+							 + B(H_{0001},H_{0001}) + J_2(K_{01},K_{01})\right].
+\end{aligned}
+\end{equation*}
+Then the general solution to the first system in \cref{eq:AH0002_AH1002_AH0102}
+can be written as
+\begin{equation*}
+\begin{aligned}
+				K_{02}={}& \hat K_{02} + \delta_3 K_{01}, \\
+				H_{0002}={}& \hat H_{0002} +  \delta_3 H_{0001} + \gamma_6 q_0.
+\end{aligned}
+\end{equation*}
+Substituting these two expressions into the last two system of \cref{eq:AH0002_AH1002_AH0102} and
+using the solvability condition yields
+\begin{equation*}
+\begin{aligned}
+				\gamma_6 ={}& -\frac1{2a} p_1 \left[ 2A_1(H_{1001},K_{01}) +
+				A_1(q_0,\hat K_{02}) + A_2(q_0,K_{01},K_{01}) \right. \\
+	& \qquad + B(q_0,\hat H_{0002}) + 2B(H_{0001},H_{1001}) +
+				2B_1(q_0,H_{0001},K_{01}) \\
+  & \left. \qquad + C(q_0,H_{0001},H_{0001}) \right],  \\
+\delta_3 ={}& -p_1 \left[ 2A_1(H_{0101},K_{01}) + A_1(q_1,\hat K_{02}) +
+    A_2(q_1,K_{01},K_{01}) \right. \\
+	& \qquad + B(q_1,\hat H_{0002}) + 2B(H_{0001},H_{0101}) +
+	    2B_1(q_1,H_{0001},K_{01}) \\
+	& \left. \qquad +  C(q_1,H_{0001},H_{0001}) +2\theta_{0001} (H_{1001} + q_1) -
+	  2H_{0101} \right] \\
+	& \qquad - p_0 \left[ 2A_1(H_{1001},K_{01}) + A_1(q_0,\hat K_{02}) +
+    A_2(q_0,K_{01},K_{01}) \right. \\ 
+	& \qquad + B(q_0,\hat H_{0002}) + 2B(H_{0001},H_{1001}) +
+    2B_1(q_0,H_{0001},K_{01}) \\
+  & \left. \qquad + C(q_0,H_{0001},H_{0001}) \right] - \gamma_6 b.
+\end{aligned}
+\end{equation*}
+Now that the last two systems in \cref{eq:AH0002_AH1002_AH0102} are consistent,
+we obtain
+\begin{equation*}
+\begin{aligned}
+H_{1002}={}& -\AINV \left[ 2A_1(H_{1001},K_{01}) + A_1(q_0,K_{02}) +
+				A_2(q_0,K_{01},K_{01}) \right. \\ 
+			  & + B(q_0,H_{0002}) + 2B(H_{0001},H_{1001}) +
+				2B_1(q_0,H_{0001},K_{01})  \\
+				& + \left. C(q_0,H_{0001},H_{0001}) \right], \\
+H_{0102}={}& -\AINV \left[ 2A_1(H_{0101},K_{01}) + A_1(q_1,K_{02}) +
+				A_2(q_1,K_{01},K_{01}) \right. \\
+  & + B(q_1,H_{0002}) + 2B(H_{0001},H_{0101}) + 2B_1(q_1,H_{0001},K_{01}) \\
+	& + C(q_1,H_{0001},H_{0001}) +2\theta_{0001} (H_{1001} + q_1 -
+	  \theta_{0001}q_0)  \\
+	& \left. - 2H_{0101} - H_{1002} \right].
+\end{aligned}
+\end{equation*}
+
+\subsubsection{Coefficients \texorpdfstring{$K_{03} \text{ and } H_{0003}$}{K03
+				and H0003}}
+\label{subsubsection:K03_H0003}
+
+Collecting the systems corresponding to the $\beta_2^3$ term in the
+homological equation yields
+\begin{equation*}
+\begin{aligned}
+-A H_{0003} ={}& J_1 K_{03} + A_1(H_{0001},K_{02}) + A_1(H_{0002},K_{01})
+				+ 2 (A_1(H_{0001},K_{02}) \\
+				& + A_1(H_{0002},K_{01}) + 3 B(H_{0001},H_{0002}) + 3 J_2(K_{01},K_{02})
+				\\
+				& + 3 A_2(H_{0001},K_{01},K_{01}) + 3 B_1(H_{0001},H_{0001},K_{01}) \\
+				& + C(H_{0001},H_{0001},H_{0001}) + J_3(K_{01},K_{01},K_{01}).
+\end{aligned}
+\end{equation*}
+This equation is solved similarly as equation \cref{eq:AH0011}. We obtain
+\begin{equation*}
+\begin{aligned}
+K_{03}={}& -p_1 \left[ A_1(H_{0001},K_{02}) + A_1(H_{0002},K_{01})
+				+ 2 A_1(H_{0001},K_{02}) \right. \\
+				& + 2 A_1(H_{0002},K_{01}) + 3 B(H_{0001},H_{0002}) + 3 J_2(K_{01},K_{02})
+				\\
+				& + 3 A_2(H_{0001},K_{01},K_{01}) + 3 B_1(H_{0001},H_{0001},K_{01}) \\
+				& \left. + C(H_{0001},H_{0001},H_{0001}) +
+				J_3(K_{01},K_{01},K_{01}) \right] K_{10}, \\
+H_{0003} ={}& -\AINV \left[ J_1 K_{03} + A_1(H_{0001},K_{02}) +
+				A_1(H_{0002},K_{01}) + 2 A_1(H_{0001},K_{02}) \right. \\
+				& + 2 A_1(H_{0002},K_{01}) + 3 B(H_{0001},H_{0002}) + 3 J_2(K_{01},K_{02})
+				\\
+				& + 3 A_2(H_{0001},K_{01},K_{01}) + 3 B_1(H_{0001},H_{0001},K_{01}) \\
+				& \left. + C(H_{0001},H_{0001},H_{0001}) +
+				J_3(K_{01},K_{01},K_{01})\right] .
+\end{aligned}
+\end{equation*}
+
+\subsection{Center manifold reduction for smooth normal form} 
+\label{sec:center-manifold-reduction-without-time-reparametrization}
+If we do not allow for a reparametrization of time, we can no longer consider the
+normal form \cref{eq:normal_form_orbital}. Instead, we need to use the smooth
+normal form as introduced in~\cite{Gray-Scott2015}, i.e., equation
+\cref{eq:BT_smooth_nf}. Applying the blowup transformation
+\begin{equation}
+\label{eq:blowup_smooth}				
+\beta_1 = - \frac4a \epsilon^4, \quad 
+\beta_2 = \frac b a \tau \epsilon^2, \quad 
+w_0 = \frac1a u \epsilon^2, \quad
+w_1 = \frac1a v \epsilon^3, \quad
+s = \epsilon t, \quad (\epsilon \neq 0),
+\end{equation}
+to the smooth normal form, we obtain the second-order nonlinear differential
+equation 
+\begin{equation}
+\label{eq:second_order_nonlinear_oscillator_smooth_normalform}
+				\ddot u = -4 + u^2 + \frac ba \dot u \left( u + \tau \right)\epsilon 
+				+ \frac1{a^2} u^2\left(\tau b a_1 + d u \right) \epsilon^2
+        + \frac1{a^2} u\dot u \left( \tau b b_1 + e u \right) \epsilon^3
+				+ \mathcal{O}(\epsilon^4).
+\end{equation}
+Here the dot represents the derivative with respect to $s$. 
+
+Note that, by using hypernormalization, we can still simplify the smooth normal form.
+Indeed, as already remarked in~\cite{Kuznetsov2005practical} the coefficient
+$e$ can be set to zero.  Furthermore, it can be seen from the system in
+\cref{eq:gamma_5_theta0001} that either the coefficient $a_1$ or $b_1$ can also
+be removed. The natural choice here is for the coefficient $b_1$ to
+be set to zero in the normal form. The parameter-dependent center manifold
+transformation in this situation is obtained by first setting the coefficients
+$\theta_{1000}$ and $\theta_{0001}$ to zero in
+\cref{subsec:center_manifold_tranformation_orbital}. Equation \cref{eq:AH3000}
+becomes
+\begin{equation}
+    \label{eq:AH3000_smooth}
+    -A H_{3000} = 3 B(H_{2000},q_0) + C(q_0,q_0,q_0) - 6d q_1 - 6a H_{1100},
+\end{equation}
+and equation \cref{eq:theta1000} becomes redundant. After $\gamma_2$ in
+\cref{eq:gamma_2} has been calculated, the Fredholm solvability condition yields
+that
+\begin{equation*}
+    d = \frac16 p_1 \left[ 3B(H_{2000},q_0) + C(q_0,q_0,q_0)  - 6 a H_{1100}\right].
+\end{equation*}
+Now that \cref{eq:AH3000_smooth} is consistent, we can replace \cref{eq:H3000}
+with
+\begin{equation*}
+	H_{3000} = -\AINV \left[ 3B(H_{2000},q_0) + C(q_0,q_0,q_0) - 6dq_1 - 6a H_{1100} \right].
+\end{equation*}
+
+Next, we replace the first equation in \cref{eq:AH2001_AH1101} with
+\begin{equation}
+\label{eq:AH2001}
+\begin{aligned}
+-AH_{2001} ={}& - 2 a_1 q_1 -2 a H_{0101} + A_1(H_{2000},K_{01}) + B(H_{0001},H_{2000}) \\
+              & + 2 B(H_{1001},q_0) + B_1(q_0,q_0,K_{01}) + C(H_{0001},q_0,q_0)
+\end{aligned}
+\end{equation}
+and the system given in \cref{eq:gamma_5_theta0001} becomes the single equation
+\[
+\gamma_5 = -\frac{\zeta_2}{b}.
+\]
+Here $\zeta_2$ is still given by the second equation in \cref{eq:zeta1_zeta2}
+(with $\theta_{1000}$ still set to zero), while $\zeta_1$ is no longer needed.
+Applying the Fredholm solvability condition to \cref{eq:AH2001} yields 
+\begin{equation*}
+\begin{aligned}
+    a_1 &= \frac{1}{2} p_1 \left[-2 a H_{0101} + A_1(H_{2000},K_{01}) +
+	B(H_{0001},H_{2000}) + 2 B(H_{1001},q_0) \right. \\
+        & \left. \qquad + B_1(q_0,q_0,K_{01}) + C(H_{0001},q_0,q_0) \right].
+\end{aligned}
+\end{equation*}
+Since \cref{eq:AH2001} is now consistent, we can replace the first equation in
+\cref{eq:H2001_H1101} with
+\begin{equation*}
+\begin{aligned}
+    H_{2001} &{}= -\AINV \left[ -2 a H_{0101} + A_1(H_{2000},K_{01}) + B(H_{0001},H_{2000})  \right. \\
+				& \left. + 2 B(H_{1001},q_0) - 2 a_1 q_1 + B_1(q_0,q_0,K_{01}) + C(H_{0001},q_0,q_0) \right].
+\end{aligned}
+\end{equation*}
+The remaining systems and equations are unchanged.
+
+To compare the homoclinic predictors corresponding to different normal forms, we also
+provide the parameter-dependent center manifold transformation for the smooth
+normal form \cref{eq:BT_smooth_nf} without transforming away the coefficients
+$e$ and $b_1$. In this case, in addition to the modification given above, we also set
+$\gamma_2$ and $\gamma_5$ to zero. Then the system in \cref{eq:AH2100} becomes
+\begin{equation}
+\label{eq:AH2100smooth}
+\begin{aligned}
+-A H_{2100} ={}& - 2 e q_1 -2 a H_{0200}-2 b H_{1100}-H_{3000} + 2 B(H_{1100},q_0) \\
+				& + B(H_{2000},q_1) + C(q_0,q_0,q_1),
+\end{aligned}
+\end{equation}
+while the second systems in \cref{eq:AH2001_AH1101} should be replaced with
+\begin{equation}
+\label{eq:AH1101smooth}
+\begin{aligned}
+-AH_{1101} ={}& -b_1 q_1 -b H_{0101} - H_{1100} - H_{2001} + A_1(H_{1100},K_{01}) + \\
+              &+ B(H_{0001},H_{1100}) + B(H_{0101},q_0) + B(H_{1001},q_1) \\
+              &+ B_1(q_0,q_1,K_{01}) + C(H_{0001},q_0,q_1).
+\end{aligned}
+\end{equation}
+Applying the Fredholm solvability condition to these equations gives
+\begin{equation*}
+\begin{aligned}
+e ={}& \frac{1}{2} p_1 \left[ -2 a H_{0200}-2 b H_{1100}-H_{3000} + 2 B(H_{1100},q_0) \right.  \\
+     & \left. + B(H_{2000},q_1) + C(q_0,q_0,q_1) \right], \\ 
+b_1 ={}& p_1 \left[ -b H_{0101} - H_{1100} - H_{2001} + A_1(H_{1100},K_{01}) + B(H_{0001},H_{1100})  \right. \\
+      & \left. + B(H_{0101},q_0) + B(H_{1001},q_1) + B_1(q_0,q_1,K_{01}) + C(H_{0001},q_0,q_1) \right].
+\end{aligned}
+\end{equation*}
+Now that \cref{eq:AH2100smooth,eq:AH1101smooth} are consistent, we can replace
+\cref{eq:H2100} and the second system in \cref{eq:H2001_H1101} with
+\begin{align*}
+	H_{2100} ={} & -\AINV \left[ -2e q_1 - 2 a H_{0200}-2 b H_{1100}-H_{3000} + 2 B(H_{1100},q_0) \right. \\
+	             & \left. \quad + B(H_{2000},q_1) + C(q_0,q_0,q_1) \right]. \nonumber
+\end{align*}
+and
+\begin{equation*}
+\begin{aligned}
+H_{1101} ={}& -\AINV \left[ -b_1 q_1 -b H_{0101} - H_{1100} - H_{2001} + A_1(H_{1100},K_{01}) + \right. \\
+				& + B(H_{0001},H_{1100}) + B(H_{0101},q_0) + B(H_{1001},q_1) \\
+				& \left. + B_1(q_0,q_1,K_{01}) + C(H_{0001},q_0,q_1) \right],
+\end{aligned}
+\end{equation*}
+respectively. The remaining systems and equations are unchanged.
+
+
+
+\begin{remark}
+The derivation in~\cite{Al-Hdaibat2016,Kuznetsov2014improved} leads to a `big'
+system in which equations need to be solved simultaneously. The derivation
+presented here does not involve a `big' system, making the expressions also
+suitable for infinitely-dimensional ODEs generated by partial and
+delay differential equations, to which the (parameter-dependent) center
+manifold theorem applies.
+\end{remark}

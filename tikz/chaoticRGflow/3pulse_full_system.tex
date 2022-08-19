@@ -1,0 +1,37 @@
+\pgfplotstableread{./data/3pulseFS.csv}\threepulseFS
+\pgfplotstableread{./data/3pulseFSpredicted.csv}\threepulseFSpredicted
+\begin{tikzpicture}
+    \begin{axis}[
+        width=\textwidth*0.40,
+        height=\textwidth*0.45,
+        xlabel={$t$}, ylabel={},
+        grid=both,
+        grid style={line width=.1pt, draw=gray!10},
+        xtick = {-7500, -2500, 0, 2500, 7500},
+        legend pos=outer north east]
+        \addplot [color=red, no markers, smooth] table[x index = {0}, y index = {1}]{\threepulseFS};
+        \addlegendentry{$\bar g_1$}
+        \addplot [color=royalyellow, no markers, smooth] table[x index = {0}, y index = {2}]{\threepulseFS};
+        \addlegendentry{$\bar g_2$}
+        \addplot [color=royalorange, no markers, smooth] table[x index = {0}, y index = {3}]{\threepulseFS};
+        \addlegendentry{$\bar g_3$}
+        \addplot [color=purple, no markers, smooth] table[x index = {0}, y index = {4}]{\threepulseFS};
+        \addlegendentry{$\bar g_4$}
+        \addplot [color=applegreen, no markers, smooth] table[x index = {0}, y index = {5}]{\threepulseFS};
+        \addlegendentry{$\bar g_5$}
+        \addplot [color=bittersweet, no markers, smooth] table[x index = {0}, y index = {6}]{\threepulseFS};
+        \addlegendentry{$\bar g_6$}
+        \addplot [color=pink, no markers, smooth] table[x index = {0}, y index = {7}]{\threepulseFS};
+        \addlegendentry{$\bar g_7$}
+        \addplot [color=royalblue, no markers, smooth] table[x index = {0}, y index = {8}]{\threepulseFS};
+        \addlegendentry{$\bar g_8$}
+        \addplot [color=red, only marks, mark size=.8pt, mark=o] table[x index = {0}, y index = {1}]{\threepulseFSpredicted};
+        \addplot [color=royalyellow, only marks, mark size=.8pt, mark=o] table[x index = {0}, y index = {2}]{\threepulseFSpredicted};
+        \addplot [color=royalorange, only marks, mark size=.8pt, mark=o] table[x index = {0}, y index = {3}]{\threepulseFSpredicted};
+        \addplot [color=purple, only marks, mark size=.8pt, mark=o] table[x index = {0}, y index = {4}]{\threepulseFSpredicted};
+        \addplot [color=applegreen, only marks, mark size=.8pt, mark=o] table[x index = {0}, y index = {5}]{\threepulseFSpredicted};
+        \addplot [color=bittersweet, only marks, mark size=.8pt, mark=o] table[x index = {0}, y index = {6}]{\threepulseFSpredicted};
+        \addplot [color=pink, only marks, mark size=.8pt, mark=o] table[x index = {0}, y index = {7}]{\threepulseFSpredicted};
+        \addplot [color=royalblue, only marks, mark size=.8pt, mark=o] table[x index = {0}, y index = {8}]{\threepulseFSpredicted};
+    \end{axis}
+\end{tikzpicture}

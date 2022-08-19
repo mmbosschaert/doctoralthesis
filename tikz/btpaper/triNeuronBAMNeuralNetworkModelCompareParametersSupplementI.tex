@@ -1,0 +1,38 @@
+\newcommand\pathToCSVFiles{./data/triNeuronBAMNeuralNetworkModel}
+\begin{tikzpicture}[pin distance=9.5cm]
+    \begin{axis}[
+        width=\textwidth*0.65,
+        height=\textwidth*0.5,
+        xlabel={$\alpha_1$},
+        ylabel={$\alpha_2$},
+        grid=both,
+        grid style={line width=.1pt, draw=gray!10},
+        legend pos= outer north east,
+        legend style = {font=\tiny},
+        xmin=-0.2950e-03, xmax=0.5e-04, ymin=-0.1548e-03, ymax=0.1757e-03,
+        restrict x to domain=-0.2950e-02:0.2485e-02
+        ]
+        \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0.0, 0.0)};
+        \addlegendentry{Transcritical Bogdanov--Takens point}
+        \addplot [color=purple, smooth] file {\pathToCSVFiles/homoclinicbifurcationcurveIThirdOrder.csv};
+        \addlegendentry{Third order homoclinic asymptotics}
+        \addplot [color=purple, smooth, forget plot] file {\pathToCSVFiles/homoclinicbifurcationcurveIIThirdOrder.csv};
+        \addplot [color=purple, dashed] file {\pathToCSVFiles/hopfbifurcationcurveIThirdOrder.csv};
+        \addlegendentry{Third order Hopf asymptotics}
+        \addplot [color=purple, dashed, forget plot] file {\pathToCSVFiles/hopfbifurcationcurveIIThirdOrder.csv};
+        \addplot [color=purple, dotted] file {\pathToCSVFiles/transcriticalbifurcationcurveThirdOrder.csv};
+        \addlegendentry{Third order transcritical asymptotics}
+        % computed curves
+        \addplot [color=royalblue, mark=*, only marks, mark size=.8pt] file {\pathToCSVFiles/homoclinicbifurcationcurveI.csv};
+        \addplot [color=royalblue, mark=*, only marks, mark size=.8pt, forget plot] file {\pathToCSVFiles/homoclinicbifurcationcurveIIsmall.csv};
+        \addplot [color=royalblue, mark=*, only marks, mark size=.8pt, forget plot] file {\pathToCSVFiles/homoclinicbifurcationcurveIII.csv};
+        \addlegendentry{Compuated homoclinic curves}
+        \addplot [color=royalblue, mark=o, only marks, mark size=.8pt, forget plot] file {\pathToCSVFiles/HopfBranchIsmall.csv};
+        \addlegendentry{Computed Hopf curves}
+        \addplot [color=royalblue, mark=o, only marks, mark size=.8pt, forget plot] file {\pathToCSVFiles/HopfBranchII.csv};
+        \addplot [color=royalblue, mark=diamond, only marks, mark size=.8pt] file {\pathToCSVFiles/TranscriticalBranchsmall.csv};
+        \addlegendentry{Transcritical curve}
+        % plot again for appearance
+        \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0.0, 0.0)};
+    \end{axis}
+\end{tikzpicture}

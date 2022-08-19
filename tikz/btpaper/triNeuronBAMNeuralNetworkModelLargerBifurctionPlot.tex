@@ -1,0 +1,31 @@
+\newcommand\pathToCSVFiles{./data/triNeuronBAMNeuralNetworkModel}
+\begin{tikzpicture}[pin distance=9.5cm]
+    \begin{axis}[
+        width=\textwidth*0.55,
+        height=\textwidth*0.5,
+        xlabel={$\alpha_1$},
+        ylabel={$\alpha_2$},
+        grid=both,
+        grid style={line width=.1pt, draw=gray!10},
+        legend pos= outer north east,
+        legend style = {font=\tiny},
+        ]
+        \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0.0, 0.0)};
+        \addlegendentry{Transcritical Bogdanov--Takens point}
+        \addplot [color=black, mark=square*, only marks, mark size=.8pt] coordinates {(-0.002711950897364, 0.002044764337237)};
+        \addlegendentry{Generic Bogdanov--Takens point}
+        % computed curves
+        \addplot [color=royalblue, smooth] file {\pathToCSVFiles/homoclinicbifurcationcurveI.csv};
+        \addplot [color=royalblue, smooth, forget plot] file {\pathToCSVFiles/homoclinicbifurcationcurveII.csv};
+        \addplot [color=royalblue, smooth, forget plot] file {\pathToCSVFiles/homoclinicbifurcationcurveIII.csv};
+        \addlegendentry{Compuated homoclinic curve}
+        \addplot [color=gray!60, smooth] file {\pathToCSVFiles/HopfBranchI.csv};
+        \addlegendentry{Compuated Hopf Branches}
+        \addplot [color=gray!60, smooth, forget plot] file {\pathToCSVFiles/HopfBranchII.csv};
+        \addplot [color=gray!60, smooth, dashed] file {\pathToCSVFiles/TranscriticalBranch.csv};
+        \addlegendentry{Compuated Transcritical branch}
+        % plot again for appearance
+        \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0.0, 0.0)};
+        \addplot [color=black, mark=square*, only marks, mark size=.8pt] coordinates {(-0.002711950897364, 0.002044764337237)};
+    \end{axis}
+\end{tikzpicture}

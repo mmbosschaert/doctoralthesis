@@ -1,0 +1,17 @@
+\pgfplotstableread{./data/homoclinicorbitImu.csv}\homoclinicI
+\begin{tikzpicture}
+    \begin{axis}[
+        width=\textwidth*0.48,
+        height=\textwidth*0.4,
+        xlabel={$t$}, ylabel={},
+        grid=both,
+        grid style={line width=.1pt, draw=gray!10},
+        xtick = {-5000, -2500, 0, 2500, 5000}]
+        \addplot [color=royalblue, no markers, smooth] table[x index = {0}, y index = {2}]{\homoclinicI};
+        \addlegendentry{$u$}
+        \addplot [color=royalyellow, no markers, smooth] table[x index = {0}, y index = {3}]{\homoclinicI};
+        \addlegendentry{$v$}
+        \addplot [color=royalorange, no markers, smooth] table[x index = {0}, y index = {1}]{\homoclinicI};
+        \addlegendentry{$x$}
+    \end{axis}
+\end{tikzpicture}

@@ -1,0 +1,29 @@
+\newcommand\pathToCSVFiles{./data/triNeuronBAMNeuralNetworkModel}
+\begin{tikzpicture}[pin distance=9.5cm]
+    \begin{axis}[
+        width=\textwidth*0.92,
+        height=\textwidth*0.65,
+        xlabel={$\epsilon$},
+        ylabel={$\alpha_1$},
+        zlabel={$u_1$},
+        grid=both,
+        grid style={line width=.1pt, draw=gray!10},
+        legend style={at={(0.5,-0.2)},anchor=north,legend
+            columns=2,fill=none,draw=black,anchor=center,align=center,font=\small,
+        legend style = {font=\tiny},
+        view={-46}{7},
+        ]
+    \addplot3 [color=royalblue, mark=*, only marks, mark size=.4pt] table {\pathToCSVFiles/homoclinicorbit1_correc_1.csv};
+    \addlegendentry{Newton corrected solution}
+    \addplot3 [color=bittersweet] table {\pathToCSVFiles/homoclinicorbit1_1.csv};
+    \addlegendentry{third-order asymptotics}
+    \addplot3 [color=royalblue, mark=*, only marks, mark size=.4pt] table {\pathToCSVFiles/homoclinicorbit2_correc_1.csv};
+    \addplot3 [color=bittersweet] table {\pathToCSVFiles/homoclinicorbit2_1.csv};
+    \foreach \myvar in {2,...,10}{
+        \addplot3 [color=royalblue, mark=*, only marks, mark size=.4pt] table {\pathToCSVFiles/homoclinicorbit1_correc_\myvar.csv};
+        \addplot3 [color=bittersweet] table {\pathToCSVFiles/homoclinicorbit1_\myvar.csv};
+        \addplot3 [color=royalblue, mark=*, only marks, mark size=.4pt] table {\pathToCSVFiles/homoclinicorbit2_correc_\myvar.csv};
+        \addplot3 [color=bittersweet] table {\pathToCSVFiles/homoclinicorbit2_\myvar.csv};
+    };
+    \end{axis}
+\end{tikzpicture}

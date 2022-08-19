@@ -1,0 +1,24 @@
+\begin{tikzpicture}
+    \begin{axis}[
+        width=\textwidth*0.35,
+        height=\textwidth*0.5,
+        xlabel={$\tilde N_1$},
+        ylabel={$\tilde N_2$},
+        grid=both,
+        grid style={line width=.1pt, draw=gray!10},
+        legend pos=outer north east,
+        legend style = {font=\tiny},
+        xmin=-5E-8,xmax=3E-9,
+        ]
+        \addplot [color=royalblue, smooth] file {./data/homoclinicbifurcationcurveIRotated.csv};
+        \addlegendentry{Hom I}
+        \addplot [color=royalyellow, smooth] file {./data/homoclinicbifurcationcurveIIRotated.csv};
+        \addlegendentry{Hom II}
+        \addplot [color=royalorange, smooth] file {./data/foldbrFSRotated.csv};
+        \addlegendentry{Fold/Hopf branch}
+        \addplot [color=purple, thick, smooth] file {./data/3pulseFSbifurcationcurve.csv};
+        \addlegendentry{Three-pulse}
+        \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0, 0)};
+        \addlegendentry{Zero-Hopf point}
+    \end{axis}
+\end{tikzpicture}

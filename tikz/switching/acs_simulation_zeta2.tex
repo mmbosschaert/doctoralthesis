@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\begin{axis}[scale only axis,width=5cm,height=5cm,
+every tick label/.append style={font=\footnotesize},
+xlabel={$x$},ylabel={$y$},
+ylabel near ticks,
+ylabel shift={-4pt},
+]
+\addplot [color=royalblue, only marks, mark size=0.1] table [x index=0,y index=1] {\datadir/acs_simulation_zeta2.csv};
+\end{axis}
+\end{tikzpicture}

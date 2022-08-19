@@ -1,0 +1,40 @@
+\newcommand\pathToCSVFiles{./data/vanderPolOscillator}
+\begin{tikzpicture}
+    \begin{axis}[
+        width=\textwidth*0.65,
+        height=\textwidth*0.5,
+        xlabel={$\epsilon$},
+        ylabel={$\tau$},
+        grid=both,
+        grid style={line width=.1pt, draw=gray!10},
+        legend pos=outer north east,
+        legend style = {font=\tiny},
+        xmin=0.745,
+        xmax=0.755,
+        ymin=0.747,
+        ymax=0.76,
+        scaled x ticks = base 10:3,
+        scaled y ticks = base 10:3]
+        \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0.75, 0.75)};
+        \addlegendentry{Transcritical Bogdanov--Takens point}
+        \addplot [color=purple, smooth] file {\pathToCSVFiles/homoclinicbifurcationcurveThirdOrderI.csv};
+        \addlegendentry{Third order homoclinic asymptotics}
+        \addplot [color=purple, smooth, forget plot] file {\pathToCSVFiles/homoclinicbifurcationcurveThirdOrderII.csv};
+        \addplot [color=purple, dashed] file {\pathToCSVFiles/hopfbifurcationcurveIThirdOrder.csv};
+        \addlegendentry{Third order Hopf asymptotics}
+        \addplot [color=purple, dashed, forget plot] file {\pathToCSVFiles/hopfbifurcationcurveIIThirdOrder.csv};
+        \addplot [color=purple, dotted] file {\pathToCSVFiles/transcriticalbifurcationcurveThirdOrder.csv};
+        \addlegendentry{Third order transcritical asymptotics}
+        % computed curves
+        \addplot [color=royalblue, mark=*, only marks, mark size=.8pt] file {\pathToCSVFiles/homoclinicbifurcationcurveI.csv};
+        \addlegendentry{Compuated homoclinic curves}
+        \addplot [color=royalblue, mark=o, only marks, mark size=.8pt] file {\pathToCSVFiles/homoclinicbifurcationcurveHopfBranchI.csv};
+        \addlegendentry{Compted Hopf curves}
+        \addplot [color=royalblue, mark=*, only marks, mark size=.8pt, forget plot] file {\pathToCSVFiles/homoclinicbifurcationcurveII.csv};
+        \addplot [color=royalblue, mark=o, only marks, mark size=.8pt, forget plot] file {\pathToCSVFiles/homoclinicbifurcationcurveHopfBranchII.csv};
+        \addplot [color=royalblue, mark=diamond, only marks, mark size=.8pt] file {\pathToCSVFiles/homoclinicbifurcationcurveTranscritical.csv};
+        \addlegendentry{Compted transcritical curve}
+        % redraw to appear on top
+        \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0.75, 0.75)};
+    \end{axis}
+\end{tikzpicture}

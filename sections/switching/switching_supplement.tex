@@ -1,0 +1,1816 @@
+\paragraph{{\color{header1}Abstract}}
+In this supplement we provide walk-throughs of the examples given in \cref{switch:sec:Examples} with \DDEBIFTOOL\footnote{\url{http://ddebiftool.sourceforge.net/}} \cite{DDEBIFTOOL}. These walkthroughs enable other researchers to reproduce the results obtained in the main text.
+
+Additionally, we will show the code used for simulation near the bifurcations
+points under consideration. Either using the built-in routine \lstinline|dde23|
+from \MATLAB \cite{Shampine01solvingdelay} or the Python package
+\PYDELAY\footnote{\url{http://pydelay.sourceforge.net/}}
+\cite{Flunkert2009Flunkert}. Other DDE models, undergoing one of the degenerate
+Hopf bifurcations treated in this paper, can easily be studied by making minor
+modifications to the given code.
+
+The focus will be on the initialization and continuation of the various codimension one equilibrium and cycles bifurcation curves emanating from the degenerate Hopf points and on simulation near the bifurcation points. For a complete overview of the capabilities and functionality for \DDEBIFTOOL, we refer to the online tutorials files and also the manual and the references therein.
+
+All code has been included into the \DDEBIFTOOL package version 3.2a on the SourceForge repository and can be executed without the need to copy and paste. Note that the code is tested on \MATLAB 2018b and \OCTAVE 4.2.2. Different results may occur with other versions of \MATLAB and \OCTAVE.
+
+\section{Generalized Hopf bifurcation in a coupled FHN neural system with delay}
+A completely synchronous solution of the three coupled FitzHugh-Nagumo (FHN) neuron system is given by the system
+\begin{equation}
+\begin{cases}
+\begin{aligned}
+\dot{u}_{1}(t) & =-\dfrac{u_{1}^{3}(t)}{3}+(c+\alpha)u_{1}^{2}(t)+du_{1}(t)-u_{2}(t)+2\beta f(u_{1}(t-\tau)),\\
+\dot{u}_{2}(t) & =\varepsilon(u_{1}(t)-bu_{2}(t)).
+\end{aligned}
+\end{cases}\label{switch:sm:eq:DDE_FHN}
+\end{equation}
+see \cref{switch:sec:example_FHN} and \cite{Ma2011}. As before, we fix the parameters
+\[
+b=0.9,\qquad\varepsilon=0.08,\qquad c=2.0528,\qquad d=-3.2135,\qquad\tau=1.7722,
+\]
+and take for $f:\mathbb{R}\to \mathbb{R}$ the sigmoidal amplification function $f(u)=\tanh(u)$. The parameters $(\beta,\alpha)$ are used to unfold the singularity. 
+%\subsection{Objectives}
+%In this demo it is show how to
+%\begin{itemize}
+%	\item Create a \emph{system file} in which the system and its symbolic derivatives are stored.
+%	\item Initialize the system.
+%	\item Construct a steady-state point and calculate its stability.
+%	\item Construct a Hopf point  and normal form coefficients.
+%	\item Continue a Hopf point in two parameters.
+%	\item Detect codimension two bifurcation of equilibria.
+%	\item Continue the limit point of cycles curve emanating from the generalized Hopf.
+%	\item Compare computed and predicted parameters and periodic orbits.
+%	\item Create a bifurcation diagram near a generalized Hopf point.
+%	\item Simulate the orbits near the bifurcation point using the \MATLAB function \lstinline|dde23|.
+%\end{itemize}
+
+\begin{remark}
+This demonstration can be found in the directory \lstinline|demos/tutorial/VII/FHN| relative to the main directory of the \DDEBIFTOOL package.
+\end{remark}
+
+\subsection{Generate system files}
+Before we start to analyze the system with \DDEBIFTOOL, we first create a \emph{system file}. This file contains the definition of the system \cref{switch:sm:eq:DDE_FHN}, the standard derivatives needed for calculation of the eigenvalues and eigenvectors, the continuation of bifurcation points and cycles, and also the multilinear forms, see \cref{switch:eq:multilinearforms}, used for the calculation of the coefficients of the critical and parameter-dependent normal forms. Alternatively, one can only supply the system itself, see \cref{switch:sm:lst:wo_system_file}. Then finite difference is used to approximate the derivatives. However, this is less efficient and accurate, and therefore not recommended. A separate script \lstinline|gen_sym_FHN.m| is used to create a system file. The most important parts of this script are listed and discussed below.
+\begin{lstlisting}[style=customMatlab,escapechar=!]
+%% Add paths and load sym package if GNU Octave is used
+clear
+ddebiftoolpath='../../../../';
+addpath(strcat(ddebiftoolpath,'ddebiftool'),...
+  strcat(ddebiftoolpath,'ddebiftool_extra_symbolic'));
+if dde_isoctave()
+  pkg load symbolic
+end
+!\matlabrule!
+%% Create parameter names as strings and define fixed parameters
+% The demo has the parameters |beta|, |alpha| and |tau|
+parnames={'beta','alpha','tau'};
+b=sym(0.9,'r');
+epsilon=sym(0.08,'r');
+c=sym(2.0528,'r');
+d=sym(-3.2135,'r');
+!\matlabrule!
+%% Create symbols for parameters, states and delays states
+% |par| is the array of symbols in the same order as parnames.
+% Due to the following two lines we may, for example,
+% use either beta or par(1) to refer to the delay.
+syms(parnames{:});       % create symbols for beta, alpha and tua
+par=cell2sym(parnames);  % now beta is par(1) etc
+!\matlabrule!
+%% Define system using symbolic algebra
+% create symbols for u1(t) u1(t-tau), u2(t), u2(t-tau)
+syms u1 u1t u2 u2t
+du1_dt=-u1^3/3+(c+alpha)*u1^2+d*u1-u2+2*beta*tanh(u1t);
+du2_dt=epsilon*(u1-b*u2);
+!\matlabrule!
+%% Differentiate and generate code (multi-linear forms)
+[fstr,derivs]=dde_sym2funcs(...
+[du1_dt;du2_dt],... % n x 1 array of derivative symbolic expressions
+[u1,u1t;u2,u2t],... % n x (ntau+1) array of symbols for states (current & delayed)
+par,... % 1 x np (or np x 1) array of symbols used for parameters
+'filename','sym_FHN_mf',... % optional argument specifying output file
+'directional_derivative',false); 
+!\matlabrule!
+%% Differentiate and generate code (directional derivatives)
+[fstr,derivs]=dde_sym2funcs(...
+[du1_dt;du2_dt],... % n x 1 array of derivative symbolic expressions
+[u1,u1t;u2,u2t],... % n x (ntau+1) array of symbols for states (current & delayed)
+par,... % 1 x np (or np x 1) array of symbols used for parameters
+'filename','sym_FHN',...  % optional argument specifying output file
+'directional_derivative',true);
+\end{lstlisting}
+The variable \lstinline|ddebiftoolpath| is directed to the \DDEBIFTOOL main folder, which should have been extracted somewhere on the computer. Here a path relative to the current working directory is used. Note that although we only use the parameters $(\beta,\alpha)$ as unfolding parameters, in the current version of \DDEBIFTOOL, we also need to include the delay(s) in the list of parameters. After running the script, the function \lstinline|dde_sym2funcs| creates two system files \lstinline|sym_FHN_mf.m| and \lstinline|sym_FHN.m|. The first file \lstinline|sym_FHN_mf.m| implements the higher order derivatives as multilinear forms, as explained in \cref{switch:sec:Implement}, and therefore the file we will solely be using. The second file \lstinline|sym_FHN.m| uses directional derivatives to implement the higher order derivatives. The directional derivatives approach \emph{formally} allows the use of state-dependent delays, see \cite{Sieber@2017}. Although both approaches yields (up to rounding errors) identical normal form coefficients, multilinear forms are much faster.
+
+\subsection{Loading the \DDEBIFTOOL package}\label{switch:sm:sec:loading_DDE-BIFTool}
+Now that a system file is created we continue with \DDEBIFTOOL to analyze \cref{switch:sm:eq:DDE_FHN}. The code in the following sections highlights the import parts of the file \lstinline|FHN.m|.
+\DDEBIFTOOL consists of a set of \MATLAB routines. Thus, to start using \DDEBIFTOOL, we only need to add \DDEBIFTOOL directories to the search path.
+\begin{lstlisting}[style=customMatlab,caption=Add \DDEBIFTOOL scripts to the search path, label={switch:sm:lst:searchpath}]
+%% Clean workspace and add DDE-BifTool scripts to 
+% the MATLAB search path
+clear;      % clear variables
+close all;  % close figures
+ddebiftoolpath='../../../../';
+addpath(strcat(ddebiftoolpath,'ddebiftool'),...
+        strcat(ddebiftoolpath,'ddebiftool_extra_psol'),...
+        strcat(ddebiftoolpath,'ddebiftool_extra_nmfm'),...
+        strcat(ddebiftoolpath,'ddebiftool_utilities'));
+\end{lstlisting}
+There are four subdirectories added to the search path:
+\par
+\medskip
+\begin{description}
+\item[ddebiftool] Containing the core files of \DDEBIFTOOL.
+\item[ddebiftool\_extra\_psol] An extension for enabling continuation of periodic orbit bifurcations for delay-differential equations with constant or state-dependent delay.
+\item[ddebiftool\_extra\_nmfm] An extension for normal form computation.
+\item[ddebiftool\_utilities] Containing various utilities.
+\end{description}
+
+\subsection{Set parameter names}
+The following code allows us to use \lstinline[keywordstyle=\color{darkblue}]{ind.beta} instead of remembering the index of the parameter $\beta$ in the parameter array, and similarly for the other parameters.
+\begin{lstlisting}[style=customMatlab]
+%% Set parameter names
+parnames={'beta','alpha','tau'};
+cind=[parnames;num2cell(1:length(parnames))];
+ind=struct(cind{:});
+\end{lstlisting}
+In this way, fewer mistakes are likely to be made and the code is easier to read.
+
+\subsection{Initialization}
+Next, we set up the \lstinline|funcs| structure, containing information about where the system and its derivatives are stored, a function pointing to which parameters are delays, and various other settings.
+\begin{lstlisting}[style=customMatlab]
+%% Set the funcs structure
+% We load the precalculated multilinear forms. These have been
+% generated with the file gen_sym_FHN.m.
+funcs=set_symfuncs(@sym_FHN_mf,'sys_tau',@()ind.tau);
+\end{lstlisting}
+Alternatively, when no system files have been generated, one could initialize the system \cref{switch:sm:eq:DDE_FHN} as follows.
+\begin{lstlisting}[style=customMatlab,caption=Define system without a system file, label={switch:sm:lst:wo_system_file}]
+%% Define the system
+b=0.9; epsilon=0.08; c=2.0528; d=-3.2135; % fixed parameters
+FHN_sys = @(xx,par) [...
+-xx(1,1,:).^3/3+(c+par(1,ind.alpha,:)).*xx(1,1,:).^2+d*xx(1,1,:)...
+-xx(2,1,:)+2*par(1,ind.beta,:).*tanh(xx(1,2,:));
+epsilon*(xx(1,1,:)-b*xx(2,1,:))];
+%% Set funcs structure
+funcs=set_funcs('sys_rhs',FHN_sys,'sys_tau',@()ind.tau,...
+    'x_vectorized',true,'p_vectorized',true);			
+\end{lstlisting}
+Inspecting the output of the \lstinline|funcs| handle gives.
+\begin{lstlisting}[style=customBash,keepspaces=true] 
+>> funcs
+
+funcs = 
+
+  ?struct? with fields:
+
+                     sys_rhs: @(x,p)wrap_rhs(x,p,funcs.sys_rhs,funcs.x_vectorized,funcs.p_vectorized)
+                    sys_ntau: @()0
+                     sys_tau: @()ind.tau
+                    sys_cond: @dummy_cond
+                    sys_deri: @(x,p,nx,np,v)dde_gen_deriv(funcs.sys_dirderi,x,p,nx,np,v,1)
+                    sys_dtau: []
+                  sys_mfderi: {}
+                 sys_dirderi: {[function_handle]  [function_handle]}
+                 sys_dirdtau: []
+                x_vectorized: 1
+                p_vectorized: 1
+                        hjac: @(ord)eps^(1/(2+ord))
+    sys_unfolding_parameters: []
+                      tp_del: 0
+           sys_deri_provided: 0
+        sys_dirderi_provided: 0
+\end{lstlistin}
+The output shows that no derivative file is supplied. In this case, the derivatives are calculated using finite-difference approximations with the function \lstinline|dde_dirderiv|. Again, we do not recommend using the latter approach. However, it can be useful for debugging purposes.
+
+\subsection{Stability and normal form coefficients of the generalized-Hopf point}
+We manually specify a steady-state at the generalized-Hopf point found in \cite{Ma2011} and calculate its stability.
+\begin{lstlisting}[style=customMatlab]
+% construct steady-state point
+beta0=1.9; alpha0=-0.9710; tau0=1.7722;
+stst=dde_stst_create('x',[0;0]);
+stst.parameter(ind.beta)  = beta0;
+stst.parameter(ind.alpha) = alpha0;
+stst.parameter(ind.tau)   = tau0;
+% Calculate stability
+method=df_mthod(funcs,'stst');
+stst.stability=p_stabil(funcs,stst,method.stability);
+\end{lstlisting}
+Inspecting the \lstinline|stst.stability| structure yields
+\begin{lstlisting}[style=matlabConsole]
+>> stst.stability.l1(1:6)
+
+ans =
+
+   0.0000 + 0.0720i
+   0.0000 - 0.0720i
+  -0.0818 + 3.1068i
+  -0.0818 - 3.1068i
+  -0.3478 + 6.4411i
+  -0.3478 - 6.4411i
+
+>> 
+\end{lstlisting}
+The eigenvalues confirm that the point under consideration is indeed a Hopf point. Next, we convert the steady-state point to a Hopf point and calculate the normal form coefficients with the function \lstinline|nmfm_genh|, which implements the coefficients derived in \cref{switch:sec:GH_coef}.
+\begin{lstlisting}[style=customMatlab]
+%% Calculate critical normal form coefficients
+hopf=p_tohopf(funcs,stst);
+method=df_mthod(funcs,'hopf');
+hopf.stability=p_stabil(funcs,hopf,method.stability);
+genh=p_togenh(hopf);
+genh=nmfm_genh(funcs,genh);
+\end{lstlisting}
+The normal form coefficients are stored in the \lstinline|genh.nmfm| structure.
+\begin{lstlisting}[style=matlabConsole,keepspaces=true]
+>> genh.nmfm
+ans = 
+
+  ?struct? with fields:
+
+    L2: -18.1302
+    L1: 0.3980
+
+>> 
+\end{lstlisting}
+Clearly, the first Lyapunov coefficient (\lstinline|L1|) is nonzero. It follows that the Hopf point is not degenerate. 
+
+\subsection{Continue Hopf point}
+Since the simulations in \cite{Ma2011} do indicate a generalized-Hopf point nearby, we continue the Hopf point.
+\begin{lstlisting}[style=customMatlab,escapechar=!]
+%% Initialize Hopf branch
+unfolding_pars=[ind.beta, ind.alpha];
+hbr=df_brnch(funcs,unfolding_pars,'hopf');
+hbr.point=hopf;
+hbr.point(2)=hopf;
+hbr.point(2).parameter(ind.alpha)=...
+hbr.point(2).parameter(ind.alpha)+0.001;
+method=df_mthod(funcs,'hopf');
+method.point.print_residual_info=1;
+hbr.point(2)=p_correc(funcs,hbr.point(2),ind.beta,[],method.point);
+!\matlabrule!
+%% Continue Hopf branch
+figure(1); clf;
+hbr=br_contn(funcs,hbr,30);
+hbr=br_rvers(hbr);
+hbr=br_contn(funcs,hbr,30);
+title('Continued Hopf branch');
+xlabel('$\beta$','Interpreter','LaTex')
+ylabel('$\alpha$','Interpreter','LaTex')
+box on
+\end{lstlisting}
+The continued branch \lstinline{hbr} is shown in \cref{switch:fig:FHN_Hopf_curve}.
+\begin{figure}
+\centering
+\subfloat[Hopf curve]{
+	\includetikz{FHN_Hopf_curve}
+	\label{switch:fig:FHN_Hopf_curve}}
+\hfill
+\subfloat[Limit point of cycles curve]{
+	\includetikz{FHN_LPC_curve}
+	\label{switch:fig:FHN_LPC_curve}}
+    \caption{\textup{(a)} Hopf curve continued from the manually constructed point. \textup{(b)} LPC curve continued from the detected generalized Hopf point using our predictors.}
+\end{figure}
+
+\subsection{Detect bifurcation points}
+To detect bifurcation points on the Hopf branch, we use the function \lstinline|LocateSpecialPoints|.
+\begin{lstlisting}[style=customMatlab]
+[hbr_wbifs,hopftests,hc2_indices,hc2_types]=...
+    LocateSpecialPoints(funcs,hbr);
+\end{lstlisting}
+The \MATLAB console shows the following output.
+\begin{lstlisting}[style=matlabConsole]
+HopfCodimension2: calculate stability if not yet present
+HopfCodimension2: calculate L1 coefficients
+HopfCodimension2: (provisional) 1 gen. Hopf  detected.
+br_insert: detected 1 of 1: genh. Normalform:
+    L2: -15.6733
+    L1: -1.6801e-12
+\end{lstlisting}
+Thus a generalized Hopf point is indeed present on the Hopf branch \lstinline|hbr|. The returned branch \lstinline|hbr_wbifs| contains this point. The array \lstinline{hc2_indices} is used to subtract the generalized Hopf point below. If there would be more bifurcation points detected, \lstinline|hc2_types| can be used to inspect their types. Lastly, \lstinline|hopftests| stores the test functions to detect a bifurcation point. A change in sign in one of these functions indicates a bifurcation. The code below plots the test function for the generalized Hopf point, i.e. the first Lyapunov coefficient (L1), see \cref{switch:fig:FHN_testfunction}.
+\begin{lstlisting}[style=customMatlab]
+al=arrayfun(@(x)x.parameter(ind.alpha),hbr_wbifs.point);
+figure(2); clf;
+plot(al,hopftests.genh(1,:),'.-',al,zeros(size(al)));
+xlabel('$\beta$','Interpreter','LaTex');
+ylabel('First Lyapunov coefficient (L1)')
+title('Criticality along Hopf bifurcation curve')
+\end{lstlisting}
+\begin{figure}
+\centering
+\includetikz{FHN_testfunction_genh}
+\label{switch:fig:FHN_testfunction}
+\caption{Plot of the test function for a generalized Hopf point.}
+\end{figure}
+
+%The function \lstinline|LocateSpecialPoints| detected a generalized Hopf bifucation with negative second Lyapunov coefficient (\lstinline|L2|). Furthermore, the coefficients of the parameter dependent normal form as derived in \cref{switch:sec:GH_coef} have been calculated with the function \lstinline|nmfm_genh|. In \cref{switch:fig:FHN_Hopf_curve} the continued Hopf curve is shown.
+%
+
+%
+\subsection{Continue limit point of cycle curve}
+First, we subtract the detected generalized-Hopf point from the branch.
+\begin{lstlisting}[style=customMatlab]
+%% Calculate parameter-dependent normal form coefficients
+% Select the located generalized Hopf point on the hopf_br_wbifs.
+% Then convert the Hopf point to a generalized Hopf point.
+% As before, we use the function nmfm_genh to calculate the normal 
+% form coefficients. By adding the option free_pars and providing  
+% the unfolding parameters the parameter-dependent normal  
+% form coefficients are calculated.
+hopf=hbr_wbifs.point(hc2_indices); % select generelized Hopf point
+genh=p_togenh(hopf);
+genh=nmfm_genh(funcs,genh,'free_pars',unfolding_pars);
+genh.nmfm.L1
+\end{lstlisting}
+By inspecting the \lstinline|genh| structure, we obtain the correct parameter values of the generalized Hopf bifurcation.
+\begin{lstlisting}[style=matlabConsole]
+>> genh.parameter
+
+ans =
+
+    1.9000   -1.0429    1.7722
+
+>> 
+\end{lstlisting}
+To continue the limit point of cycles curve emanating from the generalized Hopf point, we use the function \lstinline|C1branch_from_C2point|.
+\begin{lstlisting}[style=customMatlab]
+%% Continue LPC curve emanating from generalized-Hopf point
+figure(1); [lpcfuncs,lpcbr,~]=C1branch_from_C2point(funcs,genh,...
+    unfolding_pars,'codim2',genh.kind,'codim1','POfold');
+nop=50; [lpcbr,suc]=br_contn(lpcfuncs,lpcbr,nop); assert(suc>0)
+\end{lstlisting}
+This function uses the file \lstinline|nmfm_POfold_from_genh_init.m| in which the predictor, see \cref{switch:sec:genh_predictors}, is implemented. Using this function, a branch with three initial corrected cycles is created which is continued in the standard way, see \cref{switch:fig:FHN_LPC_curve}.
+
+\subsection{Calculate predicted periodic orbits}
+To compare the computed parameter values and periodic orbits on the branch \lstinline|lpcbr| with the predictor, we again use the function \lstinline|C1branch_from_C2point|, but with the additional argument \lstinline|predictor| set to \lstinline|1| and \lstinline|step| to an interval of $\varepsilon$-values. Now the cycles are left uncorrected.
+\begin{lstlisting}[style=customMatlab]
+%% Predictor LPC curve emanating from generalized-Hopf point
+[~,lpcbr_pred,~]=C1branch_from_C2point(funcs,genh,...
+    unfolding_pars,'codim2',genh.kind,'codim1','POfold',...
+    'step',linspace(0,1,45),'predictor',1);
+\end{lstlisting}
+
+\subsection{Bifurcation diagram}
+The following code produces the bifurcation diagram presented in the main text, see \cref{switch:fig:FHN-bifurcation-diagram}, and has been reproduced here in \cref{switch:sm:fig:FHN-bifurcation-diagram}. The figure was exported with the \MATLAB and \OCTAVE compatible package {\tt matlab2tikz}, see \cite{matlab2tikz}. 
+\begin{lstlisting}[style=customMatlab,caption=\MATLAB code for bifurcation diagram, label={sm:lst:bifurcation_diagram}]
+%% Bifurcation diagram
+figure(3); clf; hold on;
+% Inline function to subtract parameters
+getpars=@(points,ind) arrayfun(@(p)p.parameter(ind),points);
+cm=colormap('lines');
+L1s=hopftests.genh(1,:); % L1 along the hopf branch
+% Plot sub- and supercritical Hopf branches
+plot(getpars(hbr_wbifs.point(L1s>0),ind.beta),...
+  getpars(hbr_wbifs.point(L1s>0),ind.alpha),'Color',cm(1,:),...
+  'DisplayName','subcritical Hopf branch');
+plot(getpars(hbr_wbifs.point(L1s<0),ind.beta),...
+  getpars(hbr_wbifs.point(L1s<0),ind.alpha),'Color',cm(2,:),...
+  'DisplayName','supercritical Hopf branch');
+plot(getpars(lpcbr.point,ind.beta),...
+  getpars(lpcbr.point,ind.alpha),'Color',cm(3,:),...
+  'DisplayName','LPC branch');
+plot(getpars(lpcbr_pred.point,ind.beta),...
+  getpars(lpcbr_pred.point,ind.alpha),'.','Color',cm(3,:),...
+  'DisplayName','LPC predictor');
+plot(getpars(genh,ind.beta),getpars(genh,ind.alpha),'k.',...
+  'MarkerSize',8,'DisplayName','generalized Hopf point');
+title('Bifurcation diagram near generalized Hopf point')
+xlabel('$\beta$','Interpreter','LaTex');
+ylabel('$\alpha$','Interpreter','LaTex');
+text(1.8779,-1.1001,'I');
+text(1.9130,-0.9008,'II');
+text(1.8890,-0.5854,'III');
+axis([1.86 1.945 -1.5000 -0.4000])
+legend('Location','NorthEast'); box on 
+\end{lstlisting}
+%
+\begin{figure}[ht]
+\centering
+\includetikzscaled{FHN_bifdia}
+\caption{Bifurcation diagram near the generalized
+Hopf point in the system \cref{switch:sm:eq:DDE_FHN} with unfolding parameters
+$(\beta,\alpha)$. The bifurcation curves are nearly identical to
+those in the bifurcation diagram of the topological normal form as
+presented in \textup{\cite[page 314]{Kuznetsov2004}}.}
+\label{switch:sm:fig:FHN-bifurcation-diagram}
+\end{figure}
+
+\subsection{Plot comparing computed and predicted periodic orbits}
+Lastly, we create a plot to compare the computed and predicted periodic orbits.
+\begin{lstlisting}[style=customMatlab]
+%% Plot comparing computed and predicted periodic orbits
+figure(4); clf; hold on;
+for i=1:15
+    plot(lpcbr.point(i).profile(1,:),...
+        lpcbr.point(i).profile(2,:),'Color',cm(1,:));
+end
+% Plot predicted periodic orbits
+for i=1:7
+    plot(lpcbr_pred.point(i).profile(1,:),...
+        lpcbr_pred.point(i).profile(2,:),'Color',cm(2,:));
+end
+xlabel('$u_1$','Interpreter','LaTex');
+ylabel('$u_2$','Interpreter','LaTex');
+title('Compare computed and predicted periodic orbits')
+box on
+\end{lstlisting}
+The resulting plot is shown in \cref{switch:sm:fig:FHN:compare_orbits}. Note that the cycles shown have \emph{different} underlying parameter values. Nonetheless, we see that the cycles are in good agreement.
+
+\begin{figure}
+	\centering
+	\includetikz{FHN_compare_orbits}
+	\caption{Comparison between computed periodic orbits (blue) and predicted periodic orbits (red) emanating from the generalized Hopf bifurcation.}
+	\label{switch:sm:fig:FHN:compare_orbits}
+\end{figure}
+
+\subsection{Simulation with \MATLAB}
+\label{switch:SM:sec:GH:simulation}
+Next, we simulate the dynamics near the generalized Hopf point. For this, we take a point in each of the three regions as shown in \cref{switch:sm:fig:FHN-bifurcation-diagram}. The following code, from the file \lstinline|FHN_simulation.m|, uses the \MATLAB function \lstinline|dde23|.
+\begin{lstlisting}[style=customMatlab,escapechar=!]
+%% Clean workspace and add DDE-BifTool scripts
+%  to the MATLAB search path.
+clear;      % clear variables
+close all;  % close figures
+ddebiftoolpath='../../../../';
+addpath(strcat(ddebiftoolpath,'ddebiftool'),...
+    strcat(ddebiftoolpath,'ddebiftool_extra_psol'),...
+    strcat(ddebiftoolpath,'ddebiftool_extra_nmfm'),...
+    strcat(ddebiftoolpath,'ddebiftool_utilities'));
+load('FHN_results.mat')
+!\matlabrule!
+%% Point in region I
+beta0=1.8779;
+alpha0=-1.1001;
+% Point near the steady-state
+x1=0;
+x2=0.01;
+% Integrate
+tfinal=1000;
+sol = dde23(@(t,y,Z) funcs.sys_rhs([y,Z],...
+	[beta0 alpha0 tau0]),tau0,[x1 x2],[0 tfinal]);
+t=linspace(0,tfinal,1000);
+y=deval(sol,t);
+% Plot
+title('Point in region I')
+figure(1);clf;
+xlabel('$u_1$','Interpreter','LaTex')
+ylabel('$u_2$','Interpreter','LaTex')
+plot(y(1,:),y(2,:))
+!\matlabrule!
+%% Point in region II
+beta0=1.9130;
+alpha0=-0.9008;
+% Point near the steady-state
+x2=0.1;
+% Integrate
+sol = dde23(@(t,y,Z) funcs.sys_rhs([y,Z],[beta0 alpha0 tau0]),...
+tau0,[x1 x2],[0 tfinal]);
+t=linspace(0,tfinal,1000);
+y=deval(sol,t);
+% Plot
+figure(2);clf;
+title('Point in region II')
+xlabel('$u_1$','Interpreter','LaTex')
+ylabel('$u_2$','Interpreter','LaTex')
+plot(y(1,:),y(2,:))
+!\matlabrule!
+%% Point in region III
+beta0=1.8890;
+alpha0=-0.6081;
+% Orbit converging to periodic orbit
+x2=0.1;
+% Integrate
+tfinal=3000; % use lager time interval
+sol = dde23(@(t,y,Z) funcs.sys_rhs([y,Z],[beta0 alpha0 tau0]),...
+tau0,[x1 x2],[0 tfinal]);
+t=linspace(0,tfinal,4000);
+y1=deval(sol,t);
+% Plot
+figure(3);clf;
+title('Point in region III')
+xlabel('$u_1$','Interpreter','LaTex')
+ylabel('$u_2$','Interpreter','LaTex')
+plot(y1(1,:),y1(2,:))
+% Orbit converging to the stable steady-state
+% Integrate
+x2=0.093;
+sol = dde23(@(t,y,Z) funcs.sys_rhs([y,Z],[beta0 alpha0 tau0]),...
+tau0,[x1 x2],[0 tfinal]);
+y2=deval(sol,t);
+% Add to plot
+hold on; plot(y2(1,:),y2(2,:),'Color',cm(2,:));
+!\matlabrule!
+%% Time series of the previous solutions in region III
+figure(4);clf;
+plot(t,y1(1,:),t,y2(1,:))
+title('Time series of solutions in region III')
+xlabel('$t$','Interpreter','LaTex')
+ylabel('$u_1$','Interpreter','LaTex')
+\end{lstlisting}
+In \cref{switch:fig:FHN_sim1,switch:fig:FHN_sim2,switch:fig:FHN_sim3,switch:fig:FHN_sim3_time_series} the resulting plots are shown, confirming the dynamics near the generalized Hopf point as predicted in \cite{Kuznetsov2004}.
+%
+\begin{figure}[ht!]
+\centering
+\subfloat[\label{switch:fig:FHN_sim1}]{
+\includetikz{FHN_sim1}
+}\hspace*{\fill}\subfloat[\label{switch:fig:FHN_sim2}]{
+\includetikz{FHN_sim2}
+}\\
+\subfloat[\label{switch:fig:FHN_sim3}]{
+\includetikz{FHN_sim3}
+}\hspace*{\fill}\subfloat[\label{switch:fig:FHN_sim3_time_series}]{
+\includetikz{FHN_sim3_time_series}
+}
+\caption{Simulation near the generalized Hopf point in the system \cref{switch:sm:eq:DDE_FHN}. In \textup{(a)} we see a stable steady-state corresponding to a point in region I. When we enter region II, the stability of the steady-state is lost and a stable cycle appears, as seen in  \textup{(b)}. In region III, there is a stable steady-state inside a stable cycle. This is confirmed in \textup{(c)} and \textup{(d)}. In \textup{(c)}, the initial point of the orbit in blue is just outside the unstable cycle and converges to the stable cycles. The initial point of the orbit in red is just inside the unstable cycle and converges to the stable steady-state. In \textup{(d)}, the time series of these orbits are shown in the $(t,u_1(t))$ plane.}
+\end{figure}
+
+\section{Fold-Hopf bifurcation in the Rose\textendash Hindmarsh model with time delay}
+%
+In \cite{Ma2011} a Rose-Hindmarsh model \cite{Hindmarsh1982,Hindmarsh1984} with time delay in the self-feedback process, 
+\begin{equation}
+\begin{cases}
+\begin{aligned}
+\dot{x}(t)& = y(t)-ax^3(t)+bx^2(t-\tau)-cz(t)+I_{app},\\
+\dot{y}(t)& = c-dx^2(t)-y(t),\\
+\dot{z}(t)& = r(S(x(t)-\chi)-z(t)),
+\end{aligned}
+\end{cases}\label{switch:sm:eq:Rose-Hindmarsh}
+\end{equation}
+is considered, see \cref{switch:sec:ex_Rose_Hindmarsh}. The parameters values
+\begin{equation}
+a=1.0,\qquad b=3.0,\qquad c=1.0,\qquad d=5.0,\qquad\chi=-1.6,\qquad r=0.001\label{switch:sm:eq:rose_hindmarsh_pm1}
+\end{equation}
+are fixed and $(I_{app},S)$ are the unfolding parameters.
+
+%\subsection{Objectives}
+%\begin{itemize}
+%	\item Initialize the system.
+%	\item Construct a steady-state point and calculate its stability.
+%	\item Construct a fold-Hopf point and parameter-dependent normal form coefficients.
+%	\item Continue Neimark-Sacker, Hopf and fold curves emanating from fold-Hopf point.
+%	\item Compare computed and predicted parameters and periodic orbits.
+%	\item Create a bifurcation diagram near a fold-Hopf point.
+%	\item Simulate the orbits near the bifurcation point using \PYDELAY.
+%\end{itemize}
+\begin{remark}
+	This demonstration can be found in the directory \lstinline|demos/tutorial/VII/RH| relative to the main directory of the \DDEBIFTOOL package. Here, we omit the code to generate a system file. The system file \lstinline|sym_RH_mf.m| has been generated with the script \lstinline|gen_sym_RS.m|. Also, we assume that the \DDEBIFTOOL package has been loaded as in \cref{switch:sm:lst:searchpath}. The code in \crefrange{switch:sm:sec:RH:pars_and_funcs}{switch:sm:sec:RH:comparing_period_orbits} highlights the important parts of the file \lstinline|RH.m|.
+\end{remark}
+
+\subsection{Set parameter names and funcs structure} \label{switch:sm:sec:RH:pars_and_funcs}
+As in the previous example, we set the parameter names and define the \lstinline|funcs| structure.
+\begin{lstlisting}[style=customMatlab]
+%% Set parameter names
+parnames={'Iapp','S','r','tau'};
+cind=[parnames;num2cell(1:length(parnames))];
+ind=struct(cind{:});
+%% Set funcs structure
+% We load the precalculated multilinear forms. These have been
+% generated with the file gen_sym_RH.m.
+funcs=set_symfuncs(@sym_RH_mf,'sys_tau',@()ind.tau);
+\end{lstlisting}
+
+\subsection{Stability and normal form coefficients of the fold-Hopf point} We construct a steady-state at the fold-Hopf point and calculate its stability.
+\begin{lstlisting}[style=customMatlab]
+%% Construct fold-Hopf point
+a=1.0; b=3.0; c=1.0; d=5.0; chi=-1.6;
+r=1.0e-03;
+S=-0.57452592;
+[xstar,Iapp,tau]=bifurcationvalues(a,b,c,d,chi,r,S);
+% Construct steady-state point
+stst=dde_stst_create('x',[xstar; c-d*xstar^2; S*(xstar-chi)]);
+stst.parameter([ind.Iapp ind.S ind.r ind.tau])=[Iapp S r tau];
+% Calculate stability
+method=df_mthod(funcs,'stst');
+stst.stability=p_stabil(funcs,stst,method.stability);
+stst.stability.l1(1:5)
+\end{lstlisting}
+The function \lstinline|bifurcationvalues| calculates $(x_\star,I_{app},\tau)$ according to the formulas as given in \cref{switch:sec:ex_Rose_Hindmarsh}. The \MATLAB console shows the following output.
+\begin{lstlisting}[style=matlabConsole]
+ans =
+
+    0.0000 + 0.0000i
+   -0.0000 + 1.0079i
+   -0.0000 - 1.0079i
+   -0.0994 + 1.9324i
+   -0.0994 - 1.9324i
+\end{lstlisting}
+We have a zero eigenvalue and a pair of purely imaginary eigenvalues. Furthermore, the remaining eigenvalues have negative real parts. Next, we calculate the normal form coefficients and the transformation to the center manifold with the function \lstinline|nmfm_zeho|, which implements the coefficients as derived in \cref{switch:sec:fold-Hopf}. For this we need to set the argument \lstinline|free_pars| to the unfolding parameter $(I_{app},S)$. These coefficients will be used to start the continuation of the various branches emanating from the fold-Hopf point.
+\begin{lstlisting}[style=customMatlab]
+% Calculate normal coefficients
+hopf=p_tohopf(funcs,stst);
+zeho=p_tozeho(hopf);
+unfolding_pars=[ind.Iapp, ind.S];
+zeho=nmfm_zeho(funcs,zeho,'free_pars',unfolding_pars);
+zeho.nmfm
+\end{lstlisting}
+The \MATLAB console shows the following output.
+\begin{lstlisting}[style=matlabConsole,keepspaces=true]
+ans = 
+
+  ?struct? with fields:
+
+             g200: -0.0024
+             g110: 0.3296 + 0.7006i
+             g011: -0.0078
+             g300: 0.0106
+             g111: -0.0146
+             g210: -2.7764 - 3.1806i
+             g021: -0.3745 - 2.4754i
+                b: -0.0024
+                c: -0.0078
+                d: 0.3296 + 5.2274i
+                e: 15.6941
+                s: 1.8487e-05
+            theta: -139.0315
+    transcritical: 0
+             h200: [1x1 struct]
+             h011: [1x1 struct]
+             h020: [1x1 struct]
+             h110: [1x1 struct]
+                K: [2x2 double]
+           h000mu: [1x2 struct]
+           omega1: 7.4540
+           omega2: 2.1259
+\end{lstlisting}
+Since $s > 0$ and $\theta(0) < 0$ global bifurcations or invariant tori are present. However, since the sign of $e$ is 
+positive the stability of the invariant tori will be unstable for nearby parameter values. It follows that the torus observed in \cite{Ma2011} by simulations does not originate from the fold-Hopf point under consideration.
+
+\subsection{Set bifurcation parameter range and step size bounds}
+Before continuing the various branches emanating from the fold-Hopf point, we create the variable \lstinline|brpars| containing parameter bounds and maximal stepsizes.
+\begin{lstlisting}[style=customMatlab]
+%% Set bifurcation parameter range and step size bounds
+brpars={'min_bound',[ind.Iapp -20; ind.S -12],...
+        'max_bound',[ind.Iapp  10; ind.S  5],...
+        'max_step', [ind.Iapp 4e-02; ind.S 4e-02]};
+\end{lstlisting}
+\subsection{Continue NS, Hopf and fold branch} \label{switch:sm:sec:RH:continuation}
+As in the previous example, we use the function \lstinline|C1branch_from_C2point| to start to continue the branches emanating from the fold-Hopf point. \cref{switch:sm:fig:RH_bifurcation_diagram_I} is created using similar code as in Listing \ref{sm:lst:bifurcation_diagram}. We remark that even when there would be stable tori present for nearby parameter values, the window in which these tori would exist is quite small. Indeed, the parameter values would have to be below the Hopf curve and above the Neimark-Sacker curve to the left of the fold-Hopf point.
+\begin{lstlisting}[style=customMatlab,escapechar=!]
+%% Continue Neimark-Sacker curve emanating from fold-Hopf point
+[trfuncs,nsbr,~]=C1branch_from_C2point(funcs,zeho,unfolding_pars,...
+    'codim2',zeho.kind,'codim1','TorusBifurcation',...
+    brpars{:},'step',1e-03,'plot',0);
+ntrsteps=1000; [nsbr,suc]=br_contn(trfuncs,nsbr,ntrsteps);
+!\matlabrule!
+%% Continue Hopf curve emanating from fold-Hopf point
+[~,hbr,suc]=C1branch_from_C2point(funcs,zeho,unfolding_pars,...
+    'codim2',zeho.kind,'codim1','hopf',...
+    brpars{:},'step',1e-03,'plot',0);
+nop=1000; [hbr,suc]=br_contn(funcs,hbr,nop); assert(suc>0)
+hbr=br_rvers(hbr);
+[hbr,suc]=br_contn(funcs,hbr,nop);
+!\matlabrule!
+%% Continue fold curve emanating from fold-Hopf point
+[~,fbr,suc]=C1branch_from_C2point(funcs,zeho,unfolding_pars,...
+    'codim2',zeho.kind,'codim1','fold','step',1e-03,'plot',0);
+nop=1000; [fbr,suc]=br_contn(funcs,fbr,nop);
+fbr=br_rvers(fbr);
+[fbr,suc]=br_contn(funcs,fbr,nop);
+\end{lstlisting}
+
+\begin{figure}
+\includetikzscaled{RH_bifurcation_diagram_I}
+\caption{Bifurcation diagram near the fold-Hopf point in \cref{switch:sm:eq:Rose-Hindmarsh} with $(r,S)=(0.001,-0.57452592)$.}
+\label{switch:sm:fig:RH_bifurcation_diagram_I}
+\end{figure}
+
+\subsection{Stable invariant tori}
+We change the parameters $r = 1.4$ and $S = -8$, while keeping the other fixed parameters as in \cref{switch:sm:eq:rose_hindmarsh_pm1}. Using the formulas given in \cref{switch:sec:ex_Rose_Hindmarsh}, we calculate $x_\star,I_{app}$ and $\tau$.
+\begin{lstlisting}[style=customMatlab]
+%% Different parameters with stable torus
+r=1.4; S=-8;
+[xstar,Iapp,tau]=bifurcationvalues(a,b,c,d,chi,r,S);
+% Construct steady-state point
+stst=dde_stst_create('x',[xstar; c-d*xstar^2; S*(xstar-chi)]);
+stst.parameter([ind.Iapp ind.S ind.r ind.tau])=[Iapp S r tau];
+% Calculate stability
+method=df_mthod(funcs,'stst');
+stst.stability=p_stabil(funcs,stst,method.stability);
+stst.stability.l1(1:5)
+\end{lstlisting}
+The \MATLAB console outputs
+\begin{lstlisting}[style=matlabConsole]
+ans =
+
+    0.00000 +  0.00000i
+    0.00000 +  5.60424i
+    0.00000 -  5.60424i
+   -0.27870 +  0.00000i
+   -0.66607 + 11.94839i
+   -0.66607 - 11.94839i
+\end{lstlisting}
+which are indeed the eigenvalues that should be present at a fold-Hopf bifurcation. Next, we calculate the normal form coefficients.
+\begin{lstlisting}[style=customMatlab]
+% Calculate normal coefficients
+hopf=p_tohopf(funcs,stst);
+zeho=p_tozeho(hopf);
+unfolding_pars=[ind.Iapp, ind.S];
+zeho=nmfm_zeho(funcs,zeho,'free_pars',unfolding_pars);
+\end{lstlisting}
+Inspecting the normal form coefficients yields
+\begin{lstlisting}[style=matlabConsole]
+>> fprintf('s=%f, theta=%f, e=%f\n',...
+       zeho.nmfm.s,zeho.nmfm.theta,zeho.nmfm.e)
+
+s=1.770013, theta=-0.156886, e=-0.037794
+>>
+\end{lstlisting}
+The coefficients $s$ and $\theta(0)$ reveal that we are in case III of the fold-Hopf bifurcation, see \cite[page 342]{Kuznetsov2004}. Since the sign of $e=E(0)$ is negative, there is a time reversal to take into account. Therefore, we expect stable tori to be present for nearby parameter values.
+
+\subsection{Adjusting bifurcation parameter range}
+We adjust the variable \lstinline|brpars| to reflect the current situation.
+\begin{lstlisting}[style=customMatlab]
+%% Set bifurcation parameter range and step size bounds
+brpars={'min_bound',[ind.Iapp -20; ind.S -9],...
+        'max_bound',[ind.Iapp -18; ind.S -7],...
+        'max_step', [ind.Iapp 0.04; ind.S 0.04]};
+\end{lstlisting}
+
+\subsection{Detect special points on the Hopf branch}
+Since the code to continue the Neimark-Sacker, Hopf and fold curves is identical to the code in \cref{switch:sm:sec:RH:continuation}, we continue with detecting bifurcations on the Hopf branch. The Hopf points on the branch \lstinline|hbr_wbifs| will contain the normal form coefficients \lstinline|L1| and \lstinline|L2|. These will be used to visualize the criticality of the Hopf points (sub or super) in the bifurcation diagram.
+\begin{lstlisting}[style=customMatlab]
+[hbr_wbifs,hopftests,hc2_indices,hc2_types]=...
+    LocateSpecialPoints(funcs,hbr);
+\end{lstlisting}
+
+\subsection{Predictors}
+As in the previous example, we obtain predictors for the various branches simply by setting the argument \lstinline|predictor| to 1 and the argument \lstinline|step| to a range of $\varepsilon$-values when calling the function \lstinline|C1branch_from_C2point|.
+\begin{lstlisting}[style=customMatlab]
+%% Predictors for Neimark-Sacker and Hopf curves
+[~,nsbr_pred]=C1branch_from_C2point(funcs,zeho,unfolding_pars,...
+    'codim2','zeho','codim1','TorusBifurcation',...
+    'step',linspace(1e-03,2.2e-01,40),'predictor',1);
+[~,hbrsub_pred]=C1branch_from_C2point(funcs,zeho,unfolding_pars,...
+    'codim2','zeho','codim1','hopf',...
+    'step',linspace(0,1e-03,20),'predictor',1);
+[~,hbrsup_pred]=C1branch_from_C2point(funcs,zeho,unfolding_pars,...
+    'codim2','zeho','codim1','hopf',...
+    'step',linspace(-1e-03,0,20),'predictor',1);
+\end{lstlisting}
+
+\subsection{Bifurcation diagram}
+We plot the obtained curves and the predictor for the Neimark-Sacker and Hopf curve with the following code.
+\begin{lstlisting}[style=customMatlab]
+%% Plot comparing computed and predicted Neimark-Sacker curve
+figure(8); clf; hold on;
+nsbr2_pm_pred = [getpars(nsbr_pred,ind.Iapp); ...
+    getpars(nsbr_pred,ind.S)];
+hbrsub_pm_pred = [getpars(hbrsub_pred,ind.Iapp); ....
+    getpars(hbrsub_pred,ind.S)];
+hbrsup_pm_pred = [getpars(hbrsuper_pred,ind.Iapp); ...
+    getpars(hbrsuper_pred,ind.S)];
+plot(hbrsub_pm(1,:),hbrsub_pm(2,:),'Color',cm(1,:),...
+    'DisplayName','subcritical Hopf branch');
+plot(hbrsuper_pm(1,:),hbrsuper_pm(2,:),'Color',cm(2,:),...
+    'DisplayName','supercritical Hopf branch');
+plot(hbrsub_pm_pred(1,:),hbrsub_pm_pred(2,:),'.','Color',cm(1,:),...
+    'DisplayName','subcritical Hopf predictor');
+plot(hbrsup_pm_pred(1,:),hbrsup_pm_pred(2,:),'.','Color',cm(2,:),...
+    'DisplayName','supercritical Hopf predictor');
+plot(nsbr1_pm(1,:),nsbr1_pm(2,:),'Color',cm(3,:),...
+    'DisplayName','Neimark-Sacker branch');
+plot(nsbr2_pm_pred(1,:),nsbr2_pm_pred(2,:),'.','Color',cm(3,:),...
+    'DisplayName','Neimark-Sacker predictor');
+plot(zeho.parameter(ind.Iapp),zeho.parameter(ind.S),'k.',...
+    'MarkerSize',12,'DisplayName','fold-Hopf point')
+title('Neimark-Sacker curve emanating from the fold-Hopf point')
+axis([-19.0193  -18.7128   -8.0477   -7.9587])
+xlabel('$I_{app}$','Interpreter','LaTex');
+ylabel('$S$','Interpreter','LaTex');
+text(-18.784,-7.981,  'I','FontSize',14); % stable period orbit
+text(-18.905,-8.032, 'II','FontSize',14); % stable 2d torus
+legend('Location','NorthWest'); box on
+\end{lstlisting}
+\cref{switch:sm:fig:RH_bifurcation_diagram_II} shows the resulting bifurcation diagram.
+
+\begin{figure}
+\includetikzscaled{RH_bifurcation_diagram_II}
+\caption{Bifurcation diagram near the fold-Hopf point in \cref{switch:sm:eq:Rose-Hindmarsh} with $(r,S)=(1.4,-8)$. The fold branch is not included here since it is indistinguishable from the Hopf curve at this scale.}
+\label{switch:sm:fig:RH_bifurcation_diagram_II}
+\end{figure}
+
+\subsection{Plots comparing computed and predicted periodic orbits} \label{switch:sm:sec:RH:comparing_period_orbits}
+We create a plot to compare the computed and predicted periodic orbits.
+\begin{lstlisting}[style=customMatlab]
+%% Plot comparing computed and predicted periodic orbits
+figure(9); clf; hold on;
+for i=1:14
+  plot3(nsbr.point(i).profile(1,:),nsbr.point(i).profile(2,:),...
+        nsbr.point(i).profile(3,:),'Color',cm(1,:));
+end
+for i=1:9
+  plot3(nsbr_pred.point(i).profile(1,:),...
+        nsbr_pred.point(i).profile(2,:),...
+        nsbr_pred.point(i).profile(3,:),'Color',cm(2,:));
+end
+title('Comparison between computed and predicted periodic orbits')
+xlabel('x'); ylabel('y'); zlabel('z')
+view(3); grid on
+\end{lstlisting}
+The resulting plot is shown in \cref{switch:sm:fig:RH:compare_orbits}.
+To compare the computed and predicted periods, we use the following code.
+\begin{lstlisting}[style=customMatlab]
+%% Compare computed and predicted periods
+figure(10); clf; hold on;
+% Plot computed periods on nsbr(1) and nsbr(2)
+omegas1=arrayfun(@(p)p.period,nsbr.point);
+omegas1_pred=arrayfun(@(p)p.period,nsbr_pred.point);
+plot(getpars(nsbr,ind.Iapp),omegas1,'Color',cm(1,:));
+plot(getpars(nsbr_pred,ind.Iapp),omegas1_pred,'.','Color',cm(1,:));
+title('Compare computed and predicted periods')
+xlabel('$I_{app}$','Interpreter','LaTex')
+ylabel('$\omega$','Interpreter','LaTex')
+axis([-19.1016  -18.6500    1.1144    1.1220])
+legend('Computed period','Predicted period','Location','SouthEast')
+\end{lstlisting}
+The resulting plot is shown in \cref{switch:sm:fig:RH:compare_periods}.
+
+\begin{figure}
+\centering
+\subfloat[]{\includetikz{RH_compare_orbits}\label{switch:sm:fig:RH:compare_orbits}} \hfill
+\subfloat[]{\includetikz{RH_compare_periods}\label{switch:sm:fig:RH:compare_periods}}
+\caption{In \textup{(a)} the computed periodic orbits (blue) and predicted periodic orbits (red) are compared. In \textup{(b)} the computed predicted periods of the cycles are compared. We see that both are in good agreement.}
+\end{figure}
+
+\subsection{Simulation with \PYDELAY}
+\label{switch:SM:sec:RH:simulation}
+In this section we simulate the dynamics near the fold-Hopf point. The following code, from the file \lstinline|RH_simulation_torus.py|, uses the Python package \PYDELAY \cite{Flunkert2009Flunkert}.
+\begin{lstlisting}[language=Python,escapechar=!]
+import numpy as np
+from pydelay import dde23
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+from matplotlib import colors
+
+# Number of time units
+tfinal_cycle = 10000
+tfinal_torus = 20000
+
+# Define DDE
+eqns = {
+    'x' : 'y-a*pow(x,3)+b*pow(x(t-tau),2)-c*z+Iapp',
+    'y' : 'c-d*pow(x,2)-y',
+    'z' : 'r*(S*(x-chi)-z)'
+}
+
+# Set parameters for torus
+params_torus = {
+    'a':1,'b':3,'c':1,'d':5.0,'chi':-1.6,'r':1.4,
+    'tau':0.940246941050084,
+    'Iapp':-18.902420391705071,
+    'S':-8.045234985422740
+}
+
+# Set parameters for torus
+params_cycle = params_torus.copy()
+params_cycle['Iapp']=-18.886177304147466
+params_cycle['S']=-8.044197084548104
+
+# Set number of timesteps from the end to plot
+timesteps_torus=300
+timesteps_cycle=10
+
+# Select periodic orbit or torus
+tfinal,params,timesteps=tfinal_cycle,params_cycle,timesteps_cycle
+#tfinal,params,timesteps=tfinal_torus,params_torus,timesteps_torus
+
+# Solve DDE
+dde = dde23(eqns=eqns, params=params)
+dde.set_sim_params(tfinal=tfinal)
+dde.set_sim_params(tfinal=tfinal, dtmax=0.001)
+histfunc = {
+    'x': lambda t: 1.097167540709727, 
+    'y': lambda t: -5.018883061935152,
+    'z': lambda t: -21.577340325677817
+}
+dde.hist_from_funcs(histfunc, 51)
+dde.run()
+
+# Subtract solution components
+sol0 = dde.sample(tfinal-timesteps,tfinal, 0.001)
+t = sol0['t']
+x = sol0['x']
+y = sol0['y']
+z = sol0['z']
+
+# Plot time series
+fig = plt.figure()
+plt.figure(1)
+plt.subplot(311)
+plt.xlabel('$t$')
+plt.ylabel('$x(t)$')
+plt.plot(t, x, c='royalblue')
+
+plt.subplot(312)
+plt.xlabel('$t$')
+plt.ylabel('$y(t)$')
+plt.plot(t, y, c='royalblue')
+
+plt.subplot(313)
+plt.xlabel('$t$')
+plt.ylabel('$z(t)$')
+plt.plot(t, z, c='royalblue')
+fig.set_size_inches(18.5, 10.5)
+plt.show()
+
+# Plot the solution in phase-space
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+ax.w_xaxis.set_pane_color((1.0, 1.0, 1.0, 1.0))
+ax.w_yaxis.set_pane_color((1.0, 1.0, 1.0, 1.0))
+ax.w_zaxis.set_pane_color((1.0, 1.0, 1.0, 1.0))
+ax.plot(x, y, z, c='royalblue')
+
+ax.set_xlabel('$x(t)$')
+ax.set_ylabel('$y(t)$')
+ax.set_zlabel('$z(t)$')
+
+# Fix to get z_label inside the figure
+from matplotlib import rcParams
+rcParams.update({'figure.autolayout': True})
+
+ax.view_init(9,-44)
+plt.show()
+
+# Subtract solution components for Poincar!{\color{comment}\'e}! section
+sol0 = dde.sample(tfinal-1000, tfinal, 0.001)
+t = sol0['t']
+x = sol0['x']
+y = sol0['y']
+z = sol0['z']
+
+# Poincar!{\color{comment}\'e}! section
+def poincaresection(x1, x2, x3,x1_label, x2_label, val):
+  zero_cross = np.where(np.diff(np.sign(x3-val)))
+  plt.figure(1)
+  plt.xlabel(x1_label)
+  plt.ylabel(x2_label)
+  plt.plot(x1[zero_cross], x2[zero_cross],'.', c='royalblue')
+  plt.show()
+  return
+
+x1_label='$x(t)$'
+x2_label='$y(t)$'
+poincaresection(x,y,z,x1_label,x2_label,-21.75)
+
+\end{lstlisting}
+We will simulate the dynamics in region I and II, see \cref{switch:sm:fig:RH_bifurcation_diagram_II}, where a stable periodic orbit and stable two-dimensional torus, respectively, should be present. For a point in region I, we will take the unfolding parameter values 
+\[
+(I_{app},S)=(-18.886177304147466,-8.044197084548104).
+\]
+As an initial condition, we use the constant history function with values of the location of the fold-Hopf point. We integrate the DDE on the time interval $t\in[0,10.000]$ with \PYDELAY. In  \cref{switch:fig:Rose-Hindmarsh-simulation} the time series of the components $x$,$y$ and $z$ and the orbit in $(x,y,z)$-space of the last 10 time steps are shown, clearly indicating a stable orbit.
+
+Next, we simulate the dynamics in region II. Therefore, we adjust the unfolding parameter values to 
+\[
+(I_{app},S)=(-18.902420391705071,-8.045234985422740).
+\]
+Furthermore, we increase the integration interval to $t\in[0,20.000]$. Keeping the history function the same, we plot the last 1000 time steps, see \cref{switch:fig:Rose-Hindmarsh-simulation}. We conclude that the dynamics near the fold-Hopf point are as predicted in \cite{Kuznetsov2004}.
+%
+\begin{figure}[!th]
+\centering
+\includetikz{RH_simulation1} \\
+\includetikz{RH_simulation2} \\[0.6cm]
+\includetikz{RH_simulation3} \\
+\includetikz{RH_simulation4}
+\caption{Simulation near fold-Hopf point in \cref{switch:eq:Rose-Hindmarsh}. In \textup{(a)} and \textup{(b)}, a stable periodic solution is shown. In \textup{(c)} and \textup{(d)}, a stable torus is shown. In \textup{(c)}, the time series is plotted while in \textup{(d)}, the cross-section defined by $z(t)=-21.75$ in the phase-space $(x,y,z)$ is taken.}
+\label{switch:fig:Rose-Hindmarsh-simulation}
+\end{figure}
+
+\section{Hopf-Hopf and generalized Hopf bifurcations in Active control system}
+In \cref{switch:sec:acs_example} we considered the following active control system
+\begin{equation}
+\begin{cases}
+\begin{aligned}
+\dot{x}(t)&=\tau y(t),\\
+\dot{y}(t)&=\tau\left(-x(t)-g_{u}x(t-1)-2\zeta y(t)-g_{v}y(t-1)+f(t)\right),
+\end{aligned}
+\end{cases}\label{switch:sm:eq:acs}
+\end{equation}
+which  is used to control the response of structures to internal or external excitation, see \cite{Peng2013}. The function $f$ is substituted by $\beta x^{3}(t-1)$ and the parameters
+\[
+g_{u}=0.1,\quad g_{v}=0.52,\quad\beta=0.1,
+\]
+are fixed. The control parameters are $\zeta$ and $\tau$. 
+
+\begin{remark}
+	This demonstration can be found in the directory \lstinline|demos/tutorial/VII/acs| relative to the main directory of the \DDEBIFTOOL package. Here, we omit the code to generate a system file. The system file \lstinline|sym_acs_mf.m| has been generated with the script \lstinline|gen_acs.m|. Also, we assume that the \DDEBIFTOOL package has been loaded as in \cref{switch:sm:lst:searchpath}.
+	The code in \crefrange{switch:sm:sec:acs:pars_and_funcs}{switch:sm:sec:acs_bifurcation_diagram} highlights the important parts of the file \lstinline|acs.m|.
+\end{remark}
+
+\subsection{Set parameter names and funcs structure} \label{switch:sm:sec:acs:pars_and_funcs}
+We set the parameter names and define the \lstinline|funcs| structure.
+\begin{lstlisting}[style=customMatlab,escapechar=!]
+%% Set parameter names
+parnames={'zeta','tau','tau_scaled'};
+cind=[parnames;num2cell(1:length(parnames))];
+ind=struct(cind{:});
+!\matlabrule!
+%% Set funcs structure
+% We load the precalculated multilinear forms. These have been
+% generated with the file gen_sym_acs.m.
+funcs=set_symfuncs(@sym_acs_mf,'sys_tau',@()ind.tau_scaled);
+\end{lstlisting}
+
+\subsection{Stability and normal form coefficients of the Hopf-Hopf point} We construct a steady-state at the Hopf-Hopf point and calculate its stability.
+\begin{lstlisting}[style=customMatlab]
+%% Hopf-Hopf point
+% Construct steady-state point
+stst.kind='stst';
+stst.x=[0;0];
+stst.parameter(ind.zeta)=-0.016225;
+stst.parameter(ind.tau)=5.89802;
+stst.parameter(ind.tau_scaled)=1;
+% Calculate stability
+method=df_mthod(funcs,'stst');
+stst.stability=p_stabil(funcs,stst,method.stability);
+stst.stability.l1
+\end{lstlisting}
+The \MATLAB console shows the following output.
+\begin{lstlisting}[style=matlabConsole]
+ans =
+
+    0.0000 + 4.5275i
+    0.0000 - 4.5275i
+   -0.0000 + 7.6449i
+   -0.0000 - 7.6449i
+\end{lstlisting}
+The eigenvalues confirm that the point under consideration is indeed a Hopf-Hopf point. Furthermore, the remaining eigenvalues have negative real parts. Next, we calculate the normal form coefficients and the transformation to the center manifold with the function \lstinline|nmfm_hoho|, which implements the coefficients as derived in \cref{switch:sec:HH_coef}. For this we need to set the argument \lstinline|free_pars| to the unfolding parameter $(\zeta,\tau)$. These coefficients will be used to start the continuation of the various branches emanating from the Hopf-Hopf point.
+\begin{lstlisting}[style=customMatlab]
+%% Calculate coefficients of the parameter dependent normal form
+hopf=p_tohopf(funcs,stst);
+method=df_mthod(funcs,'hopf');
+hopf.stability=p_stabil(funcs,hopf,method.stability);
+hoho=p_tohoho(hopf);
+unfolding_parameters=[ind.zeta, ind.tau];
+hoho=nmfm_hoho(funcs,hoho,'free_pars',unfolding_parameters);
+hoho.nmfm
+\end{lstlisting}
+The \MATLAB console shows the following output.
+\begin{lstlisting}[style=matlabConsole,keepspaces=true]
+ans = 
+
+?struct? with fields:
+
+    g2100: -0.0915 + 0.1214i
+    g1011: -0.3084 + 0.4096i
+    g1110: 0.2151 + 0.3876i
+    g0021: 0.1813 + 0.3268i
+    theta: -1.7009
+    delta: -2.3517
+        b: [2x2 double]
+    h0011: [1x1 struct]
+    h0020: [1x1 struct]
+    h2000: [1x1 struct]
+        K: [2x2 double]
+    h0000: [1x2 struct]
+\end{lstlisting}
+We conclude that this Hopf-Hopf bifurcation is of `difficult' type, since
+\[
+( \Re g_{2100} )( \Re g_{0021} ) = -0.0166 < 0,
+\]
+see \cite{Kuznetsov2004}. Furthermore, the quantities
+\[
+\theta=\frac{\text{Re }g_{1011}}{\text{Re }g_{0021}}=-1.7009,\qquad\delta=\frac{\text{Re }g_{1101}}{\text{Re }g_{2100}}=-2.3517
+\]
+are such that $\theta<0,\,\delta<0,\,\theta\delta>0$. It follows that we are in case VI.
+
+\subsection{Set bifurcation parameter range and step size bounds}
+Before continuing the various branches emanating from the transcritical-Hopf point, we create the variable \lstinline|brpars| containing parameter bounds and maximal stepsizes.
+\begin{lstlisting}[style=customMatlab]
+%% Set bifurcation parameter range and step size bounds
+brpars={'max_bound',[ind.tau 16],...
+        'min_bound',[ind.tau 5],...
+        'max_step', [ind.zeta 0.04; ind.tau 0.04]};
+\end{lstlisting}
+
+\subsection{Continuing Hopf and Neimark-Sacker bifurcation curves}
+We use the function \lstinline|C1branch_from_C2point| to start to continue the branches emanating from the Hopf-Hopf point.
+\begin{lstlisting}[style=customMatlab]
+%% Continue Neimark-Sacker curves emanating from Hopf-Hopf point
+[trfuncs,nsbr,suc]=C1branch_from_C2point(funcs,hoho,...
+    unfolding_parameters,'codim2','hoho','codim1',....
+    'TorusBifurcation',brpars{:},'step',1e-01,'plot',0);
+assert(all(suc(:)>0))
+ntrsteps=186; [nsbr(1),suc]=br_contn(trfuncs,nsbr(1),ntrsteps);
+assert(suc>0)
+ntrsteps=61;  [nsbr(2),suc]=br_contn(trfuncs,nsbr(2),ntrsteps);
+assert(suc>0)
+\end{lstlisting}
+\begin{lstlisting}[style=customMatlab]
+%% Continue Hopf curve emanating from Hopf-Hopf point
+[~,hbr,suc]=C1branch_from_C2point(funcs,hoho,...
+    unfolding_parameters,'codim2','hoho','codim1','hopf'....
+    ,brpars{:},'step',1e-03,'plot',0);
+assert(all(suc(:)>0))
+nop=1000; [hbr(1),suc]=br_contn(funcs,hbr(1),nop);assert(suc>0)
+hbr(1)=br_rvers(hbr(1));
+[hbr(1),suc]=br_contn(funcs,hbr(1),nop); assert(suc>0)
+nop=10; [hbr(2),suc]=br_contn(funcs,hbr(2),nop); assert(suc>0)
+hbr(2)=br_rvers(hbr(2));
+[hbr(2),suc]=br_contn(funcs,hbr(2),nop); assert(suc>0)
+\end{lstlisting}
+In \cref{switch:sm:fig:continued_branches}, the computed branches are shown. We see in \cref{switch:sm:fig:acs_hopf_branches} that it is redundant to continue the second Hopf branch emanating from the Hopf-Hopf point. Indeed, the first Hopf branch connects the Hopf-Hopf point to itself. Here, we verified that the underlying points coincide.
+\begin{figure}
+\subfloat[]{\includetikz{acs_ns_branches}}
+\hfill
+\subfloat[\label{switch:sm:fig:acs_hopf_branches}]{\includetikz{acs_hopf_branches}}
+\caption{In \textup{(a)}, the continued branches \lstinline|ns1_br| and \lstinline|ns2_br| are plotted. In \textup{(b)}, the continued Hopf branch \lstinline|hopf_br1| is plotted.}
+\label{switch:sm:fig:continued_branches}
+\end{figure}
+
+\subsection{Predictors}
+For comparison in the bifurcation diagram, we obtain predictors for the various branches by setting the argument \lstinline|predictor| to 1 and \lstinline|step| to a range of $\varepsilon$-values when calling the function \lstinline|C1branch_from_C2point|.
+\begin{lstlisting}[style=customMatlab]
+%% Predictors for Neimark-Sacker and Hopf curves
+[trfuncs,nsbr_pred,suc]=C1branch_from_C2point(funcs,hoho,...
+    unfolding_parameters,'codim2','hoho','codim1',...
+    'TorusBifurcation','step',linspace(1e-03,2,40),'predictor',1);
+[~,hbr_pred,suc]=C1branch_from_C2point(funcs,hoho,...
+    unfolding_parameters,'codim2','hoho','codim1','hopf',...
+    'step',linspace(-2e-01,2e-01,30),'predictor',1);
+\end{lstlisting}
+
+\subsection{Bifurcation diagram}
+We plot the computed curves and the predictors for the Neimark-Sacker and Hopf curves with the following code.
+\begin{lstlisting}[style=customMatlab]
+%% Close-up near Hopf Hopf point in parameter space with predictors
+figure(2); clf; hold on;
+hbr1_pred_pm  = [getpars(hbr_pred(1), ind.zeta)
+                 getpars(hbr_pred(1), ind.tau)];
+hbr2_pred_pm  = [getpars(hbr_pred(2), ind.zeta)
+                 getpars(hbr_pred(2), ind.tau)];
+nsbr1_pred_pm = [getpars(nsbr_pred(1),ind.zeta)
+                 getpars(nsbr_pred(1),ind.tau)];
+nsbr2_pred_pm = [getpars(nsbr_pred(2),ind.zeta)
+                 getpars(nsbr_pred(2),ind.tau)];
+plot(hbr_pm(1,:),hbr_pm(2,:),'Color',cm(1,:),...
+    'DisplayName','Hopf branches')
+plot(nsbr1_pm(1,:),nsbr1_pm(2,:),'Color',cm(2,:),...
+    'DisplayName','Neimark-Sacker branches')
+plot(nsbr2_pm(1,:),nsbr2_pm(2,:),'Color',cm(2,:),...
+    'HandleVisibility','off')
+plot(hbr1_pred_pm(1,:), hbr1_pred_pm(2,:) ,'.',...
+    'Color',cm(1,:),'DisplayName','Hopf predictors')
+plot(hbr2_pred_pm(1,:), hbr2_pred_pm(2,:) ,'.',...
+    'Color',cm(1,:),'HandleVisibility','off')
+plot(nsbr1_pred_pm(1,:),nsbr1_pred_pm(2,:),'.',...
+    'Color',cm(2,:),'DisplayName','Neimark-Sacker predictors')
+plot(nsbr2_pred_pm(1,:),nsbr2_pred_pm(2,:),'.',...
+    'Color',cm(2,:),'HandleVisibility','off')
+plot(hoho.parameter(ind.zeta),hoho.parameter(ind.tau),'k.',...
+    'MarkerSize',12,'DisplayName','Hopf Hopf point')
+title(['Close-up near Hopf Hopf point '...
+       'in parameter space with predictors'])
+xlabel('$\zeta$','Interpreter','LaTex');
+ylabel('$\tau$','Interpreter','LaTex');
+legend('Location','NorthWest')
+axis([-0.0562    0.0109    5.7098    6.1757])
+box on
+\end{lstlisting}
+In \cref{switch:sm:fig:acs_hoho_predictors} the predictors in parameter space are compared.
+
+\subsection{Plot comparing computed and predicted periods}
+To compare the computed and predicted periods, we use the following code.
+\begin{lstlisting}[style=customMatlab]
+%% Compare computed and predicted periods
+figure(3); clf; hold on;
+% Plot computed periods on nsbr(1) and nsbr(2)
+omegas1=arrayfun(@(p)p.period,nsbr(1).point);
+omegas2=arrayfun(@(p)p.period,nsbr(2).point);
+omegas1_pred=arrayfun(@(p)p.period,nsbr_pred(1).point);
+omegas2_pred=arrayfun(@(p)p.period,nsbr_pred(2).point);
+plot(getpars(nsbr(1),ind.zeta),omegas1,'Color',cm(1,:));
+plot(getpars(nsbr(2),ind.zeta),omegas2,'Color',cm(2,:));
+plot(getpars(nsbr_pred(1),ind.zeta),...
+     omegas1_pred,'.','Color',cm(1,:));
+plot(getpars(nsbr_pred(2),ind.zeta),...
+     omegas2_pred,'.','Color',cm(2,:));
+title('Compare computed and predicted periods')
+xlabel('$\zeta$','Interpreter','LaTex');
+ylabel('$\omega$','Interpreter','LaTex');
+\end{lstlisting}
+In \cref{switch:sm:fig:acs_compare_periods}, the computed and predicted periods of the cycles are compared using the formulas as given in \cref{switch:eq:HH_period_predictors}.
+
+\begin{figure}
+\centering
+\subfloat[]{\includetikz{acs_hoho_predictors_for_sm}\label{switch:sm:fig:acs_hoho_predictors}} \hfill
+\subfloat[]{\includetikz{acs_compare_omegas}\label{switch:sm:fig:acs_compare_periods}}
+\caption{In \textup{(a)}, the computed curves are compared with the predicted curves for the Hopf-Hopf point \lstinline|hoho|. In \textup{(b)}, the computed and predicted periods of the cycles are compared.}
+\end{figure}
+
+\subsection{Detect special points on the Hopf branch}
+Using the detection capabilities from \DDEBIFTOOL via the function \lstinline|LocateSpecialPoints|, we detect one additional Hopf-Hopf point and
+three generalized Hopf points.
+\begin{lstlisting}[style=customMatlab]
+%% Detect codimension two points on hopf_br1
+[hopf_br_wbifs,hopftests,hc2_indices,hc2_types]=...
+    LocateSpecialPoints(funcs,hbr(1));
+\end{lstlisting}
+The \MATLAB console shows the following output.
+\begin{lstlisting}[style=matlabConsole,keepspaces=true]
+HopfCodimension2: calculate stability if not yet present
+HopfCodimension2: calculate L1 coefficients
+HopfCodimension2: (provisional) 3 gen. Hopf 4 Hopf-Hopf  detected.
+br_insert: detected 1 of 7: hoho. Normalform:
+     g2100: 0.1813 + 0.3268i
+     g1011: 0.2151 + 0.3876i
+     g1110: -0.3084 + 0.4096i
+     g0021: -0.0915 + 0.1214i
+     theta: -2.3517
+     delta: -1.7009
+
+br_insert: detected 2 of 7: genh. Normalform:
+     L2: -0.0458
+     L1: -1.6706e-11
+
+br_insert: detected 3 of 7: hoho. Normalform:
+     g2100: 0.1813 + 0.3268i
+     g1011: 0.2151 + 0.3876i
+     g1110: -0.3084 + 0.4096i
+     g0021: -0.0915 + 0.1214i
+     theta: -2.3517
+     delta: -1.7009
+
+br_insert: detected 4 of 7: hoho. Normalform:
+    g2100: -0.0034 + 0.3217i
+    g1011: -0.0046 + 0.4380i
+    g1110: -0.1494 + 0.4498i
+    g0021: -0.0509 + 0.1531i
+    theta: 0.0912
+    delta: 43.8639
+
+br_insert: detected 5 of 7: genh. Normalform:
+    L2: 0.0070
+    L1: -5.9006e-14
+
+br_insert: detected 6 of 7: genh. Normalform:
+    L2: 0.0075
+    L1: 2.2535e-14
+
+br_insert: detected 7 of 7: hoho. Normalform:
+    g2100: -0.0034 + 0.3217i
+    g1011: -0.0046 + 0.4380i
+    g1110: -0.1494 + 0.4498i
+    g0021: -0.0509 + 0.1531i
+    theta: 0.0912
+    delta: 43.8639
+\end{lstlisting}
+There are seven bifurcations detected on the Hopf branch \lstinline|hbr(1)|: four Hopf-Hopf bifurcations and three generalized Hopf bifurcations. However, by inspecting the parameters of the detected Hopf Hopf points suggest that there are only two distinct Hopf-Hopf points,  which are connected with the same Hopf branch. By comparing the location of the underlying points confirms the premise. We are therefore not interested in continuing the Hopf curves emanating from these points. What we are interested in is continuing the Neimark-Sacker and limit point of cycle curves emanating from the second Hopf-Hopf point and the three generalized Hopf points, respectively.
+
+The normal form coefficients of the second Hopf-Hopf point are such that
+\[
+( \Re g_{2100} )( \Re g_{0021} ) = 1.7331e - 04 > 0
+\]
+and
+\[
+\theta\geq \delta > 0, \qquad \delta\theta=4>1.
+\]
+We conclude that we are in case I of the `simple' type, see \cite[page 360]{Kuznetsov2008}. Therefore, no stable invariant two-dimensional torus is predicted for nearby parameter values. We only expect to find two stable periodic orbits.
+
+\subsection{Continuing third Neimark-Sacker bifurcation and limit point of cycle bifurcation curves}
+It turns out that we only need to continue one of the Neimark-Sacker bifurcation curves emanating from the second
+Hopf-Hopf point. Indeed, the other Neimark-Sacker bifurcation curve is given
+by \lstinline|ns_br(1)|.
+\begin{lstlisting}[style=customMatlab,escapechar=!]
+%% Subtract generalized Hopf points
+genh_indices=hc2_indices(strcmp(hc2_types,'genh'));
+genhpts=hopf_br_wbifs.point(genh_indices);
+!\matlabrule!
+%% Continue limit point of cycles emanating from the generalized Hopf points
+[~,lpc_br1,suc]=C1branch_from_C2point(funcs,genhpts(1),...
+unfolding_parameters,'codim2','genh','codim1','POfold',...
+brpars{:},'step',1e-01,'plot',0);
+assert(all(suc>0))
+[poffuncs,lpc_br2,suc]=C1branch_from_C2point(funcs,genhpts(3),...
+unfolding_parameters,'codim2','genh','codim1','POfold',...
+brpars{:},'step',5e-03,'plot',0);
+assert(all(suc>0))
+ntrsteps=193; [lpc_br1,suc]=br_contn(poffuncs,lpc_br1,ntrsteps);
+assert(suc>0)
+ntrsteps=220; [lpc_br2,suc]=br_contn(poffuncs,lpc_br2,ntrsteps);
+assert(suc>0)
+!\matlabrule!
+%% Subtract second Hopf-Hopf point on the Hopf branch
+hoho_indices=hc2_indices(strcmp(hc2_types,'hoho'));
+hoho2=hopf_br_wbifs.point(hoho_indices(3));
+!\matlabrule!
+%% Continue Neimark-Sacker curves emanating from Hopf-Hopf point
+[trfuncs,nsbr34,suc]=C1branch_from_C2point(funcs,hoho2,...
+    unfolding_parameters,'codim2','hoho','codim1',...
+    'TorusBifurcation',brpars{:},'step',5e-03,'plot',0);
+assert(all(suc(:)>0))
+ntrsteps=200; [nsbr34(2),suc,fail,rjct]=...
+    br_contn(trfuncs,nsbr34(2),ntrsteps);
+\end{lstlisting}
+
+\subsection{Bifurcation diagram} \label{switch:sm:sec:acs_bifurcation_diagram}
+We plot the computed degenerate Hopf points, the limit point of limit cycle curves, and the Neimark-Sacker curves with the following code.
+\begin{lstlisting}[style=customMatlab]
+%% Bifurcation diagram in $(\zeta,\tau)$
+figure(4); clf; hold on;
+% Subtract paramater values from the branches
+lpc_br1_pm= [getpars(lpc_br1,   ind.zeta)
+             getpars(lpc_br1,   ind.tau)];
+lpc_br2_pm= [getpars(lpc_br2,   ind.zeta)
+             getpars(lpc_br2,   ind.tau)];
+nsbr3_pm  = [getpars(nsbr34(2), ind.zeta)
+             getpars(nsbr34(2) ,ind.tau)];
+% Plot curves
+plot(hbr_pm(1,:),    hbr_pm(2,:),    'Color',cm(1,:),...
+    'DisplayName','Hopf branches');
+plot(nsbr1_pm(1,:),  nsbr1_pm(2,:),  'Color',cm(2,:),...
+    'DisplayName','Neimark-Sacker branches');
+plot(nsbr2_pm(1,:),  nsbr2_pm(2,:),  'Color',cm(2,:),...
+    'HandleVisibility','off');
+plot(nsbr3_pm(1,:),  nsbr3_pm(2,:),  'Color',cm(2,:),...
+    'HandleVisibility','off');
+plot(lpc_br1_pm(1,:),lpc_br1_pm(2,:),'Color',cm(3,:),...
+    'DisplayName','Generalized Hopf');
+plot(lpc_br2_pm(1,:),lpc_br2_pm(2,:),'Color',cm(3,:),...
+    'HandleVisibility','off');
+% Add bifurcation points
+plot(hoho.parameter(ind.zeta), hoho.parameter(ind.tau),...
+    'k.','MarkerSize',8,'DisplayName','Hopf Hopf point')
+plot(hoho2.parameter(ind.zeta),hoho2.parameter(ind.tau),...
+    'k.','MarkerSize',8,'HandleVisibility','off')
+plot(genhpts(1).parameter(ind.zeta),...
+    genhpts(1).parameter(ind.tau),'b.','MarkerSize',8,...
+    'DisplayName','Generelized Hopf point')
+plot(genhpts(2).parameter(ind.zeta),...
+     genhpts(2).parameter(ind.tau),'b.','MarkerSize',8,...
+     'HandleVisibility','off')
+plot(genhpts(3).parameter(ind.zeta),
+     genhpts(3).parameter(ind.tau),'b.','MarkerSize',8,...
+     'HandleVisibility','off')
+title('Bifurcation diagram in (\zeta,\tau)')
+xlabel('$\zeta$','Interpreter','LaTex')
+ylabel('$\tau$','Interpreter','LaTex')
+axis([-0.3    0.4    5    16])
+legend()
+\end{lstlisting}
+\cref{switch:sm:fig:acs_hoho_genh_lpc_ns} shows the resulting bifurcation diagram. There, we see that two generalized Hopf points are connected by the same limit point of cycles bifurcation curve.
+\begin{figure}
+\centering
+\includetikzscaled{acs_hoho_genh_lpc_ns}
+\caption{Unfolding from multiple codimension two points detected in the DDE \cref{switch:sm:eq:acs}.}
+\label{switch:sm:fig:acs_hoho_genh_lpc_ns}
+\end{figure}
+
+\subsection{Simulation near Hopf-Hopf point with \texttt{pydelay}}
+\begin{figure}[ht]
+\subfloat[\label{switch:fig:-Bifurcation-diagram-hoho}Bifurcation diagram near Hopf-Hopf point]{
+\centering
+\includetikz{acs_hoho_zoom}
+}
+\hspace*{\fill}
+\subfloat[\label{switch:fig:acs_zeta1}$\zeta_{1}$ Stable periodic orbit]{
+\centering
+\includetikz{acs_simulation_zeta1}
+}
+\caption{In \textup{(a)}, the points $(\zeta_i,\tau)$ for $i=1,\dots,5$ of the parameter values where the simulation is performed are plotted. Note that $\zeta_4$ and $\zeta_5$ are almost indistinguishable. In \textup{(b)}, the Poincar\'e section of the simulation using \PYDELAY at the parameters ($\zeta_2,\tau)=(-0.015685728828307,5.901783308978358)$ shows a stable periodic orbit.}
+\end{figure}
+
+\begin{figure}[ht!]
+\centering
+\subfloat[\label{switch:fig:acs_zeta2}$\zeta_{2}$ Stable two-dimensional torus]{
+\includetikz{acs_simulation_zeta2}
+}
+\hspace*{\fill}
+\subfloat[\label{switch:fig:acs_zeta3}$\zeta_{3}$ Stable two-dimensional torus]{
+\includetikz{acs_simulation_zeta3}
+} \\
+%
+\subfloat[\label{switch:fig:zeta4}$\zeta_{4}$ Stable three-dimensional torus]{
+\includetikz{acs_simulation_zeta4}
+}
+\hspace*{\fill}
+\subfloat[\label{switch:fig:acs_zeta5}$\zeta_{5}$ Three-dimensional torus near blow-up]{
+\includetikz{acs_simulation_zeta5}
+}
+\caption{Simulation with \texttt{pydelay} illustrating the branching of a three-dimensional torus from a two-dimensional torus. We refer to the text for further description.}
+\end{figure}
+
+In this last Section, we simulate the dynamics near the manually constructed Hopf-Hopf point at parameter values \cref{switch:eq:acs-HH-pm}. As remarked before, the unfolding of the Hopf-Hopf point \blist{hoho} is of `difficult' type case VI. The normal form coefficients predict a stable invariant two-dimensional torus. Furthermore, this torus undergoes a bifurcation in which a three-dimensional torus is born. Since the DDE under investigation \cref{switch:eq:acs3-1} does not contain any terms of order higher than three, the results for the normal form remain valid for the system. To confirm the unfolding in  \cref{switch:fig:acs_hoho_predictors}, we fix the delay $\tau=5.901783308978358$ and take for $\zeta$ consecutive the values
+\begin{align*}
+\zeta_{1} & =-0.015485728828307,\\
+\zeta_{2} & =\zeta_{1}-0.0002,\\
+\zeta_{3} & =\zeta_{1}-0.0004,\\
+\zeta_{4} & =\zeta_{1}-0.000445,\\
+\zeta_{5} & =\zeta_{1}-0.0004496,
+\end{align*}
+see \cref{switch:fig:-Bifurcation-diagram-hoho}. The cross-sections in \cref{switch:fig:acs_zeta1,switch:fig:acs_zeta5} are generated with the following Python code using \PYDELAY, see also the file \lstinline|acs_simulation.py|
+\begin{lstlisting}[language=Python]
+import numpy as np
+import pylab as pl
+from pydelay import dde23
+from matplotlib import colors
+
+# Number of time units
+tfinal = 90000
+
+# Define DDE
+eqns = {
+    'x':'tau*y',
+    'y':'tau*(-x-0.1*x(t-1)-2*zeta*y' \
+         '-0.52*y(t-1)+0.1*pow(x(t-1),3))'
+}
+
+# Set parameters
+tau=5.901783308978358
+zeta1=-0.015485728828307 # periodic orbit
+zeta2=zeta1-0.0002       # torus
+zeta3=zeta1-0.0004       # torus near bifurcation to 3d torus
+zeta4=zeta1-0.000445     # 3d torus
+zeta5=zeta1-0.0004496    # 3d torus near destruction
+
+# Solve DDE
+dde = dde23(eqns=eqns, params={'zeta':zeta2, 'tau':tau})
+dde.set_sim_params(tfinal=tfinal, dtmax=0.1, AbsTol=1e-08, 
+	RelTol=1e-06)
+histfunc = {'x': lambda t: 0.01, 'y': lambda t: 0 }
+dde.hist_from_funcs(histfunc, 51)
+dde.run()
+
+# Subtract solution components
+a1=1;
+dt=1e-04
+sol = dde.sample(tfinal-tfinal/10, tfinal, dt)
+soldelayed = dde.sample(tfinal-tfinal/10-a1, tfinal-a1, dt)
+t = sol['t']
+x = sol['x']
+y = sol['y']
+xdelayed = soldelayed['x']
+zero_crossings = np.where(np.diff(np.sign(xdelayed)))[0]
+
+# Scatter plot
+x_cros=x[zero_crossings]
+y_cros=y[zero_crossings]
+params = {
+    'figure.figsize': (15, 15),
+    'axes.labelsize': 'x-large',
+    'xtick.labelsize':'x-large',
+    'ytick.labelsize':'x-large'
+}
+pl.rcParams.update(params)
+fig = pl.figure()
+pl.figure(1)
+pl.scatter(x_cros,y_cros,s=0.8,color='royalblue')
+pl.xlabel('$x$')
+pl.ylabel('$y$')
+pl.show()
+\end{lstlisting}
+
+In \cref{switch:fig:acs_zeta1} there are two dots, corresponding to a stable period orbit. Crossing the curve \blist{ns1\_br}, a stable two-dimensional torus branches off, see \cref{switch:fig:acs_zeta2}. The torus still exists at $\zeta=\zeta_{3}$, as seen in  \cref{switch:fig:acs_zeta3}. Then, at $\zeta=\zeta_{4}$, only slightly smaller than $\zeta_{3}$, a three-dimensional torus is observed, see \cref{switch:fig:zeta4}. Lastly, \cref{switch:fig:acs_zeta5} shows the three-dimensional torus near the curve where the torus blows up.
+
+\section{Transcritical-Hopf bifurcation in Van der Pol's oscillator with delayed position and velocity feedback}
+Consider the generalized van der Pol's oscillator with delayed feedback\begin{equation}
+\begin{cases}
+\begin{aligned}
+\dot{x}(t)&=\left(\tau_0+\mu_2\right)y(t),\\[0.5em]
+\dot{y}(t)&=\left(\tau_0+\mu_{2}\right)\big[-x(t)-\varepsilon(x^2(t)-1)y(t)+(1+\mu_1)x(t-\tau)-0.2y(t-1)\\[0.5em]
+&\qquad-0.2x^2(t-1)-0.2x(t-\tau)y(t-1)-0.2 y^2(t-1)+0.5x^3(t-1)\big],
+\end{aligned}
+\end{cases}\label{switch:sm:eq:vdp}
+\end{equation}
+see \cref{switch:sec:HT_example} and \cite{Bramburger2014}. The parameter $\varepsilon=0.3$ is fixed. For $\tau_{0}\approx1.757290761249588$ a transcritical-Hopf bifurcation is located at $(\mu_1,\mu_2)=(0,0)$.
+
+\begin{remark}
+	This demonstration can be found in the directory \lstinline|demos/tutorial/VII/vdpo| relative to the main directory of the \DDEBIFTOOL package. Here, we omit the code to generate a system file. The system file \lstinline|sym_vdpo_mf.m| has been generated with the script \lstinline|gen_sym_vdpo.m|. Also, we assume that the \DDEBIFTOOL package has been loaded as in \cref{switch:sm:lst:searchpath}. The code in \crefrange{switch:sm:sec:vdpo:pars_and_funcs}{switch:sm:sec:vdpo:comparing_period_orbits} highlights the important parts of the file \lstinline|vdpo.m|.
+\end{remark}
+
+\subsection{Set parameter names and funcs structure} \label{switch:sm:sec:vdpo:pars_and_funcs}
+We set the parameter names and define the \lstinline|funcs| structure.
+\begin{lstlisting}[style=customMatlab]
+%% Set parameter names
+parnames={'mu1','mu2','tau'};
+cind=[parnames;num2cell(1:length(parnames))];
+ind=struct(cind{:});
+%% Set funcs structure
+% We load the precalculated multilinear forms. These have been
+% generated with the file gen_sym_vdpo.m.
+funcs=set_symfuncs(@sym_vdpo_mf,'sys_tau',@()ind.tau);
+\end{lstlisting}
+
+\subsection{Stability and normal form coefficients of the transcritical-Hopf point} We construct a steady-state at the transcritical-Hopf point and calculate its stability.
+\begin{lstlisting}[style=customMatlab]
+%% Construct transcritical-Hopf bifucation point
+stst=dde_stst_create('x',[0;0],'parameter',[0 0 1]);
+% Calculate stability
+method=df_mthod(funcs,'stst');
+stst.stability=p_stabil(funcs,stst,method.stability);
+stst.stability.l1
+\end{lstlisting}
+The \MATLAB console shows the following output.
+\begin{lstlisting}[style=matlabConsole]
+ans =
+
+    0.0000 + 0.0000i
+   -0.0000 + 2.4539i
+   -0.0000 - 2.4539i
+\end{lstlisting}
+We have a zero eigenvalue and a pair of purely imaginary eigenvalues. Furthermore, the remaining eigenvalues have negative real parts. Next, we calculate the normal form coefficients and the transformation to the center manifold with the function \lstinline|nmfm_zeho|, which implements the coefficients as derived in \cref{switch:sec:fold-Hopf,switch:sec:transcritical-Hopf}. For this we need to set the argument \lstinline|free_pars| to the unfolding parameter $(\mu_1,\mu_2)$. These coefficients will be used to start the continuation of the various branches emanating from the transcritical-Hopf point.
+\begin{lstlisting}[style=customMatlab]
+%% Coefficients of the parameter dependent normal form
+ht=p_tohopf(funcs,stst);
+ht=p_tozeho(ht);
+unfolding_pars=[ind.mu1, ind.mu2];
+ht=nmfm_zeho(funcs,ht,'transcritical',1,'free_pars',unfolding_pars);
+ht.nmfm
+\end{lstlisting}
+The \MATLAB console shows the following output.
+\begin{lstlisting}[style=matlabConsole,keepspaces=true]
+ans = 
+
+?struct? with fields:
+
+             g200: 0.2121
+             g110: -0.1337 + 0.2672i
+             g011: 0.4241
+             g300: 0.4935
+             g111: 1.0243
+             g210: -0.8178 - 0.4283i
+             g021: -0.3302 - 0.1646i
+                b: 0.2121
+                c: 0.4241
+                d: -0.1337 - 5.4430i
+                e: -0.2435
+                s: 0.0899
+            theta: -0.6303
+    transcritical: 1
+             h200: [1x1 struct]
+             h011: [1x1 struct]
+             h020: [1x1 struct]
+             h110: [1x1 struct]
+                K: [2x2 double]
+           omega1: 0.4644
+           omega2: 1.2768
+\end{lstlisting}
+The normal form coefficients are such that
+\[
+g_{011} \Re ( g_{110}) = 0.4241 \Re (- 0.1337 + 0.2672i ) < 0.
+\]
+Therefore, there are two Neimark-Sacker bifurcation curves predicted, see \cref{switch:sec:HT_predictors}.
+
+\subsection{Set bifurcation parameter range and step size bounds}
+Before continuing the various branches emanating from the transcritical-Hopf point, we create the variable \lstinline|brpars| containing parameter bounds and maximal stepsizes.
+\begin{lstlisting}[style=customMatlab]
+%% Set bifurcation parameter range and step size bounds
+brpars={'max_bound',[ind.mu1 0.0139; ind.mu2 0.0094],...
+        'min_bound',[ind.mu1 -0.0190; ind.mu2 -0.0069 ],...
+        'max_step' ,[ind.mu1  1.0e-02; ind.mu2 1.0e-02]};
+\end{lstlisting}
+
+\subsection{Continuing Hopf, transcritical and Neimark-Sacker bifurcation curves}
+We use the function \lstinline|C1branch_from_C2point| to continue the various branches emanating from the singularity.
+\begin{lstlisting}[style=customMatlab,escapechar=!]
+%% Continue Neimark-Sacker curves emanating from 
+%  the transcritical-Hopf point
+[trfuncs,nsbr,suc]=C1branch_from_C2point(funcs,ht,unfolding_pars,...
+    'codim2','zeho','codim1','TorusBifurcation',...
+    'step',1e-04,'plot',0,brpars{:});
+assert(all(suc(:)>0))
+ntrsteps=27; [nsbr(1),suc]=br_contn(trfuncs,nsbr(1),ntrsteps);
+assert(suc>0)
+ntrsteps=30; [nsbr(2),suc]=br_contn(trfuncs,nsbr(2),ntrsteps);
+assert(suc>0)
+!\matlabrule!
+%% Continue Hopf curves emanating from fold-Hopf point
+[~,hbr,suc]=C1branch_from_C2point(funcs,ht,unfolding_pars,...
+    'codim2','zeho','codim1','hopf',brpars{:},'step',1e-05,'plot',0);
+assert(all(suc(:)>0))
+for i=2:-1:1
+nop=1000; hbr(i)=br_contn(funcs,hbr(i),nop);
+hbr(i)=br_rvers(hbr(i));
+hbr(i)=br_contn(funcs,hbr(i),nop);
+end
+!\matlabrule!
+%% Continue transcritical curve emanating from fold-Hopf point
+[~,tcbr]=C1branch_from_C2point(funcs,ht,unfolding_pars,...
+    'codim2','zeho','codim1','fold',brpars{1:4},....
+    'step',linspace(-8.0e-03,8.0e-03,10),'plot',0);
+\end{lstlisting}
+
+\subsection{Detect special points on the Hopf branches}
+We continue with detecting bifurcations on the Hopf branches. The Hopf points on the branch \lstinline|hbr_wbifs(i)|$(i=1,2)$ will contain the normal form coefficients \lstinline|L1| and \lstinline|L2|. These will be used to visualize the criticality of the Hopf points (sub or super) in the bifurcation diagram.
+\begin{lstlisting}[style=customMatlab]
+%% Detect special points on the Hopf branches
+for i=2:-1:1
+  [hbr_wbifs(i),hopftests(i),hc2_indices,hc2_types]=...
+  LocateSpecialPoints(funcs,hbr(i));
+  al{i}=arrayfun(@(x)x.parameter(ind.mu1),hbr_wbifs(i).point);
+  figure(i); clf;
+  plot(al{i},hopftests(i).zeho(1,:),'.-',al{i},zeros(size(al{i})));
+  xlabel('$\mu_1$','Interpreter','LaTex');
+  ylabel('First Lyapunov coefficient (L1)')
+  title('Criticality along Hopf bifurcation curve')
+end
+\end{lstlisting}
+
+\subsection{Predictors}
+For comparison in the bifurcation diagram we obtain predictors for the various branches by setting the argument \lstinline|predictor| to 1 and \lstinline|step| to a range of $\varepsilon$-values when calling the function \lstinline|C1branch_from_C2point|.
+\begin{lstlisting}[style=customMatlab]
+%% Predictors for Neimark-Sacker, Hopf and transcritical curves
+[trfuncs,nsbr_pred]=C1branch_from_C2point(funcs,ht,...
+    unfolding_pars,'codim2','zeho','codim1','TorusBifurcation',...
+    'step',linspace(1e-05,4e-02,20),'predictor',true);
+[~,tcbr_pred]=C1branch_from_C2point(funcs,ht,unfolding_pars,...
+    'codim2','zeho','codim1','fold',...
+    'step',linspace(-8.0e-03,8.0e-03,10),'predictor',true);
+[~,hbrsup_pred]=C1branch_from_C2point(funcs,ht,unfolding_pars,...
+    'codim2','zeho','codim1','hopf',brpars{:},...
+    'step',linspace(-1e-01,0,40),'predictor',1);
+[~,hbrsub_pred]=C1branch_from_C2point(funcs,ht,unfolding_pars,...
+    'codim2','zeho','codim1','hopf',brpars{:},...
+    'step',linspace(0,1e-01,40),'predictor',1);
+% Correct super- and subcritical hopf branches for the first curve
+tempbr=hbrsub_pred(1);
+hbrsub_pred(1)=hbrsuper_pred(1);
+hbrsuper_pred(1)=tempbr;
+\end{lstlisting}
+
+\subsection{Bifurcation diagram}
+We plot the obtained curves and the predictors for the Neimark-Sacker, Hopf, and transcritical curves with the following code.
+\begin{lstlisting}[style=customMatlab]
+%% Plot comparing computed and predicted curves
+figure(4); clf; hold on;
+plot(ht.parameter(ind.mu1),ht.parameter(ind.mu2),'k.'...
+    ,'MarkerSize',12)
+tcbr_pm_pred = [getpars(tcbr_pred,ind.mu1); ...
+    getpars(tcbr_pred,ind.mu2)];
+plot(tcbr_pm_pred(1,:),tcbr_pm_pred(2,:),'.','Color',cm(5,:));
+plot(tcbr_pm(1,:),tcbr_pm(2,:),'Color',cm(5,:));
+for i=2:-1:1
+  nsbr_pm_pred{i} = [getpars(nsbr_pred(i),ind.mu1); ...
+    getpars(nsbr_pred(i),ind.mu2)];
+  hbrsub_pm_pred{i}  = [getpars(hbrsub_pred(i),ind.mu1); ...
+    getpars(hbrsub_pred(i),ind.mu2)];
+  hbrsup_pm_pred{i} = [getpars(hbrsup_pred(i),ind.mu1); ...
+   getpars(hbrsup_pred(i),ind.mu2)];
+  plot(nsbr_pm_pred{i}(1,:),nsbr_pm_pred{i}(2,:),...
+    '.','Color',cm(3,:));
+  plot(hbrsub_pm_pred{i}(1,:),hbrsub_pm_pred{i}(2,:),....
+    '.','Color',cm(2,:));
+  plot(hbrsup_pm_pred{i}(1,:),hbrsup_pm_pred{i}(2,:),...
+    '.','Color',cm(1,:));
+  plot(nsbr_pm{i}(1,:),nsbr_pm{i}(2,:),'Color',cm(3,:));
+  plot(hbrsup_pm{i}(1,:),hbrsup_pm{i}(2,:),'Color',cm(2,:));
+  plot(hbrsub_pm{i}(1,:),hbrsub_pm{i}(2,:),'Color',cm(1,:));
+end
+legend({'transcritical Hopf','transcritical predictor',...
+'transcritical curve','Neimark-Sacker predictor',...
+'subcritical Hopf predictor','supercritical Hopf predictor',...
+'Neimark-Sacker branch','subcritical Hopf branch',...
+'superscritical Hopf branch'})
+title('Neimark-Sacker curve emanating from the transcrical-Hopf point')
+axis([-0.0190    0.0139   -0.0069    0.0094])
+xlabel('$\mu_1$','Interpreter','LaTex')
+ylabel('$\mu_2$','Interpreter','LaTex')
+text(-0.0129,0.0038,'I');  text(-0.0093,0.007,'II');
+text(0.008,-0.0052,'III'); text(0.0115,-0.003,'IV');
+legend('Location','NorthWest'); box on
+% Reverse the stacking order of the graphics
+chi=get(gca,'Children'); set(gca,'Children',flipud(chi));
+\end{lstlisting}
+\cref{switch:sm:fig:HT_bifurcation_diagram} shows the resulting bifurcation diagram.
+
+%
+\begin{figure}[ht]
+\centering
+\includetikzscaled{VDPO_bifurcation_diagram}
+\caption{\label{switch:sm:fig:HT_bifurcation_diagram} Bifurcation diagram near the transcritical-Hopf bifurcation in the delayed Van der Pol's oscillator given by \cref{switch:eq:vdp}. There are two supercritical Hopf curves (blue), two subcritical Hopf curves (red), two Neimark-Sacker curves (yellow), and one transcritical curve (green).  We see that the predictors (dotted) give a good approximation for nearby values.}
+\end{figure}
+
+\subsection{Plot comparing computed and predicted periodic orbits} \label{switch:sm:sec:vdpo:comparing_period_orbits}
+Lastly, we create a plot to compare the computed and predicted periodic orbits.
+\begin{lstlisting}[style=customMatlab]
+%% Plot comparing computed and predicted periodic orbits
+figure(5); clf; hold on;
+genpars=@(br,i)ones(2,length(...
+    br.point(1).profile(1,:))).*br.point(i).parameter(ind.mu1);
+for i=1:23
+  plot3(genpars(nsbr(1),i),nsbr(1).point(i).profile(1,:),...
+    nsbr(1).point(i).profile(2,:),'Color',cm(1,:));
+end
+for i=1:12
+  plot3(genpars(nsbr_pred(1),i),...
+    nsbr_pred(1).point(i).profile(1,:),...
+    nsbr_pred(1).point(i).profile(2,:),'Color',cm(2,:));
+end
+for i=1:20
+  plot3(genpars(nsbr(2),i),nsbr(2).point(i).profile(1,:),...
+    nsbr(2).point(i).profile(2,:),'Color',cm(1,:));
+end
+for i=1:12
+  plot3(genpars(nsbr_pred(2),i),...
+    nsbr_pred(2).point(i).profile(1,:),...
+    nsbr_pred(2).point(i).profile(2,:),'Color',cm(2,:));
+end
+title('Comparison between computed and predicted periodic orbits')
+xlabel('\mu_1'); ylabel('x'); zlabel('y');
+view(3)
+\end{lstlisting}
+The resulting plot is show in \cref{switch:sm:VDPO_compare_periodic_orbits}.
+
+\begin{figure}
+    \centering
+    \includetikz{VDPO_compare_periodic_orbits}
+	\caption{Comparison between predicted periodic orbits (red) and computed periodic orbits (blue) emanating from the transcritical-Hopf bifurcation}
+	\label{switch:sm:VDPO_compare_periodic_orbits}
+\end{figure}
+
+\subsection{Simulation near transcritical-Hopf point with \texttt{pydelay}}
+\label{switch:SM:sec:TH:simulation}
+We simulate the dynamics in regions $\text{II}$ and $\text{III}$ of  \cref{switch:sm:fig:HT_bifurcation_diagram}. Since the critical normal form coefficients are such that
+\[
+s=1,\qquad \theta<0, \qquad e<0,
+\]
+a stable cycle and stable torus should be present. %, see \cref{switch:remark:Ht_stab1}.
+%This is also confirmed by calculating the first Lyapunov given by \cref{switch:eq:pred_Ht_l_1}
+%\[
+%l_1=-5.7257 <0,
+%\]
+%indicating a supercritical Hopf bifurcation in the amplitude system \cref{switch:eq:Ht-nf}. 
+The simulation in regions $\text{I}$ and $\text{IV}$ have also been carried out, but have been omitted here. The following code can be found in the file \lstinline|vdpo_simulation.py|.
+\begin{lstlisting}[language=Python,escapechar=!]
+import numpy as np
+import pylab as pl
+from pydelay import dde23
+from matplotlib import colors
+
+# Number of time units
+tfinal = 30000
+
+# Define DDE
+eqns = {
+    'x' : '(tau0+mu2)*y',
+    'y' : '(tau0+mu2)*((1+mu1)*x(t-tau)-0.2*y(t-tau)'
+           '-0.2*pow(x(t-tau),2)'
+           '-0.2*x(t-tau)*y(t-tau)-0.2*pow(y(t-tau),2)'
+           '-epsilon*(pow(x,2)-1)*y-x+0.5*pow(x,3))'
+}
+
+# Set parameters
+# Period cycle
+tau0=1.757290761249588
+params1 = {
+    'mu1':0.0049,
+    'mu2':-0.0031,
+    'tau0':tau0,
+    'epsilon':0.3,
+    'tau':1
+}
+
+# Torus
+params2 = {
+    'mu1':-0.006871405962603,
+    'mu2':0.003871232826592+0.00001,
+    'tau0':1.757290761249588,
+    'epsilon':0.3,
+    'tau':1
+}
+
+# Solve DDE
+dde = dde23(eqns=eqns, params=params1)
+dde.set_sim_params(tfinal=tfinal, dtmax=0.1, AbsTol=1e-8, RelTol=1e-6)
+histfunc = {'x': lambda t: 0, 'y': lambda t: -0.2 }
+dde.hist_from_funcs(histfunc, 51)
+dde.run()
+
+# Subtract solution components
+M=600
+sol1 = dde.sample(tfinal-M, tfinal, 0.1)
+t = sol1['t']
+x = sol1['x']
+y = sol1['y']
+
+# Plot the solution in phase-space
+pl.plot(x, y)
+pl.show()
+
+# Plot the solution in phase-space
+import matplotlib as mpl
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+# Substract delayed solution component
+soltau = dde.sample(tfinal-M-tau0,tfinal-tau0, 0.1)
+xtau = soltau['y']
+
+# Poincar!{\color{comment}\'e}! section
+def poincaresection(x, xtau, y, x_label, y_label, val):
+  zero_cross = np.where(np.diff(np.sign(xtau-val)))
+  plt.figure(1)
+  plt.xlabel(x_label)
+  plt.ylabel(y_label)
+  plt.plot(x[zero_cross], y[zero_cross],'.', c='royalblue')
+  plt.show()
+  return
+
+x_label='$x(t)$'
+y_label='$x(t-\tau)$'
+poincaresection(x,xtau,y,x_label,y_label,-0.009)
+\end{lstlisting}
+
+\begin{figure}[ht!]
+\centering
+\includetikz{vdpo_simulation1} \\
+\includetikz{vdpo_simulation2} \\[0.2cm]
+\includetikz{vdpo_simulation3} \\
+\includetikz{vdpo_simulation4}
+\caption{In \textup{(a)} and \textup{(b)}, the periodic solution is shown to be present for parameter values in region $\text{III}$ of  \cref{switch:sm:fig:HT_bifurcation_diagram}. In \textup{(c)}, the torus present in $\text{II}$ of  \cref{switch:sm:fig:HT_bifurcation_diagram} is shown. In \textup{(d)}, a cross-section of the torus with $y(t)=-0.009$ in the phase-space $(x,x(t-\tau_0),y)$ is taken.}
+\end{figure}

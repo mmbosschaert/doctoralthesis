@@ -1,0 +1,86 @@
+%! TeX program = lualatex
+\nonstopmode
+\ifdefined\issiam
+    \documentclass[class=../siamonline220329]{standalone}
+\fi
+\ifdefined\isarXiv
+    \documentclass[class=../myarticle]{standalone}
+\fi
+\ifdefined\isthesis
+    \documentclass[class=../siamonline220329]{standalone}
+    \usepackage[textwidth=13cm,top=1in]{geometry}
+    \setlength{\oddsidemargin}{0pt}
+\fi
+
+\input{./mycolors.tex}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{groupplots}
+\usepackage{environ}
+
+\NewEnviron{groupwidth}[1]{% #1 = number of groupplots per row
+    \tikzset{/pgfplots/width={\dimexpr \textwidth/#1}}%
+    \sbox0{\BODY}%
+    \tikzset{/pgfplots/width={\dimexpr 2\textwidth/#1 - \wd0/#1}}%
+\BODY}
+
+\newcommand\pathToCSVFiles{../data/doubleAlleeEffect}
+\pgfplotsset{
+    axis on top,
+    xminorticks=true,
+    yminorticks=true,
+    every tick label/.append style={font=\footnotesize},
+    label style = {font = \small},
+    tick label style={font=\footnotesize},
+    legend style={font=\tiny},
+}
+
+\usepackage{xspace}
+\newcommand{\DDEBIFTOOL}{\texttt{DDE-BifTool}\xspace}
+\externaldocument[]{../bt_supplement}
+
+\begin{document}
+
+% \input{../shared.tex}
+% \tikzexternalexportnextfalse % otherwise it is difficult to use the citation
+% \thispagestyle{empty}
+
+\noindent\begin{groupwidth}{1}
+\begin{tikzpicture}
+    \begin{axis}[
+        height=\textwidth*0.5,
+        xlabel={$\vartheta$},
+        ylabel={$\delta$},
+        grid=both,
+        grid style={line width=.1pt, draw=gray!10},
+        legend pos=outer north east,
+        legend style = {font=\tiny},
+        ymin=0.55, ymax=0.61,
+        scaled x ticks = base 10:2
+        ]
+        \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0.100000000124156, 0.598808848241460)};
+        \addlegendentry{Bogdanov--Takens point}
+        \addplot [color=royalyellow] file {\pathToCSVFiles/homoclinicbifurcationcurveJiao2021.csv};
+        \addlegendentry{Homoclinic asymptotics from \cite{Jiao2021}}
+        \addplot [color=purple] file {\pathToCSVFiles/homoclinicbifurcationcurveThirdOrder.csv};
+        \addlegendentry{Third order homoclinic asymptotics}
+        \addplot [color=royalyellow, dashed] file {\pathToCSVFiles/hopfbifurcationcurveJiao2021.csv};
+        \addlegendentry{Hopf asymptotics from \cite{Jiao2021}}
+        \addplot [color=purple, dashed] file {\pathToCSVFiles/hopfbifurcationcurveThirdOrder.csv};
+        \addlegendentry{Third order Hopf asymptotics}
+        \addplot [color=purple, dotted] file {\pathToCSVFiles/foldbifurcationcurveThirdOrder.csv};
+        \addlegendentry{Third order Hopf asymptotics}
+        % computed curves
+        \addplot [color=royalblue, mark=*, only marks, mark size=.8pt] file {\pathToCSVFiles/homoclinicbifurcationcurve.csv};
+        \addlegendentry{Computed homoclinic curve}
+        \addplot [color=royalblue, mark=o, only marks, mark size=.8pt] file {\pathToCSVFiles/hopfbifurcationcurve.csv};
+        \addlegendentry{Computed Hopf curve}
+        \addplot [color=royalblue, mark=diamond, only marks, mark size=.8pt] file {\pathToCSVFiles/foldbifurcationcurve.csv};
+        \addlegendentry{Computed fold curve}
+        % redraw to appear on top
+        \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0.100000000124156, 0.598808848241460)};
+    \end{axis}
+\end{tikzpicture}
+\end{groupwidth}
+\end{document}

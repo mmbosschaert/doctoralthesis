@@ -1,0 +1,99 @@
+%! TeX program = lualatex
+\def\isthesis{1}
+\ifdefined\issiam
+    \documentclass[class=../siamonline220329]{standalone}
+\fi
+\ifdefined\isarXiv
+    \documentclass[class=../myarticle]{standalone}
+\fi
+\ifdefined\isthesis
+    \documentclass[class=../../BTInterplay/siamonline220329]{standalone}
+    \usepackage[textwidth=13cm,top=1in]{geometry}
+    \setlength{\oddsidemargin}{0pt}
+    \usepackage[fontsize=9pt]{scrextend}
+\fi
+
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.18}
+\usepackage{environ}
+\input{../../BTInterplay/mycolors.tex}
+
+\NewEnviron{groupwidth}[1]{% #1 = number of groupplots per row
+    \tikzset{/pgfplots/width={\dimexpr \textwidth/#1}}%
+    \sbox0{\BODY}%
+    \tikzset{/pgfplots/width={\dimexpr 2\textwidth/#1 - \wd0/#1}}%
+\BODY}
+
+ \pgfplotsset{
+        every axis plot/.append style={line width=0.3pt},
+        every tick label/.append style={font=\footnotesize},
+        title style = {font = \small},
+        label style = {font = \small},
+        tick label style={font= \small},
+        legend style={font=\small},
+     }
+
+\begin{document}
+\noindent\begin{groupwidth}{2}
+\newcommand\pathToCSVFiles{../data}
+
+\begin{tikzpicture}[mark size = 1.4]
+\begin{groupplot}[ 
+    group style={
+    group size=2 by 1,
+    horizontal sep=50pt
+    },
+    height = 0.5\textwidth,
+    xlabel = $A_0$,
+    grid=both,
+    grid style={line width=.1pt, draw=gray!10},
+]
+% -------------------------------------------------------------------------------------------------------------------
+%-----------
+% Plot [1, 1]
+%-----------
+\nextgroupplot[
+        xlabel={$N_1 - N_1^*$},
+        ylabel={$N_2 - N_2^*$},
+        xmin=-3E-7,xmax=3E-7,
+]
+% (Relative) Coordinate at top of the first plot
+\coordinate (c1) at (rel axis cs:0,1);
+\addplot [color=royalblue, smooth] file   {\pathToCSVFiles/homoclinicbifurcationcurveI.csv};
+\addplot [color=royalyellow, smooth] file {\pathToCSVFiles/homoclinicbifurcationcurveII.csv};
+\addplot [color=royalorange, smooth] file {\pathToCSVFiles/foldbrFS.csv};
+\addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0, 0)};
+
+%-----------    
+% Plot [1, 2]
+%-----------
+\nextgroupplot[
+    xlabel={$\tilde N_1$},
+    ylabel={$\tilde N_2$},
+    xmin=-5E-8,xmax=3E-9,
+    legend style={at={($(0,0)+(1cm,1cm)$)},legend
+    columns=10,fill=none,draw=black,anchor=center,align=center,
+    font=\tiny,column sep=1ex},
+    legend to name=fred0,
+]
+\addplot [color=royalblue, smooth] file {\pathToCSVFiles/homoclinicbifurcationcurveIRotated.csv};
+\addlegendentry{Hom I}
+\addplot [color=royalyellow, smooth] file {\pathToCSVFiles/homoclinicbifurcationcurveIIRotated.csv};
+\addlegendentry{Hom II}
+\addplot [color=royalorange, smooth] file {\pathToCSVFiles/foldbrFSRotated.csv};
+\addlegendentry{Fold/Hopf branch}
+\addplot [color=purple, thick, smooth] file {\pathToCSVFiles/3pulseFSbifurcationcurve.csv};
+\addlegendentry{Three-pulse}
+\addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0, 0)};
+\addlegendentry{Zero-Hopf point}
+
+% (Relative) Coordinate at top of the second plot
+\coordinate (c2) at (rel axis cs:1,1);% I moved this to the upper right corner
+\end{groupplot}
+\coordinate (c3) at ($(c1)!.5!(c2)$);
+\node[below] at (c3 |- current bounding box.south)
+  {\pgfplotslegendfromname{fred0}};
+\end{tikzpicture}%
+\end{groupwidth}
+\end{document}

@@ -1,0 +1,114 @@
+%! TeX program = lualatex
+\ifdefined\issiam
+    \documentclass[class=../siamonline220329]{standalone}
+\fi
+\ifdefined\isarXiv
+    \documentclass[class=../myarticle]{standalone}
+\fi
+\ifdefined\isthesis
+    \documentclass[class=../siamonline220329]{standalone}
+    \usepackage[textwidth=13cm,top=1in]{geometry}
+    \setlength{\oddsidemargin}{0pt}
+\fi
+\input{./mycolors.tex}
+
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.18}
+\usepackage{environ}
+
+\NewEnviron{groupwidth}[1]{% #1 = number of groupplots per row
+    \tikzset{/pgfplots/width={\dimexpr \textwidth/#1}}%
+    \sbox0{\BODY}%
+    \tikzset{/pgfplots/width={\dimexpr 2\textwidth/#1 - \wd0/#1}}%
+\BODY}
+
+ \pgfplotsset{
+        every axis plot/.append style={line width=0.3pt},
+        every tick label/.append style={font=\footnotesize},
+        title style = {font = \small},
+        label style = {font = \small},
+        tick label style={font= \small},
+        legend style={font=\small},
+     }
+
+\begin{document}
+\noindent\begin{groupwidth}{2}
+\newcommand\pathToCSVFiles{../data/triNeuronBAMNeuralNetworkModel}
+\begin{tikzpicture}
+pgfplotsset{
+    axis on top,
+    xminorticks=true,
+    yminorticks=true,
+    ylabel style={anchor=south},
+    font=\tiny,
+}
+\begin{groupplot}[ 
+    group style={
+        group name=my plots,
+        group size= 2 by 2,
+        horizontal sep=70pt,
+        vertical sep=70pt
+    },
+    ylabel shift=-10pt,
+    xlabel={$u_1$},
+    ylabel={$u_2$},
+    zlabel={$u_3$},
+    grid=both,
+    grid style={line width=.1pt, draw=gray!10},
+    view={-12}{12},
+]
+% -------------------------------------------------------------------------------------------------------------------
+%-----------
+% Plot [1, 1]
+%-----------
+\nextgroupplot[
+    title=Homoclinic orbit I,
+]
+\addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0,0,0)};
+\foreach \myvar in {1,...,45}{
+    \addplot3 [color=royalblue] table {\pathToCSVFiles/homoclinicorbitI_\myvar.csv};
+    };
+
+%-----------    
+% Plot [1, 2]
+%-----------
+\nextgroupplot[ 
+    title=Rotated homoclinic orbit I,
+    xlabel={$\tilde u_1$},
+    ylabel={$\tilde u_2$},
+]
+\foreach \myvar in {1,...,44}{
+    \addplot3 [color=royalblue,smooth] table {\pathToCSVFiles/homoclinicorbitIrotated_\myvar.csv};
+    };
+\addplot3 [color=bittersweet] table {\pathToCSVFiles/homoclinicorbitIrotated_45.csv};
+
+%-----------    
+% Plot [2, 1]
+%-----------
+\nextgroupplot[ 
+    title=Homoclinic orbit II,
+]
+\foreach \myvar in {1,...,57}{
+    \addplot3 [color=royalblue,smooth] table {\pathToCSVFiles/homoclinicorbitII_\myvar.csv};
+    };
+\addplot3 [color=bittersweet] table {\pathToCSVFiles/homoclinicorbitII_58.csv};
+
+%-----------    
+% Plot [2, 1]
+%-----------
+\nextgroupplot[ 
+    title=Rotated homoclinic orbit III,
+    xlabel={$\tilde u_1$},
+    ylabel={$\tilde u_2$},
+    scaled z ticks = base 10:2
+]
+\foreach \myvar in {1,...,182}{
+    \addplot3 [color=royalblue,smooth] table {\pathToCSVFiles/homoclinicorbitIIIrotated_\myvar.csv};
+    };
+\addplot3 [color=bittersweet] table {\pathToCSVFiles/homoclinicorbitIIIrotated_183.csv};
+
+\end{groupplot}
+\end{tikzpicture}
+\end{groupwidth}
+\end{document}

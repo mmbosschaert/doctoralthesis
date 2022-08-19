@@ -1,0 +1,86 @@
+%! TeX program = lualatex
+\ifdefined\issiam
+    \documentclass[class=../siamonline220329]{standalone}
+\fi
+\ifdefined\isarXiv
+    \documentclass[class=../myarticle]{standalone}
+\fi
+\ifdefined\isthesis
+    \documentclass[class=../siamonline220329]{standalone}
+    \usepackage[textwidth=13cm,top=1in]{geometry}
+    \setlength{\oddsidemargin}{0pt}
+\fi
+\input{../mycolors.tex}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{groupplots}
+\usepackage{environ}
+
+\NewEnviron{groupwidth}[1]{% #1 = number of groupplots per row
+    \tikzset{/pgfplots/width={\dimexpr \textwidth/#1}}%
+    \sbox0{\BODY}%
+    \tikzset{/pgfplots/width={\dimexpr 2\textwidth/#1 - \wd0/#1}}%
+\BODY}
+
+\pgfplotsset{
+    axis on top,
+    xminorticks=true,
+    yminorticks=true,
+    every tick label/.append style={font=\footnotesize},
+    label style = {font = \small},
+    tick label style={font=\footnotesize},
+    legend style={font=\small},
+}
+
+\begin{document}
+\noindent\begin{groupwidth}{2}
+\begin{tikzpicture}
+\begin{groupplot}[ 
+    group style={
+    group size=2 by 1,
+    horizontal sep=50pt,
+    },
+    xlabel = $A_0$,
+]
+% -------------------------------------------------------------------------------------------------------------------
+%-------------
+% Plot [1, 1]
+%-------------
+\nextgroupplot[
+    title = {the Van der Pol oscillator},
+    ylabel = {$\delta$},
+    legend style={at={($(0,0)+(1cm,1cm)$)},legend
+    columns=10,fill=none,draw=black,anchor=center,align=center,
+    column sep=1ex},
+    legend to name=fred3,
+    xmode=log,
+    ymode=log
+]
+% (Relative) Coordinate at top of the first plot
+\coordinate (c1) at (rel axis cs:0,1);
+\addplot [color=royalorange, mark=+, only marks] table {../data/vanderPolOscillator/convergence_plot_first_order.csv};
+\addlegendentry{first order};
+\addplot [color=royalblue, mark=x, only marks] table {../data/vanderPolOscillator/convergence_plot_third_order.csv};
+\addlegendentry{third order};
+
+%-------------    
+% Plot [1, 2]
+%-------------
+\nextgroupplot[
+    title = {Tri-neuron BAM model},
+    xmode=log,
+    ymode=log
+]
+\addplot [color=royalorange, mark=+, only marks] table {../data/triNeuronBAMNeuralNetworkModel/convergence_plot_first_order.csv};
+\addplot [color=royalblue, mark=x, only marks] table {../data/triNeuronBAMNeuralNetworkModel/convergence_plot_third_order.csv};
+
+% (Relative) Coordinate at top of the second plot
+\coordinate (c2) at (rel axis cs:1,1);% I moved this to the upper right corner
+\end{groupplot}
+\coordinate (c3) at ($(c1)!.5!(c2)$);
+\node[below] at (c3 |- current bounding box.south)
+  {\pgfplotslegendfromname{fred3}};
+\end{tikzpicture}%
+\end{groupwidth}
+\end{document}

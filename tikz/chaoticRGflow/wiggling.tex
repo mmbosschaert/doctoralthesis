@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+    \begin{axis}[
+        width=\textwidth*0.35,
+        height=\textwidth*0.5,
+        xlabel={$N_1 - N_1^*$},
+        ylabel={$N_2 - N_2^*$},
+        grid=both,
+        grid style={line width=.1pt, draw=gray!10},
+        xmin=-3E-7,xmax=3E-7,
+        ]
+        \addplot [color=royalblue, smooth] file {./data/homoclinicbifurcationcurveI.csv};
+        \addplot [color=royalyellow, smooth] file {./data/homoclinicbifurcationcurveII.csv};
+        \addplot [color=royalorange, smooth] file {./data/foldbrFS.csv};
+        \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0, 0)};
+    \end{axis}
+\end{tikzpicture}

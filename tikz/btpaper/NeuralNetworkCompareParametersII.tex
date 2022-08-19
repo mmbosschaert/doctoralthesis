@@ -1,0 +1,34 @@
+% \tikzexternalexportnextfalse % otherwise it is difficult to use the citation
+\newcommand\pathToCSVFiles{./data/neuralNetworkModel}
+\tikzexternalexportnextfalse % otherwise it is difficult to use the citation
+\begin{tikzpicture}
+    \begin{axis}[
+        width=\textwidth*0.65,
+        height=\textwidth*0.5,
+        xlabel={$Q$},
+        ylabel={$E$},
+        grid=both,
+        grid style={line width=.1pt, draw=gray!10},
+        legend pos=outer north east,
+        legend style = {font=\tiny},
+        xmin=1.25, xmax=1.65, ymin=-0.055, ymax=0.055,
+        %scaled x ticks = base 10:2
+        ]
+        \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(1.3000,0.0505)};
+        \addlegendentry{Bogdanov--Takens point}
+        \addplot [color=black, mark=square, only marks, mark size=.8pt] coordinates {(1.459868437376222,0)};
+        \addlegendentry{double homoclinic solution}
+        % computed curves
+        \addplot [color=royalblue] file {\pathToCSVFiles/homoclinicbifurcationcurve.csv};
+        \addlegendentry{Computed homoclinic curve}
+        \addplot [color=royalblue,forget plot] file {\pathToCSVFiles/homoclinicbifurcationcurve2.csv};
+        \addplot [color=royalorange] file {\pathToCSVFiles/hopfbifurcationcurve.csv};
+        \addlegendentry{Computed Hopf curve}
+        \addplot [color=royalorange,forget plot] file {\pathToCSVFiles/hopfbifurcationcurve2.csv};
+        \addplot [color=royalyellow] file {\pathToCSVFiles/foldbifurcationcurve.csv};
+        \addlegendentry{Computed fold curve}
+        % redraw to appear on top
+        \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(1.3000,0.0505)};
+        \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(1.3000,-0.0505)};
+    \end{axis}
+\end{tikzpicture}

@@ -1,0 +1,25 @@
+\begin{tikzpicture}
+\begin{groupplot}[group style={
+	group name=left plots,
+	group size= 1 by 3, vertical sep=0.0cm},
+    % ylabsh=-4em,
+	height=0.11\textwidth,width=0.33\textwidth,scale only axis,
+	every tick label/.append style={font=\footnotesize},
+	scaled ticks=false, tick label style={/pgf/number format/fixed}]
+\nextgroupplot[ylabel={$x$}, xtick=\empty]
+	\addplot [smooth,tension=1,royalblue,thick] table [x index=0,y index=1] {\datadir/vdpo_cycle1.csv};
+\nextgroupplot[ylabel={$y$}, xtick=\empty, ytick={0.01,0,-0.01}]
+	\addplot [royalblue,thick] table [x index=0,y index=2] {\datadir/vdpo_cycle1.csv};
+\nextgroupplot[xlabel={$t$}, ylabel={$x(t-\tau_0)$},xtick={2990,2995,3000},xmin=2990,xmax=3000]
+	\addplot [royalblue,thick] table [x index=0,y index=1] {\datadir/vdpo_cycle2.csv};
+\end{groupplot}
+%
+\begin{groupplot}[group style={
+	group size= 1 by 1},
+	every tick label/.append style={font=\footnotesize},
+	height=0.33\textwidth,width=0.33\textwidth,scale only axis,ztick pos=right]
+\nextgroupplot[xlabel={$x$}, ylabel={$y$}, zlabel={$x(t-\tau_0)$},view={60}{10},%
+anchor=north west, at={($(left plots c1r1.north east) + (1.6cm,0)$)}]],
+\addplot3 [royalblue,thick] table [x index=0,y index=1,z index=2] {\datadir/vdpo_cycle_3d.csv};
+\end{groupplot}
+\end{tikzpicture}

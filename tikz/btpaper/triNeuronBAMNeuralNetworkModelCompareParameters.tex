@@ -1,0 +1,36 @@
+\newcommand\pathToCSVFiles{./data/triNeuronBAMNeuralNetworkModel}
+\begin{tikzpicture}[pin distance=9.5cm]
+    \begin{axis}[
+        width=\textwidth*0.95,
+        height=\textwidth*0.5,
+        xlabel={$\alpha_1$},
+        ylabel={$\alpha_2$},
+        grid=both,
+        grid style={line width=.1pt, draw=gray!10},
+        legend pos= north east,
+        legend style = {font=\tiny},
+        xmin = -0.0030, xmax = 0.0005, ymin = -0.0010, ymax = 0.0021
+        ]
+        \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0.0, 0.0)};
+        \addlegendentry{Transcritical Bogdanov--Takens point}
+        \addplot [color=black, mark=square*, only marks, mark size=.8pt] coordinates {(-0.002711950897364, 0.002044764337237)};
+        \addlegendentry{Generic Bogdanov--Takens point}
+        \addplot [color=purple, smooth] file {\pathToCSVFiles/homoclinicbifurcationcurveIThirdOrder.csv};
+        \addlegendentry{Third order asymptotics}
+        \addplot [color=purple, smooth, forget plot] file {\pathToCSVFiles/homoclinicbifurcationcurveIIThirdOrder.csv};
+        \addplot [color=purple, smooth, forget plot] file {\pathToCSVFiles/homoclinicbifurcationcurveIIIThirdOrder.csv};
+        % computed curves
+        \addplot [color=royalblue, mark=*, only marks, mark size=.8pt] file {\pathToCSVFiles/homoclinicbifurcationcurveI.csv};
+        \addplot [color=royalblue, mark=*, only marks, mark size=.8pt, forget plot] file {\pathToCSVFiles/homoclinicbifurcationcurveIIsmall.csv};
+        \addplot [color=royalblue, mark=*, only marks, mark size=.8pt, forget plot] file {\pathToCSVFiles/homoclinicbifurcationcurveIII.csv};
+        \addlegendentry{Compuated homoclinic curve}
+        \addplot [color=gray!60, smooth] file {\pathToCSVFiles/HopfBranchIsmall.csv};
+        \addlegendentry{Compuated Hopf Branches}
+        \addplot [color=gray!60, smooth, forget plot] file {\pathToCSVFiles/HopfBranchII.csv};
+        \addplot [color=gray!60, smooth, dashed] file {\pathToCSVFiles/TranscriticalBranchsmall.csv};
+        \addlegendentry{Compuated Transcritical branch}
+        % plot again for appearance
+        \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0.0, 0.0)};
+        \addplot [color=black, mark=square*, only marks, mark size=.8pt] coordinates {(-0.002711950897364, 0.002044764337237)};
+    \end{axis}
+\end{tikzpicture}

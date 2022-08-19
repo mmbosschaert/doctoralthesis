@@ -1,0 +1,67 @@
+\section{Discussion}%
+We have derived third-order predictors for the homoclinic curve emanating from
+the generic codimension two Bogdanov--Takens bifurcation in general
+$n$-dimensional autonomous ODEs. By considering the smooth orbital normal form
+\cref{eq:normal_form_orbital} and incorporating the time-re\-pa\-ram\-e\-triza\-tion in the
+homological equation \cref{eq:homological_equation}, we were able to derive
+the third-order asymptotic of the homoclinic curve independent of any undetermined
+normal form coefficients. However, for this simplification, there is a price to
+pay. Firstly, the systems to be solved to obtain the coefficients for the
+parameter-dependent center manifold become more difficult, see
+\cref{subsec:center_manifold_tranformation_orbital}. Ideally, there should be
+an automatic algorithm in line with~\cite{Murdock@2003}. However, to the best
+of our knowledge, such algorithms do not exist yet.  Secondly, the translation
+of time in the homological equation needs to be inverted numerically. This,
+however, can be done relatively cheap and is very accurate, as shown by the
+examples.
+
+In \cref{thm:coefficients} we have shown how to obtain a correct transformation to the
+parameter-dependent center manifold by inspecting which terms are in, \emph{and
+are not in}, the normal form that alters the homoclinic asymptotic up to
+certain order. The comparison in \cref{sec:comparison_homoclinic_predictors}
+and the examples in \cref{sec:examples} together with the examples in the
+supplementary materials confirm that we indeed have obtained the correct
+transformation.
+
+The additional non-linear transformation
+\cref{eq:second_time_transformation} greatly simplifies the computation
+of the coefficients in the Lindstedt-Poincar\'e method since all calculations
+become essentially polynomial, which is ideal for computers to work with.
+Nonetheless, the algorithmic complexity grows exponentially as the order
+increases linearly. Also, the radius of convergence is clearly finite, as shown
+in \cref{sec:case_study_BT2}. One way to increase the convergence radius is by
+using transformations as in~\cite{Milton@1974}. However, we didn't include any
+results in this direction since it would distract too much from our main
+objectives.
+
+Using different phase conditions can improve the accuracy of the homoclinic
+approximation. However, this only holds true when applied directly to the system
+considered. Indeed, the phase condition isn't invariant under the
+parameter-dependent center manifold transformation. Thus, its applicability is
+very limited. Furthermore, using a different phase condition may, somewhat
+unexpectedly, result in difficult integrals to be solved, see
+\cref{sec:RPM_norm_minimizing_phase condition}.
+
+The higher-order approximation to the non-linear time transformation in the
+Lindstedt-Poincar\'e method turns out to be essential to obtain higher-order
+approximations to the homoclinic solutions. This is clearly seen by inspecting
+the profiles of the homoclinic solution in
+\cref{fig:RP_vs_LP2016_vs_LP_profiles} and in the convergence plot in
+\cref{fig:RP_vs_LP2016_vs_LP}. Without the higher-order approximation the same
+convergence order as the unperturbed Hamiltonian solution, i.e., the
+zeroth-order solution. It should be noted that the higher-order approximation
+of the non-linear time transformation is more difficult to obtain. Therefore,
+we conclude that there seem to be \emph{no benefits} of the
+Lindstedt-Poincar\'e method over the regular perturbation method for starting
+continuation of homoclinic orbits. Indeed, the numerical comparisons in
+\cref{sec:examples} show similar accuracy of convergence at each order.
+
+By comparing the convergence order of Lindstedt-Poincar\'e the with the regular
+perturbation method, we see that contrary to what one might expect, the
+regular perturbation method may result in better accuracy at the same order. A
+possible explanation for this might be that although the Lindstedt-Poincar\'e
+method provides a uniform approximation in time, the numerical solution is
+truncated to a finite interval in which the `parasitic turn' doesn't give a
+significant contribution. After all, it then simply depends on the higher-order
+non-linear terms in the system which favor one method over the other. 
+

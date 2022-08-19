@@ -1,0 +1,24 @@
+\begin{tikzpicture}
+\begin{groupplot}[group style={
+	group name=left plots,
+	group size= 1 by 3, vertical sep=0.0cm}, 
+    % ylabsh=-4em,
+	every tick label/.append style={font=\footnotesize},
+	height=0.11\textwidth,width=0.33\textwidth,scale only axis]
+\nextgroupplot[ylabel={$x$},xtick=\empty]
+	\addplot [royalblue,thick] table [x index=0,y index=1] {\datadir/RH-cycle.csv};
+\nextgroupplot[xlabel=\empty, ylabel={$y$}, xtick=\empty]
+	\addplot [royalblue,thick] table [x index=0,y index=2] {\datadir/RH-cycle.csv};
+\nextgroupplot[xlabel={$t$}, ylabel={$z$},xtick={2990,2995,3000},ytick={-22,-21.8, -21.6}]
+	\addplot [royalblue,thick] table [x index=0,y index=3] {\datadir/RH-cycle.csv};
+\end{groupplot}
+%
+\begin{groupplot}[group style={
+	group size= 1 by 1},
+	every tick label/.append style={font=\footnotesize},
+	height=0.33\textwidth,width=0.33\textwidth,scale only axis,ztick pos=right]
+\nextgroupplot[xlabel={$x$}, ylabel={$y$}, zlabel={$z$},view={60}{10},%
+anchor=north west, at={($(left plots c1r1.north east) + (1.6cm,0)$)}]],
+\addplot3 [royalblue,thick] table [x index=1,y index=2,z index=3] {\datadir/RH-cycle.csv};
+\end{groupplot}
+\end{tikzpicture}

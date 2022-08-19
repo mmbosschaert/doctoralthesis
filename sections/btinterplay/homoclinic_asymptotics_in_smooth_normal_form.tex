@@ -1,0 +1,142 @@
+\section{Asymptotics for homoclinic solution in the smooth normal form}
+\label{sec:asymptotics-for-homoclinic-solution-for-the-smooth-normal-form}
+
+Following the procedure outlined in \cref{sec:PolynomailLindstedtPoincare} to
+the second-order nonlinear differential equation
+\cref{eq:second_order_nonlinear_oscillator_smooth_normalform} obtained from the
+smooth normal form \cref{eq:BT_smooth_nf}. For the third-order homoclinic
+predictor we obtain
+\begin{align}
+				\sigma ={}& 6 + \frac{3 \left(-70 a_1 b+6 b^2+49 d\right)}{49 a^2} \epsilon^2
+                    + \mathcal{O}(\epsilon^4),
+				\nonumber \\
+				\delta ={}& -4 + \frac{140 a_1 b-18 b^2-245 d}{49 a^2} \epsilon^2
+                    + \mathcal{O}(\epsilon^4),
+				\nonumber \\
+				\label{eq:tau_smooth}
+				\tau   ={}& \frac{10}{7} + \frac{98 b (50 a b_1+73 d)-9604 a e-2450 a_1 b^2+288 b^3}{2401 a^2 b} \epsilon^2
+								+ \mathcal{O}(\epsilon^4), \\
+				\tilde \omega(\zeta) ={}& 1 - \frac{6b}{7a}\zeta  \epsilon	+ 
+				\frac{70 a_1 b+18 b^2 \left(3 \zeta ^2+1\right)+49 d \left(9 \zeta ^2-5\right)}{196 a^2} \epsilon^2 +
+				\nonumber \\
+        & \frac{\zeta}{2401 a^3} \left( \left(-147 b \left(20 a b_1-7 d
+        \zeta ^2+11 d\right)-9604 a e \left(\zeta ^2-1\right) \right. \right. \nonumber \\
+        & \left. \left. +1470 a_1 b^2+18 b^3 \left(7 \zeta ^2-11\right)\right) \right)\epsilon^3 + \mathcal{O}(\epsilon^4)
+        \nonumber.
+\end{align}
+It follows that
+\begin{align}
+    \label{eq:third_order_uhat_smooth}
+    \tilde {u}(\zeta) 
+    ={}& 6 \zeta ^2-4 + \frac{-70 a_1 b \left(3 \zeta ^2-2\right)+18 b^2 \left(\zeta
+    ^2-1\right)+49 d \left(3 \zeta ^2-5\right)}{49 a^2} \epsilon^2 
+        + \mathcal{O}(\epsilon^4), \\
+    \label{eq:third_order_vhat_smooth}
+	\tilde  v(\zeta) 
+  ={}& -2 \tilde\omega(\zeta) \sigma (1-\zeta^2)\zeta
+	= -\left[ -12 + \frac{72b}{7a} \zeta \epsilon
+			 - \frac{3}{49 a^2} \left(70 a_1 b-6 b^2 \left(9 \zeta ^2+5\right)
+       \right. \right. \\
+     & \left. -147 d \left(3 \zeta ^2-1\right)\right)\epsilon^2 + \frac{12
+         \zeta}{2401 a^3}  \left(147 b \left(20 a b_1-7 d \zeta ^2+18
+         d\right) \right. \nonumber \\
+    & \left. \left. + 9604 a e \left(\zeta ^2-1\right)-2940 a_1 b^2-18 b^3 \
+\left(7 \zeta ^2-18\right)\right) \epsilon^3 \right]
+     (1-\zeta^2) \zeta + \mathcal{O}(\epsilon^4) \nonumber.
+\end{align}
+
+The relation $\xi(s)$ can be obtained by solving the ODE
+\begin{equation}
+				\label{eq:third_order_dxi_ds_smooth}
+				\frac{d\xi}{ds}(s) = \tilde \omega(\tanh(\xi(s))).
+\end{equation}
+Thus, we substitute 
+\begin{equation*}
+				\xi(s) = s + \xi_1(s)\epsilon + \xi_2(s)\epsilon^2
+				+ \xi_3(s)\epsilon^3 + \mathcal{O}(\epsilon^4),
+\end{equation*}
+into \cref{eq:third_order_dxi_ds_smooth} and expand the resulting equation in
+$\epsilon$ to obtain
+\begin{align*}
+\frac{d\xi_1}{ds}(s) ={}& -\frac{6b\tanh(s)}{7a}, \\
+\frac{d\xi_2}{ds}(s) ={}& \frac{-168 a b \sech^2(s) \xi_1(s)+70 a_1 b+9 \left(6 b^2+49 d\right) \tanh ^2(s)+18 b^2-245 d}{196 a^2} , \\
+\frac{d\xi_3}{ds}(s) ={}& \frac{\sech^3(s)}{4802 a^3} \left(4116 a^2 b \sinh (s) (\xi_1(s))^2-4116 a^2 b \cosh (s) \xi_2(s) \right. \\
+                        & +441 a \left(6 b^2+49 d\right) \sinh (s)\xi_1(s)+2 \sinh (s) \left(-3 b \cosh (2 s) \right. \\
+                        & \left(98 (5 a b_1+d)-245 a_1 b+12 b^2\right)-1470 a b b_1+9604 a e+735 a_1 b^2 \\
+                        & \left. \left. -162 b^3-1323 b d\right)\right).
+\end{align*}
+Here we directly used that $\xi_0(s)=s$. By solving these equations recursively,
+we obtain
+\begin{equation*}
+\begin{aligned}
+\xi_1(s) ={}& - \frac{6b}{7a}\log(\cosh(s)), \\
+\xi_2(s) ={}& \frac{2 s \left(35 a_1 b-36 b^2+98 d\right)+9 \tanh (s) \left(16 b^2 \log (\cosh (s))+10 b^2-49 d\right)}{196 a^2}, \\
+\xi_3(s) ={}& \frac{1}{4802 a^3}\left(-7 \sech^2(s) \left(1372 a e-27 b \left(6 b^2+49 d\right) \log (\cosh (s)) \right. \right. \\
+            & \left. +216 b^3 \log ^2(\cosh(s))-234 b^3-147 b d\right)-5880 a b b_1 \log (\cosh (s)) \\
+            & + 9604 a e+42 b s \tanh (s) \left(-35 a_1 b+36 b^2-98 d\right)+4410 a_1 b^2 \log (\cosh (s)) \\
+            & \left. -1656 b^3 \log (\cosh (s))-1638 b^3+2940 b d \log (\cosh (s))-1029 b d\right).
+\end{aligned}
+\end{equation*}
+Here we used the phase condition that $\xi_i(0)=0,i=1,2,3$. This results in the
+constraint $v(0)=0$. Substituting the above expression for $\xi$ into
+\cref{eq:blowup_smooth} we obtain the third-order predictor
+\begin{equation}
+\label{eq:third_order_predictor_LP_tau_smooth}
+\begin{cases}
+\begin{aligned}
+w_0(t)  &= \frac{1}{a} \tilde{u}\left(\tanh\left(\xi(\epsilon t)\right)\right) \epsilon^2, \\
+w_1(t)  &= \frac{1}{a} \tilde{v}\left(\tanh\left(\xi(\epsilon t)\right)\right) \epsilon^3, \\
+\beta_1    &= -\frac{4}{a}\epsilon^4, \\
+\beta_2    &= \frac{b}{a}\tau\epsilon^2,
+\end{aligned}
+\end{cases}
+\end{equation}
+where $\tau,\tilde{u}$ and $\tilde{v}$ are given by
+\cref{eq:tau_smooth,eq:third_order_uhat_smooth,eq:third_order_vhat_smooth},
+respectively.
+
+Note that by expanding $\tilde{u}\left(\tanh\left(\xi(s)\right)\right)$ in
+\cref{eq:third_order_predictor_LP_tau_smooth} up to order three in $\epsilon$ 
+we obtain
+\begin{equation}
+\label{eq:u_i_RP_smooth}
+\begin{aligned}
+    u_0(s) &= 6 \tanh ^2(s)-4, \\
+    u_1(s) &= -\frac{72 b \tanh (s) \sech^2(s) \log (\cosh (s))}{7 a}, \\
+    u_2(s) &= \left(12 s \sinh (2 s) \left(35 a_1 b-36 b^2+98 d\right)+8
+        \cosh (2 s) \left(7 \left(5 a_1 b+9 b^2-56 d\right) \right. \right. \\
+              & \; \left. -108 b^2 \log ^2(\cosh (s))+108 b^2 \log (\cosh (s))\right)
+              +9 \left(35 a_1 b+192 b^2 \log^2(\cosh (s)) \right. \\
+              & \; \left.\left. -96 b^2 \log (\cosh(s))-64 b^2+245 d\right)-7
+              \cosh (4 s) (5 a_1 b+7 d)\right)\frac{\sech^4(s)}{196 a^2}, \\
+        u_3(s) &=  \left(-2 \sinh (s) \left(\cosh (2 s) \left(-6 b \log (\cosh (s))
+                        \left(-980 (a b_1+3 d)+1225 a_1 b+312 b^2\right)
+                        \right.\right.\right. \\ 
+                  & \; \left. +7 \left(-1372 a e+234 b^3+147 b d\right)+2016 b^3 \log^3(\cosh (s)) -6048 b^3 \log ^2(\cosh (s))\right)\\
+                  & \; +6 b \log(\cosh(s)) \left(980 a b_1-1225 a_1 b+1200 b^2 -9408 d\right)+7 \left(1372 a e-234 b^3 \right. \\
+                  & \; \left. \left. - 147 b d\right)-10080 b^3 \log ^3(\cosh (s)) +15120
+                  b^3 \log ^2(\cosh (s))\right)  \\
+                  & \; +42 b s \cosh ( 3 s)\left(35 a_1 b -36 b^2+98 d\right) (2 \log (\cosh (s)) -1) \\
+                  & \; \left. +42 b s \cosh (s) \left(-35 a_1 b+36 b^2-98 d\right) (6 \log (\cosh (s))-1)\right)\frac{3 \sech^5(s)}{4802 a^3}.
+\end{aligned}
+\end{equation}
+Together with \cref{eq:tau_smooth}, this is the solution obtained by using the
+regular perturbation method to the second-order nonlinear oscillator
+\cref{eq:second_order_nonlinear_oscillator_smooth_normalform} obtained from the
+smooth normal form with phase condition $\dot u(0)=0$. This gives us the third-order
+homoclinic predictor
+\begin{equation}
+\label{eq:third_order_predictor_smooth_RPM_tau}
+\begin{cases}
+\begin{aligned}
+w_0(t)  &= \frac1{a} \left( \sum_{i=0}^3 u_i(\epsilon t) \epsilon^i +
+\mathcal{O}(\epsilon^4) \right)   \epsilon^2, \\
+w_1(t)  &= \frac1{a} \left( \sum_{i=0}^3 \dot u_i(\epsilon t) \epsilon^i +
+\mathcal{O}(\epsilon^4) \right)   \epsilon^3, \\
+\beta_1    &= - \frac{4}{a} \epsilon^4, \\
+\beta_2    &= \frac{b}{a}\epsilon^2 \tau,
+\end{aligned}
+\end{cases}
+\end{equation}
+where $\tau$ is given by \cref{eq:tau_smooth} and $u_i(i=0,\dots,3)$ are given
+by \cref{eq:u_i_RP_smooth}.

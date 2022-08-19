@@ -1,0 +1,33 @@
+\newcommand\pathToCSVFiles{\datadir/neuralNetworkModel}
+\begin{tikzpicture}
+    \begin{axis}[
+        width=0.65*\textwidth,
+        height=0.5*\textwidth,
+        xlabel={$Q$},
+        ylabel={$E$},
+        grid=both,
+        grid style={line width=.1pt, draw=gray!10},
+        legend pos=outer north east,
+        legend style = {font=\tiny},
+        xmin=1.2928, xmax=1.4323, ymin=0.0209, ymax=0.0522,
+        %scaled x ticks = base 10:2
+        ]
+        \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(1.3000,0.0505)};
+        \addlegendentry{Bogdanov--Takens point}
+        \addplot [color=purple] file {\pathToCSVFiles/homoclinicbifurcationcurveThirdOrder.csv};
+        \addlegendentry{Third order homoclinic asymptotics}
+        \addplot [color=purple, dashed] file {\pathToCSVFiles/hopfbifurcationcurveThirdOrder.csv};
+        \addlegendentry{Third order Hopf asymptotics}
+        \addplot [color=purple, dotted] file {\pathToCSVFiles/foldbifurcationcurveThirdOrder.csv};
+        \addlegendentry{Third order Hopf asymptotics}
+        % computed curves
+        \addplot [color=royalblue, mark=*, only marks, mark size=.8pt] file {\pathToCSVFiles/homoclinicbifurcationcurve.csv};
+        \addlegendentry{Computed homoclinic curve}
+        \addplot [color=royalblue, mark=o, only marks, mark size=.8pt] file {\pathToCSVFiles/hopfbifurcationcurve.csv};
+        \addlegendentry{Computed Hopf curve}
+        \addplot [color=royalblue, mark=diamond, only marks, mark size=.8pt] file {\pathToCSVFiles/foldbifurcationcurve.csv};
+        \addlegendentry{Computed fold curve}
+        % redraw to appear on top
+        \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(1.3000,0.0505)};
+    \end{axis}
+\end{tikzpicture}

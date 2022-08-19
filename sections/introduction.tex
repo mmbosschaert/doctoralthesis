@@ -1,0 +1,398 @@
+% \makeatletter
+% \def\convertto#1#2{\strip@pt\dimexpr #2*65536/\number\dimexpr 1#1}
+% \makeatother
+% \convertto{cm}{\the\textwidth} \\
+% \convertto{cm}{\the\textheight} \\
+% \convertto{cm}{\the\topmargin} \\
+% \the\textwidth \\
+A dynamical system is a system whose state evolves with time over a state space
+$X$ according to an evolution operator $\phi$. The state space $X$ may be finite,
+for example the Euclidian space $\mathbb R^n$, or infinite, such as the space of
+continuous functions on a finite interval. The time can be either discrete, whose
+set of values is the set of integer numbers $\mathbb Z$, or continuous, whose set
+of values is the set of real numbers $\mathbb R$. Although, any set $T$ with the
+algebraic structure is possible in general. The evolution operator $\varphi$
+allows us to determine all future states given an initial state from the state
+space.
+
+It is assumed that the evolution operator itself does not change with time.
+That is, the result of time evolution will depend only on the initial position
+of the system and on the length of the evolution, but not on the moment when
+the state of the system was initially registered. Thus, if our system was
+initially at a state $x \in X$, it will find itself after time $t$ at a new
+state, which is uniquely determined by $x$ and $t$, and thus can be denoted by
+$\phi^t x$. By fixing $t\in T$, we obtain a transformation 
+\[
+    \phi^t \colon X \rightarrow X \colon x \mapsto \phi^t x.
+\]
+There are two natural properties associated with the evolution operator
+\begin{itemize}
+    \item $\phi^0 = \id$,
+    \item $\phi^{s+t} = \phi^s \circ \phi^t$.
+\end{itemize}
+The first property implies that the system does not change its state
+``spontaneously''. The second property describes how the transformations for
+different times are related to each other. Namely, the evolution of the state
+$x$ for time $s + t$ can be obtained by first applying the transformation
+$\phi^t$  to $x$ and then by applying $\phi^s$ to the new state $\phi^t(x)$.
+In other words, the evolution operators $\phi^t$ form a semigroup. 
+
+The evaluation operator, which may be implicitly defined, can be rather simple.
+However, the long term behavior as time goes to infinity may be very difficult to
+predict by just letting the system evolve. The main objective in the study of
+dynamical systems is to understand the asymptotic behavior of the states. For a
+more in depth review on dynamical systems we refer to \cite{Kuznetsov2004}, and
+the references therein.
+
+Generally, the evaluation operator doesn't only depend on the states in the
+state space, but also on parameters. The latter are quantities that do not
+change with time, but assume different values depending on the specifies of the
+application at hand. Then the behavior of the system may change depending on
+different values of these parameters. What we therefore like to know is where
+do those changes happen and what happens in these transitions. The most amazing
+and remarkable aspect of studying these transitions is that you begin to notice
+that there are universal types of transitions that occur.
+
+Consider for example the following ordinary differential equation
+\[
+    \begin{cases}
+    \begin{aligned}
+        \frac{d}{dt} x_1 &= \alpha x_1  - x_2 + \sigma x_1(x_1^2 + x_2^2), \\
+        \frac{d}{dt} x_2 &= x_1 + \alpha  x_2 + \sigma x_2(x_1^2 + x_2^2).
+    \end{aligned}
+    \end{cases}
+\]
+Here the dependence of the variables $x_{1,2}$ on the time $t\in \mathbb R$ has
+been suppressed for readability. The state space is $X$ is the Euclidian space
+$\mathbb R^2$, $\sigma$ is a constant with value $\pm 1$, and $\alpha$ is a
+parameter in the parameter space $\mathbb R$. The evaluation operator is defined
+implicitly through the differential equation, although in this specific situation
+the operator can be obtained explicitly. Transforming the system in polar
+coordinates $(\rho, \theta)$ yields
+\[
+    \begin{cases}
+    \begin{aligned}
+        \frac{d}{dt} \rho &= \rho(\alpha + \sigma \rho^2), \\
+        \frac{d}{dt} \theta &= 1.
+    \end{aligned}
+    \end{cases}
+\]
+It is easily seen that for $\sigma=-1$
+\begin{itemize}
+    \item $\alpha \leq 0$ the systems has a stable focus, and for 
+    \item $\alpha > 0$ the systems has a unique stable periodic orbit,
+        while the focus has become unstable.
+\end{itemize}
+In the case that $\sigma=1$ we have that for
+\begin{itemize}
+    \item $\alpha < 0$ the system has a stable focus and a unique unstable
+        periodic orbit, while for
+    \item $\alpha \geq 0$ the focus has become
+        unstable and the periodic orbit no longer exists.
+\end{itemize}
+In other words, there is a discrete structural change in the state space when
+continuously changing the parameter $\alpha$ through $0$. We say that
+$\alpha=0$ is a bifurcation point. The above system is the (truncated)
+canonical form, or normal form, for this type of bifurcation to occur. It is
+known as the Poincar\'e–Andronov–Hopf bifurcation named after Henri Poincar\'e,
+Aleksandr Andronov, and Eberhard Hopf and is usually abbreviated to the Hopf
+bifurcation. One can show that adding higher order terms to the system does
+not change the local behavior near the bifurcation point. Furthermore, this
+bifurcation may take place in a higher dimensional system on a two-dimensional
+invariant manifold (the center manifold) and is characterized by the single
+condition that the linearization at the critical parameter value has one pair
+of complex eigenvalues while there are no other eigenvalues present on the
+imaginary axis. 
+
+The case in which $\sigma=-1$ is called supercritical, while the case in which
+$\sigma=1$ is called subcritical. Thus, in order to know which type of Hopf
+bifurcation occurs in a particular system, it is necessary to calculate the
+sign of $\sigma$, also known as the first Lyapunov coefficient. One way to
+obtain this coefficient is by first calculating the reduced system on the
+center manifold and then preforming a normal form procedure. However, in
+\cite{Coullet1983competinginstabilities} a \emph{normalization technique} is
+described in which these two steps are combined into one single procedure. These
+expressions are independent of the (finite) dimension of the phase space and
+they involve only critical eigenvectors of the Jacobian matrix and its
+transpose as well as higher order derivatives of the right-hand side at the
+critical equilibrium. These properties make them suitable for both symbolic and
+numerical evaluation.
+
+Since, for the Hopf bifurcation, there is only one (genericity) condition to be
+satisfied, this bifurcation belongs to the class of codimension one equilibria
+bifurcations. If there is an additional parameter to be tweaked, an extra
+condition can be met, leading to codimension two bifurcations. There are in
+total five generic codimension two bifurcations
+\begin{itemize}
+    \item cusp,
+    \item generalized Hopf (Bautin),
+    \item fold-Hopf (zero-Hopf),
+    \item Hopf-Hopf (double-Hopf),
+    \item Bogdanov--Takens.
+\end{itemize} 
+As with the codimension one Hopf bifurcation, different kinds of dynamics is
+present near these codimension two bifurcation points depending on certain
+normal form coefficients of the corresponding normal forms. In
+\cite{Kuznetsov1999} the normalization technique was applied to obtain
+expressions for the critical normal form coefficients of all generic
+codimension one and two bifurcations of equilibria in ODEs, also see \cite[\S
+8.7]{Kuznetsov2004}. 
+
+From these codimension two bifurcation points emanate codimension one curves.
+Given a general system in which a codimension two bifurcation occurs, no exact
+solutions can, generally, be obtained for these codimension one curves.
+However, approximations to the codimension one curves in the
+(parameter-dependent) normal forms may be available. Then, if there is a
+transformation to the parameter-dependent center manifold near the
+codimension two bifurcation point, one can use these asymptotics to start
+the continuation of the codimension one curves with numerical software.
+the 
+Indeed, in \cite{Kuznetsov2008} the normalization technique was applied to
+parameter-dependent normal forms to start the continuation of non-hyperbolic
+cycles emanating from generalized Hopf, fold-Hopf, and Hopf-Hopf bifurcation
+points of ODEs. The resulting predictors were implemented in the freely
+available software package \MATCONT \cite{matcont1}, a \MATLAB toolbox for
+continuation and bifurcation analysis of finite dimensional dynamical systems.
+This makes it possible to verify transversality conditions and to initialize
+the continuation of the nonhyperbolic cycles mentioned above. A similar
+switching problem for iterated maps, i.e., where the time $T$ is discrete in
+the dynamical system, was solved earlier in \cite{Govaerts2007maps}.
+
+Similarly, in \cite{Kuznetsov2014improved} the normalization technique was used
+to the smooth parameter-dependent normal form of the codimension two
+Bogdanov--Takens bifurcation in order to start the continuation of the
+codimsion-one homoclinic bifurcation curve emanating from the singularity.
+However, in \cite{Kuznetsov2014improved} the objective wasn't merely to obtain
+a homoclinic predictor, but a higher-order homoclinic predictor, specifically,
+of order two. 
+
+We now turn our attention to infinite dimensional systems generated by delay
+differential equations (DDEs). In these systems the assumption that all
+occurrences of time occurs simultaneously is lifted. The type of delay equations
+we will be considering in this thesis are called classical DDEs. They are of the
+following form
+\begin{equation}
+    \dot{x}(t)= F(x_t, \alpha), \qquad t \ge 0,
+\end{equation}
+where $F: X \times \RR^p \to \RR^n$ is $C^k$-smooth for some $k \ge 1$ with
+$F(0,0) = 0$ and the state space is given by $X \DEF C([-h,0],\RR^n)$. Here for
+each $t \ge 0$, the \emph{history function} $x_t : [-h,0] \to \RR^n$ defined by
+\[
+  x_t(\theta) \DEF x(t + \theta), \qquad \forall\,\theta \in [-h,0].
+\]
+
+The main achievements of this thesis can be split into two parts:
+\begin{enumerate}[label=\Roman*.]
+    \item Initialization of non-hyperbolic cycles emanating from generalized
+        Hopf, fold-Hopf, transcrical-Hopf, and Hopf-Hopf bifurcation points in DDEs.
+    \item Initialization of homoclinic orbits emanating from generic and transcritical
+        codimension two Bogdanov--Takens bifurcation points in DDEs using higher order
+        asymptotics.
+\end{enumerate}
+
+For the first part we will generalize the parameter-dependent center manifold
+theorem provided in \cite{diekmann1995delay}. The second part turns out to be
+much more difficult. A first attempt to provide asymptotic approximations to the
+homoclinic bifurcation curve near a generic codimension two Bogdanov--Takens
+bifurcation point in general $n$-dimensional systems was made
+in~\cite{Beyn_1994}. By applying a singular rescaling to the (one of the
+equivalent) parameter-dependent normal form on the center manifold, a perturbed
+planar Hamiltonian system is obtained. The unperturbed Hamiltonian system
+contains an explicit homoclinic solution. A first-order correction in
+parameter-space can subsequently be obtained by reformulating the problem as a
+branching problem in a suitable Banach space, see~\cite{Beyn_1994}.  Then, by
+using the regular perturbation method, higher-order approximations to the
+homoclinic bifurcation curve can be obtained. Unfortunately, in~\cite{Beyn_1994},
+even the first-order correction in the phase-space was not derived.  Nonetheless,
+it was proven that the obtained homoclinic predictor converges to the true
+solution under the Newton iterations in the perturbed Hamiltonian systems.
+
+In~\cite{Kuznetsov2014improved} the work continued by obtaining a second-order
+correction in parameter \emph{and} phase-space to the homoclinic bifurcation
+curve for the perturbed Hamiltonian system. However, a new problem was
+overlooked.  The normal form used in~\cite{Kuznetsov2014improved} is a normal
+form for $C^\infty$-equivalence (also called \emph{smooth orbital equivalence}),
+i.e., besides a $C^\infty$-coordinate change, also a time-reparametrization must
+be taken into account, which was not the case in~\cite{Kuznetsov2014improved}. In
+the subsequent paper~\cite{Gray-Scott2015}, this problem was resolved by
+considering a smooth normal form for the Bogdanov--Takens bifurcation point,
+which is a normal form for $C^\infty$-conjugacy (\emph{smooth equivalence}). 
+
+In the follow-up paper~\cite{Al-Hdaibat2016}, progress was made in obtaining a
+uniform approximation in time of the homoclinic solution, using a generalization
+of the Lindstedt-Poincar\'e method. This removes the so-called parasitic turns
+near the saddle point, as observed in~\cite{Kuznetsov2014improved}. Although, as
+pointed out by~\cite{Algaba_2019}, there were mistakes in the third-order
+approximation with the Lindstedt-Poincar\'e method, the asymptotics for the
+homoclinic predictor from \cite{Kuznetsov2014improved} for the smooth normal form
+improved significantly in the phase space.
+
+Nonetheless, the task of correctly lifting the asymptotics in the normal form to
+the parameter-dependent center manifold was not accomplished. Effectively, only
+the zeroth-order approximation to the homoclinic solutions in the phase space,
+i.e., a transformed homoclinic solution of the \emph{un}perturbed Hamiltonian
+system, was available for a general $n$-dimensional system.
+
+We will thus first revisit the second problem in the finite dimensional setting
+of ODEs. After we solved the problem of correctly lifting the higher-order
+homoclinic asymptotics obtained in the normal form to the parameter-dependent
+center manifold, while preserving the approximation order, we turn our attention
+to the infinite dimensional setting. 
+
+We should remark here that while deriving the coefficients of the
+parameter-dependent normal form and parameter-dependent center manifold
+transformation of the codimension two bifurcation points, we also obtain the
+critical normal form coefficients, which were first derived in
+\cite{Janssens:Thesis}.
+
+Another codimension two bifurcation where a branch of homoclinic orbits may
+emerge from, is the fold-Hopf bifurcation. However, the existence or non-existence
+of the homoclinic branch cannot be fully determined by inspecting a finte number
+of normal form coefficients. It is, therefore, also not surprising that no reliable
+homoclinic predictors exist to start the continuation of the branch of homoclinic
+orbits, although attempts have been made \cite{Budac:Thesis}. Provided that
+homoclinic branches do emerge from the fold-Hopf bifurcation point, then there
+are automatically two homoclinic branches. Furthermore, again under the
+assumption the homoclinic branches exist, there are simple conditions, depending
+on the normal form coefficients, to determine if the orbits are in fact Shilnikov
+homoclinic solutions \cite{baldoma2020hopf} and imply the existence of chaos. We
+will finish this thesis by showing how to obtain these homoclinic curves near a
+fold-Hopf bifurcation point in a bi-antisymmetric tensor quantum field theories
+with $O(N_1)\times O(N_2)$ symmetry.
+
+\section{Structure of this thesis}
+We start this thesis in the finite dimensional settings of ODEs. In
+\cref{chapter:interplay} we rigorously derive correct third-order homoclinic
+predictors for $n$-dimensional ODEs near generic codimension two Bogdanov--Takens
+bifurcation points. We extend the normalization method to allow the inclusion of
+a time-reparametrization. This allows us to use the orbital normal form for the
+Bogdanov--Takens bifurcation. As a result the homoclinic asymptotic up to order
+three is independent of any normal form coefficients. Additionally, a detailed
+comparison is made between applying different normal forms (smooth and orbital),
+different phase conditions, and different perturbation methods (regular and
+Lindstedt-Poincar\'e) to approximate the homoclinic solution near
+Bogdanov--Takens points.  Examples demonstrating the correctness of the
+predictors are given. The new homoclinic predictors are implemented in the
+open-source \MATLAB/\OCTAVE continuation package \MATCONT. Complementary to
+\cref{chapter:interplay} an
+\href{https://mmbosschaert.github.io/MatCont7p2NewInitBTHom-/}{online Jupyter
+Notebook} is provided in which 10 different models are considered using the new
+homoclinic predictor and comparing different approximation methods in detail.
+
+Then, shifting our attention to infinity dimensional systems,  we proof in
+\cref{chapter:switching} the existence of a local parameter-dependent center
+manifold in the abstract setting of dual perturbation theory. The proof
+presented here lifts the restriction for the equilibrium to exists for all
+nearby parameter values as is done in \cite{diekmann1995delay}. Subsequently,
+we show how the general results apply in the special case of DDEs. This allows
+us to lift the normalization technique used in \cite{Kuznetsov2008} applied to
+parameter-dependent normal forms to start the continuation of nonhyperbolic
+cycles emanating from generalized Hopf, fold-Hopf, and Hopf-Hopf bifurcation
+points of ODEs to the infinite dimensional setting of DDEs. The obtained
+expressions give explicit formulas which have been implemented in the freely
+available numerical software package \DDEBIFTOOL. While our theoretical results
+are proven to apply more generally, the software implementation and examples
+focus on DDEs with finitely many discrete delays.
+
+Accompanying \cref{chapter:switching} is the supplement in
+\cref{chapter:switching_supplement}. In this chapter we provide a complete
+step-by-step walk-through of the examples in \cref{chapter:switching} using our
+implementation in \DDEBIFTOOL. Additionally, we provide the code for simulation
+near the bifurcation points, confirming our obtained results. The simulation is
+either done with the built-in routine \lstinline|dde23| from \MATLAB
+\cite{Shampine01solvingdelay} or the Python package \PYDELAY
+\cite{Flunkert2009Flunkert}.
+
+In \cref{chapter:BT_DDE} we combine the results from \cref{chapter:interplay} and
+\cref{chapter:switching} to obtain homoclinic asymptotics near the generic
+codimension two Bogdanov--Takens bifurcation in classical DDEs. Whereas the use
+of the orbital normal form for the generic Bogdanov--Takens bifurcation was more
+of a theoretical exercise in \cref{chapter:interplay}, it turns out to be rather
+usefull while treading the transcritical Bogdanov--Takens bifurcations. Indeed, by
+a simple transformation \cref{eq:blowup} we directly obtain the third order
+homoclinic asymptotics for the transcritical codimsion two Bogdanov--Takens
+bifurcation.
+
+In the same style of \cref{chapter:switching,chapter:switching_supplement} there
+is an accompanying supplement in \cref{chapter:BT_DDE_supplement} to
+\cref{chapter:BT_DDE}. Thus, in this chapter we provide a complete step-by-step
+walk-through of the examples in \cref{chapter:BT_DDE} using our implementation in
+\DDEBIFTOOL. While doing so, we correct some mistakes made in the literature and
+at the same time obtain some new results. Contrary to the supplement in
+\cref{chapter:switching_supplement}, we will preform the simulations fully in the
+programming language Julia.
+
+Lastly, in \cref{chapter:chaoticRGFlow} we study a bi-antisymmetric tensor
+quantum field theories with $O(N_1)\times O(N_2)$ symmetry. In particular, we
+show that for special non-interger values of $N_1$ and $N_2$, the
+Renormalization Group flow becomes chaotic. Thus, we allow $N_1$ and $N_2$ to
+assume real values and treat them as bifurcation parameters. Using
+analytical and numerical techniques we proof the existence of
+Shilnikov homoclinic orbits near a zero-Hopf bifurcation point. As mentioned
+above, no general predictors for the codimension one homoclinic bifurcation
+curve is known to exists. Given the high dimensionality of the system, we
+used Julia as our programming environment, providing us with great speed
+and flexibility.
+
+
+\section{Acknowledgments}
+The work presented here would not have been possible without the help and
+participation of many others, to whom I am grateful. First of all, I am grateful
+to my supervisor Prof. dr. Peter de Maesschalck and co-supervisors Prof. dr.
+Renato Huzak and Prof. Dr. Yuri A. Kuznetsov. It was Peter who helped me
+transition into the dynamical systems group at Hasselt University and gave me the
+opportunity to revisit open problems encountered during my master thesis. Indeed,
+the first two years of my assistant/Ph.D. position were at the computational
+mathematics group at Hasselt University under supervision of Iuliu Sorin Pop and
+co-supervision Prof. dr. Jochen Schuetz. Working as an assistant to these
+energetic and enthusiastic professors for the first two years has been extremely
+beneficial to me. Under their supervision, I've gained much insight into the field
+of numerical mathematics (and drank more coffee). Assisting many numerical
+courses and attending various talks provided by the computational mathematics
+group during those two years provided me with tools that turned out to be very
+helpful while solving the aforementioned open problems. Indeed, a common theme in
+numerical analysis is the use of convergence plots, which are less often seen in
+bifurcation analysis. It turned out to be very helpful in analyzing the
+convergence order of the homoclinic approximations in higher-dimensional systems.
+It is therefore also very unfortunate I didn't have enough time to work in both
+groups simultaneously (next to the teaching duties).
+
+The transition to the dynamical system group was made in May 2018. I'm very
+grateful to Yuri for providing me a place to work at Utrecht University to
+facilitate the collaboration.
+
+I also like to thank Peter here once more for his support, and am especially
+thankful for all the spontaneous meetings throughout the years under his
+supervision. His high level of experience and great sense of humor always gave me
+more energy to continue working on some problem once more.
+
+Next, I would like to thank Sebastiaan Janssens. It was a pleasure to be working
+with him on the switching paper published in 2019. I also like to thank him and
+dr. Babette de Wolff for co-organizing with me the ``Delay-Days'' mini-symposia
+at Hasselt University, online, and at Utrecht University. Next to his deep level
+of understanding of perturbation theory for dual semigroups, he has a profound
+writing style. When reading Sebastiaan's work, it feels as being on a journey,
+rather than just reading mathematical results. I wish him all the best in
+finishing his Ph.D. and hope to be working with him in the near feature once
+more.
+
+In addition to be working with Sebasitaan Janssens, I also had the pleasure of
+supervising Bram Lentjes during his bachelor and master thesis. The master thesis
+titled ``Center Manifolds and Periodic Normal Forms for Bifurcations of Limit
+Cycles in DDEs'' under supervision of Yuri A. Kuznetsov has been a very
+successful project. In fact, a first preprint is already available
+\cite{Bram@2022}.
+
+Furthermore, I'm very grateful to my girlfriend Veerle van Harten, who encouraged
+me to apply for the assisted/Ph.D. position at Hasselt University in the first
+place and was willing to move with me. I couldn't have done this without her.
+Lastly, I would like to thank my mother Marjon van Uden, sister Mariska
+Bosschaert, and great mother Cornelius van Uden for their unconditionally support
+throughout the years. Without the bi-weekly baby sitting of my mother on our
+child Josephine Bosschaert during the COVID-19 pandemic, this thesis would not
+have been.
+
+
+\section{Publications}
+The content of this thesis has been published or is submitted for publication,
+see \cite{Bosschaert@Interplay,Switching2019,PhysRevD.105.065021}.

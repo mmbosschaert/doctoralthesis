@@ -1,0 +1,16 @@
+\tikzsetnextfilename{homoclinic_orbit_reduced_system}
+\begin{tikzpicture}
+     \begin{axis}[
+         width=\textwidth*0.6,
+         height=\textwidth*0.6,
+         xlabel={$u$},
+         ylabel={$v$},
+         zlabel={$x$},
+         grid=both,
+         grid style={line width=.1pt, draw=gray!10},
+         % axis line style={draw=none},
+         tick style={draw=none}
+         ]
+         \addplot3 [color=royalblue] file {data/homoclinicorbitI.csv};
+    \end{axis}
+ \end{tikzpicture}

@@ -1,0 +1,177 @@
+\begin{code}
+\begin{minted}[breaklines,escapeinside=||,mathescape=true,
+numbersep=3pt, gobble=2, frame=lines, fontsize=\small, framesep=2mm]{julia}
+module BTQuadraticHomoclinic
+
+using Polynomials, OffsetArrays
+
+function z(i, τ, σ, ω)
+    if i == 1
+        p = 24*Polynomial([0,-2, 0,  3])
+    else
+        p =  Polynomial([0,2])*sum(σ[l]*τ[i-1-l] for l in 1:i-1)
+        p += Polynomial([0,2])*sum(σ[l]*ω[k]*τ[i-1-l-k] 
+                for k in 1:i-1 for l in 0:i-1-k)
+        p -= Polynomial([2,0,-6])*sum(σ[i-l]*ω[l] for l in 1:i-1)
+        p -= 2*sum(σ[i-l-k]*ω[l]*derivative(
+                Polynomial([0,1,0,-1])*ω[k]) for k in 1:i-1 for l in 0:i-k)
+        p += Polynomial([-1,0,1])*Polynomial([0,2])*sum(σ[l]*
+               σ[i-1-l-k]*ω[k] for k in 0:i-1 for l in 0:i-2-k)
+        p += Polynomial([-4,0,6])*Polynomial([0,2])*sum(σ[i-1-k]*ω[k]
+                for k in 0:i-1)
+        p += Polynomial([1,0,-1])*sum(σ[k]*σ[i-k] for k in 1:i-1)
+    end
+    Polynomial([1,0,-1])*p
+end
+
+function solve(;order = n)
+    σ = OffsetArray(zeros(Rational{BigInt}, order), 0:order-2)
+    τ = OffsetArray(zeros(Rational{BigInt}, order-1), 0:order-1)
+    ω = OffsetArray(Array{Polynomial}(undef, order), 0:order-1)
+
+    σ[0], ω[0]  = 6, 1
+    for i=1:order-1
+        gi = integrate(Polynomial([0,12//1])*z(i, τ, σ, ω))
+        if i%2 == 1
+            τ[i-1] = -10//192*gi(1)
+            ω[i] = (τ[i-1]*144*Polynomial([2//15, 0, 0, 1//3, 0, -1//5]) 
+                      + gi) ÷ (Polynomial([1,0,-1])*Polynomial([0,12]))^2
+        else
+            σ[i] = -gi(-1)//12
+            ω[i] = -σ[i]//6 + (σ[i]*Polynomial([-1,0,1])*
+                (Polynomial([-4,0,6])^2-4) + gi + 12*σ[i]) ÷ 
+                        (Polynomial([1,0,-1])*Polynomial([0,12]))^2
+        end
+    end
+    τ, σ, ω
+end
+
+end
+\end{minted}
+\caption{Implementation in Julia of the algorithm outlined in
+\cref{sec:PolynomailLindstedtPoincare} for the quadratic codimension 2
+Bogdanov--Takens normal form \cref{eq:universal_unfolding}}
+\label{lst:BTQuadraticHomoclinic}
+\end{code}
+\begin{table}[h]
+    \centering
+    \begin{minted}[breaklines,escapeinside=||,mathescape=true,
+    numbersep=3pt, gobble=2, frame=lines, fontsize=\small, framesep=2mm]{julia}
+    julia> @benchmark BTQuadraticHomoclinic.solve(order=20)
+    BenchmarkTools.Trial:
+      memory estimate:  107.36 MiB
+      allocs estimate:  5384379
+      --------------
+      minimum time:     382.111 ms (21.56% GC)
+      median time:      414.436 ms (24.41% GC)
+      mean time:        459.831 ms (26.81% GC)
+      maximum time:     577.254 ms (32.91% GC)
+      --------------
+      samples:          11
+      evals/sample:     1
+    \end{minted}
+    \caption{Benchmark to obtain a 20th-order approximation to $\tau$ in the
+    quadratic normal form \cref{eq:universal_unfolding} using the algorithm
+    outlined in \cref{sec:PolynomailLindstedtPoincare}. See in particular
+    \cref{corollary:quadraticBTsigma_delta_relation} and the algorithm above.}
+    \label{tab:benchmark}
+\end{table}
+\section{Case study of the quadratic codim 2 Bogdanov--Takens normal form}
+\label{sec:case_study_BT2}
+In this section, we will numerically study the algorithm outlined in
+\cref{sec:PolynomailLindstedtPoincare} for the quadratic codimension 2
+Bogdanov--Takens normal form \cref{eq:universal_unfolding}.  Since the algorithm
+only relies on arithmetic and calculus on polynomials over the field $\mathbb
+Q$, see \cref{corllary:rational_coefficients} there is no need to use propriety
+software for the implementation. We choose the relative new programming
+language Julia~\cite{bezanson2017julia}. Julia natively supports arbitrary
+precision rational numbers. We use the package
+\mintinline{julia}{Polynomials.jl}~\cite{Polynomials} to handle the
+differentiation and integration of polynomials, as well as polynomial division.
+Since the programming language Julia starts indexing arrays at $1$, we use the
+package \mintinline{julia}{OffsetArrays}~\cite{OffsetArrays} to lower the index
+to $0$ to keep the indexing identical. The code is given in \cref{lst:BTQuadraticHomoclinic}.
+
+\begin{figure}
+\centering
+\includetikz{BTQuadraticNormalFormTimings}
+\caption{Log-linear plot of the order $i$ and the time in seconds it took to
+compute the coefficients.}
+\label{fig:BTQuadraticNormalFormTimings}
+\end{figure}
+
+\begin{table}
+\label{table:tauCoeffients}
+\centering
+\def\arraystretch{1.5}
+\pgfplotstabletypeset[
+    col sep=comma,
+    string type,
+    every head row/.style={%
+        before row=\hline,
+        after row=\hline
+    },
+    every last
+    row/.style={after
+    row=\hline},
+    columns/i/.style={column
+        name=$i$,
+        column
+    type=r},
+    columns/tau/.style={column
+        name=$\tau_i$,
+        column
+    type=l}
+    ]{\datadir/coefficients_first10.csv}
+    \caption{First 20 coefficients of $\tau$}
+\end{table}
+
+\begin{figure}[ht!]
+\includetikzscaled{BTQuadraticNormalFormApproximations}
+\caption{Comparison between the numerical obtained continued homoclinic
+    bifurcation curve emanating from the Bogdanov--Takens point in
+    \cref{eq:universal_unfolding} with $a=b=1$ and the parameter approximations
+    with orders ranging from 10 to 200.  For $\beta_1 \lesssim -8$ the
+    approximation starts diverging. This indicates that the radius of
+    convergence in the perturbation parameter $\epsilon$ is less than or equal
+    to $\sqrt[4]{2}$. Note that for $\beta_1 > -8$ the tenth order is
+    already indistinguishable from the numerical obtained parameters.}
+\label{fig:BTQuadraticNormalFormApproximations}
+\end{figure}
+
+In~\cite{Algaba_2019} it is claimed that one can obtain higher-order
+approximations very fast using their algorithm. However, our algorithm, which
+should be superior, shows that the order of approximation and the computational
+cost are not linear related. We performed a benchmark to obtain a 20th-order
+approximation to $\tau$, see \cref{tab:benchmark}.
+These results were obtained on the mobile CPU Intel i5-6200U (4) @ 2.800GHz
+with 11407MiB of memory. The coefficients for $\tau$ are shown in
+\cref{table:tauCoeffients}. We see that the length of the numerator and
+denominator increases at each (even) order. This also holds true for the
+coefficients of $\sigma$ and the coefficients of the polynomials $\omega$.
+Performing operations on these rational numbers become increasingly more
+difficult for the computer to deal with. In
+\cref{fig:BTQuadraticNormalFormTimings} a log-linear plot is shown, plotting
+the time in seconds to solve the $ith$ order equation
+\cref{eq:ith_order_equation}. It took nearly 10 hours to obtain the 200th order
+approximation of $\tau$. A linear regression on the last 50 data points
+indicates the time increases exponentially. Extrapolation yields that it would
+take more than 17 years to solve the first 500 terms if memory doesn't become
+an issue. Since the algorithm is embarrassingly parallelizable we could speed
+up the process. However, exponential growth cannot be escaped.
+
+Next, we would like to make some comments on the radius of convergence of the
+asymptotic approximation to the homoclinic orbit in the quadratic
+Bogdanov--Takens bifurcation. In~\cite{Algaba_2019} there is the remark that the
+higher-order approximation can greatly improve the accuracy of the
+approximation for large parameter values. However, this fully depends
+on the radius of convergence of the series. To get a first impression, we
+compare the parameters computed from the numerical continued solution to the
+homoclinic solution in \cref{eq:universal_unfolding} using \MATCONT with the
+predicted parameters. \Cref{fig:BTQuadraticNormalFormApproximations} reveals 
+a typical situation  in perturbation series. Increasing the order of the
+perturbation parameter improves the approximation for small parameters, but for
+larger parameters, the approximation becomes much worse. Reproducing~\cite[Fig
+3c]{Algaba_2019}, but increasing the order, shows that this solution is outside
+the radius of convergence.
+

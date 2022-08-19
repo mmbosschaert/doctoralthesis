@@ -1,0 +1,17 @@
+\newcommand\pathToCSVFiles{\datadir/neuralNetworkModel}
+\begin{tikzpicture}
+    \begin{axis}[
+        width=\textwidth*0.65,
+        height=\textwidth*0.5,
+        xlabel = $A_0$,
+        ylabel = {$\delta$},
+        legend pos=outer north east,
+        legend style = {font=\tiny},
+        xmode=log, ymode=log
+        ]
+        \addplot [color=royalorange, mark=+, only marks] table {\pathToCSVFiles/convergence_plot_first_order.csv};
+        \addlegendentry{first order};
+        \addplot [color=royalblue, mark=x, only marks] table {\pathToCSVFiles/convergence_plot_third_order.csv};
+        \addlegendentry{third order};
+    \end{axis}
+\end{tikzpicture}

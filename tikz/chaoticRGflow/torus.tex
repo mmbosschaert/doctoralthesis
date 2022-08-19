@@ -1,0 +1,19 @@
+\tikzsetnextfilename{torus}
+\begin{tikzpicture}
+  \begin{axis}[
+       width=\textwidth*0.45,
+       height=\textwidth*0.45,
+       view={25}{50},
+       xlabel={$u$},
+       ylabel={$v$},
+       zlabel={$x$},
+       grid=both,
+       grid style={line width=.1pt, draw=gray!10},
+       % axis line style={draw=none},
+       tick style={draw=none},
+      ]
+      \addplot3 [color=royalblue, line width=.1pt, smooth] file {data/torus.csv};
+      \addplot3 [color=royalorange, only marks, mark size=0.1pt] file {data/torus_poincare_section.csv};
+      \addplot3[fill=royalorange, fill opacity=0.5, draw opacity=0] coordinates {(-0.01, -0.015, -0.015) (-0.01, -0.015, -0.03) (-0.01,  0.017, -0.03) (-0.01,  0.017, -0.015)};
+  \end{axis}
+\end{tikzpicture}

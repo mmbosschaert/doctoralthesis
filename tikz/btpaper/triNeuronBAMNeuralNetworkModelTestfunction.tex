@@ -1,0 +1,34 @@
+\newcommand\pathToCSVFiles{./data/triNeuronBAMNeuralNetworkModel}
+\begin{tikzpicture}
+pgfplotsset{
+    axis on top,
+    xminorticks=true,
+    yminorticks=true,
+    font=\tiny,
+}
+\begin{axis}[
+    width=\textwidth-40,
+    height=0.46\textwidth,
+    grid=both,
+    grid style={line width=.1pt, draw=gray!10},
+    legend style={at={(0.5,-0.3)},anchor=north},
+    % scaled x ticks = base 10:3,
+    xlabel = {$\alpha_1$},
+    ylabel = {$\alpha_2$},
+    zlabel = {$\omega$},
+]
+\coordinate (A1) at (-3e-03,-0.5e-03,0);
+\coordinate (A2) at (-3e-03,2.5e-03,0);
+\coordinate (A3) at (0.5e-03,2.5e-03,0);
+\coordinate (A4) at (0.5e-03,-0.5e-03,0);
+\addplot3 [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0,0,0)};
+\addlegendentry{Detected Bogdanov--Takens point}
+\addplot3 [color=black, mark=*, only marks, mark size=.8pt, forget plot] coordinates {(-0.0027,0.002,0)};
+\addplot3 [color=royalblue,smooth] table {\pathToCSVFiles/testfunctionBogdanovTakens.csv};
+\addlegendentry{Bogdanov--Takens testfunction along the frist Hopf curve}
+\addplot3 [color=black, mark=*, only marks, mark size=.0pt] coordinates {(-3e-03,-0.5e-03,0)};
+\addplot3 [color=black, mark=*, only marks, mark size=.0pt] coordinates {(0.5e-03,2.5e-03,0)};
+\fill[fill=bittersweet,opacity=0.2] (A1) -- (A2) -- (A3)  -- (A4) -- cycle;
+\end{axis}
+
+\end{tikzpicture}

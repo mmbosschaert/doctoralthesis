@@ -1,0 +1,126 @@
+%! TeX program = lualatex
+\ifdefined\issiam
+    \documentclass[class=../siamonline220329]{standalone}
+\fi
+\ifdefined\isarXiv
+    \documentclass[class=../myarticle]{standalone}
+\fi
+\ifdefined\isthesis
+    \documentclass[class=../siamonline220329]{standalone}
+    \usepackage[textwidth=13cm,top=1in]{geometry}
+    \setlength{\oddsidemargin}{0pt}
+\fi
+\input{./mycolors.tex}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usepgfplotslibrary{groupplots}
+\usetikzlibrary{math}
+\usepackage{environ}
+
+\NewEnviron{groupwidth}[1]{% #1 = number of groupplots per row
+    \tikzset{/pgfplots/width={\dimexpr \textwidth/#1}}%
+    \sbox0{\BODY}%
+    \tikzset{/pgfplots/width={\dimexpr 2\textwidth/#1 - \wd0/#1}}%
+    \BODY}
+
+ \pgfplotsset{
+        every axis plot/.append style={line width=0.3pt},
+        every tick label/.append style={font=\footnotesize},
+        title style = {font = \small},
+        label style = {font = \small},
+        tick label style={font= \small},
+        legend style={font=\footnotesize},
+     }
+
+\begin{document}
+\noindent\begin{groupwidth}{2}
+\newcommand\pathToCSVFiles{../data/vanderPolOscillator}
+\begin{tikzpicture}
+\begin{groupplot}[ 
+    group style={
+        group size= 2 by 2,
+        horizontal sep=40pt,
+        vertical sep=40pt,
+        group name=plots
+    }
+]
+% -------------------------------------------------------------------------------------------------------------------
+%-----------
+% Plot [1, 1]
+%-----------
+\nextgroupplot[
+    title=Homoclinic orbit I,
+    xlabel={$x_1$},
+    ylabel={$x_2$},
+    grid=both,
+    grid style={line width=.1pt, draw=gray!10},
+]
+\addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0,0)};
+\addplot [color=royalblue, mark=*, only marks, mark size=.4pt] table [x index=1, y index=2] {\pathToCSVFiles/homoclinicorbit1_correc_1.csv};
+\addplot [color=bittersweet] table [x index=1, y index=2] {\pathToCSVFiles/homoclinicorbit1_1.csv};
+\foreach \myvar in {2,3,4,5,6,7,8,9,10}{
+    \addplot [color=royalblue, mark=*, only marks, mark size=.4pt] table [x index=1, y index=2] {\pathToCSVFiles/homoclinicorbit1_correc_\myvar.csv};
+    \addplot [color=bittersweet] table [x index=1, y index=2] {\pathToCSVFiles/homoclinicorbit1_\myvar.csv};
+    };
+    % redraw to appear on top
+    \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0,0)};
+
+%-----------    
+% Plot [2, 2]
+%-----------
+\nextgroupplot[ 
+    title=Homoclinic orbit II,
+    xlabel={$x_1$},
+    xmax=0.007
+]
+\coordinate (c1) at (rel axis cs:1,0);
+\foreach \myvar in {1,2,3,4,5,6,7,8,9,10}{
+    \addplot [color=royalblue, mark=*, only marks, mark size=.4pt] table [x index=1, y index=2] {\pathToCSVFiles/homoclinicorbit2_correc_\myvar.csv};
+    \addplot [color=bittersweet] table [x index=1, y index=2] {\pathToCSVFiles/homoclinicorbit2_\myvar.csv};
+    };
+    % redraw to appear on top
+    \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0,0)};
+\end{groupplot}
+
+% \begin{axis}[
+%     height=0.5\textwidth,
+%     anchor=north,
+%     yshift=-60,
+%     grid=both,
+%     grid style={line width=.1pt, draw=gray!10},
+%     scaled x ticks = base 10:3,
+%     scaled y ticks = base 10:0,
+%     xlabel = {$\epsilon$},
+%     ylabel = {$x_1$},
+%     zlabel = {$x_2$},
+%     ytick = {-5e-03,0},
+%     yticklabels = {$\pgfmathprintnumber[sci]{-5e-03}$,$0$},
+%     legend style={at={($(0,0)+(1cm,1cm)$)},legend
+%     columns=3,fill=none,draw=black,anchor=center,align=center,
+%     column sep=2ex},
+%     legend to name=VDPOCompareOrbitsPhaseSpaceLengend,
+% ]
+% \addplot3 [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0.75,0,0)};
+% \addlegendentry{Bogdanov--Takens point}
+% \addplot3 [color=royalblue, mark=*, only marks, mark size=.4pt] table {\pathToCSVFiles/homoclinicorbit1_correc_1.csv};
+% \addlegendentry{Newton corrected solution}
+% \addplot3 [color=royalblue, mark=*, only marks, mark size=.4pt] table {\pathToCSVFiles/homoclinicorbit1_1.csv};
+% \addlegendentry{third-order asymptotics}
+% \foreach \myvar in {2..10}{
+%     \addplot3 [color=royalblue, mark=*, only marks, mark size=.4pt] table {\pathToCSVFiles/homoclinicorbit1_correc_\myvar.csv};
+%     \addplot3 [color=bittersweet] table {\pathToCSVFiles/homoclinicorbit1_\myvar.csv};
+%     \addplot3 [color=royalblue, mark=*, only marks, mark size=.4pt] table {\pathToCSVFiles/homoclinicorbit2_correc_\myvar.csv};
+%     \addplot3 [color=bittersweet] table {\pathToCSVFiles/homoclinicorbit2_\myvar.csv};
+%     };
+% \coordinate (c4) at (rel axis cs:0,1);
+% \coordinate (c5) at (rel axis cs:1,1);
+% \end{axis}
+% 
+% \coordinate (c6) at ($(c0)!.5!(c1)$);
+% \node[below] at (c6 |- current bounding box.south)
+%   {\pgfplotslegendfromname{VDPOCompareOrbitsPhaseSpaceLengend}};
+
+\end{tikzpicture}
+\end{groupwidth}
+\end{document}

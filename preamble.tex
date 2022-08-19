@@ -1,0 +1,322 @@
+\usepackage{amsfonts,amssymb,amsopn,amsmath,amsthm} 
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage[caption=false]{subfig}
+\usepackage[paperheight=24cm,paperwidth=17cm,margin=2cm,heightrounded]{geometry}
+% \usepackage[paperheight=24cm,paperwidth=17cm,margin=2cm,heightrounded,showframe]{geometry}
+\usepackage{fancyhdr}
+\setlength{\headheight}{22.76004pt}
+\usepackage{mathtools}
+\usepackage{bibentry}
+\nobibliography*
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage[noabbrev,nameinlink]{cleveref}
+\crefformat{equation}{(#2#1#3)}
+\crefmultiformat{equation}{(#2#1#3)}%
+{ and~(#2#1#3)}{, (#2#1#3)}{ and~(#2#1#3)}
+\usepackage{qtree}
+\usepackage{xcolor}
+\usepackage{interval}
+\usepackage{minted}
+\setmonofont{DejaVu Sans Mono}[Scale=MatchLowercase]
+% set default options for minted environments
+\setminted[julia]{linenos,breaklines,escapeinside=||, mathescape=true,
+                  numbersep=3pt, gobble=2, frame=lines, framesep=2mm}
+\setminted[MATLAB]{linenos,breaklines,escapeinside=||, mathescape=true,
+                   numbersep=3pt, gobble=2, frame=lines, framesep=2mm}
+\setminted[shell-session]{numbersep=3pt, frame=lines, framesep=2mm}
+\usemintedstyle[shell-session]{bw}
+\usepackage{environ}
+\usepackage{appendix}
+\usepackage{chngcntr}
+\usepackage{etoolbox}
+\usepackage{caption}
+\usepackage{siunitx}
+\usepackage{braket}
+\usepackage{epigraph}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage{tikzscale}
+\usetikzlibrary{external} 
+\usepackage{enumitem}
+
+\pgfplotsset{compat=1.18}
+
+\newcommand{\blist}[1]{\mbox{\lstinline!#1!}}
+
+\newenvironment{code}{\captionsetup{type=listing}}{}
+
+\AtBeginEnvironment{subappendices}{%
+    \chapter*{\textcolor{siamblue}{Appendix}}
+    \addcontentsline{toc}{chapter}{Appendices}
+    \counterwithin{figure}{section}
+    \counterwithin{table}{section}
+}
+
+\definecolor{header1}{cmyk}{.9,.5,0,.35}
+\definecolor{blue1}{cmyk}{.9,.7,0,0}
+\definecolor{siamblue}{cmyk}{.77,.42,.0,.48}
+\definecolor{maroon}{cmyk}{.4,1,.3,.2}
+\definecolor{gold1}{cmyk}{.2,.2,1,.1}
+\definecolor{gray}{cmyk}{0,0,0,.5}
+\definecolor{siamgreen}{cmyk}{1,0,1,0}
+\definecolor{proofcolor}{cmyk}{1,0,1,0}
+\definecolor{red1}{cmyk}{0,1,.8,0}
+\definecolor{orange1}{cmyk}{0,.55,1,0}
+\definecolor{strip}{cmyk}{.6,.1,.1,.1}
+
+% \newtheoremstyle{plain}% Allow loooong optional labels for theorems???? JR
+%  {\item[\hskip\labelsep\hskip\parindent \color{header1}\theorem@headerfont ##1\ \textup{##2\theorem@separator}]}%
+%  {\item[\hskip\labelsep\hskip\parindent \color{header1}\theorem@headerfont ##1\ \textup{##2}]{\color{header1}\sffamily\textup{(##3)\theorem@separator}}\ }
+% 
+% \theoremstyle{plain}
+\newtheoremstyle{bluetheorem}{}{}{}{}{\color{siamblue}\bfseries}{}{ }{}
+\theoremstyle{bluetheorem}
+\newtheorem{remark}{Remark}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{lemma}{Lemma}
+\newtheorem{definition}{Definition}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=siamgreen,
+  citecolor=siamgreen,
+  frenchlinks=false,
+  pdfborder={0 0 0},
+  naturalnames=false,
+  hypertexnames=false,
+  breaklinks
+}
+\urlstyle{same}
+
+\usepackage{sectsty}
+\chapterfont{\color{siamblue}}  % sets colour of chapters
+\sectionfont{\color{siamblue}}  % sets colour of sections
+\subsectionfont{\color{siamblue}}  % sets colour of sections
+\subsubsectionfont{\color{siamblue}}  % sets colour of sections
+
+\fancyhf{}
+\fancyhead[LE]{{\color{header1}\normalsize \slshape \rightmark}} %section
+\fancyhead[RO]{{\color{header1}\normalsize \slshape \leftmark}} % chapter
+\fancyfoot[C]{\thepage}
+\pagestyle{fancy}
+
+\makeatletter
+\renewcommand\@makefnmark{\hbox{\@textsuperscript{\normalfont\color{siamgreen}\@thefnmark}}}
+\makeatother
+
+\graphicspath{ {images/} }
+
+\newcommand\thesistitle{Homoclinic solutions in finite and infinite dimensional systems}
+\newcommand\thesissubtitle{Numerical continuation of homoclinic curves emanating from codimension two Bogdanov--Takens bifurcations points}
+
+\usepackage{sectsty}
+
+% \chapternumberfont{\Large} 
+\chaptertitlefont{\Large}
+
+% \usepackage[paperheight=24cm,paperwidth=17cm,margin=2cm,heightrounded,showframe]{geometry}
+% \addtolength{\topmargin}{-10.76004pt}
+
+% \usepackage{fontspec} \setmainfont{Verdana}
+
+\DeclareMathOperator{\sech}{sech}
+\DeclareMathOperator{\arcsech}{arcsech}
+\DeclareMathOperator{\arctanh}{arctanh}
+\DeclareMathOperator{\AINV}{A^{\text{INV}}}
+\DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
+
+\usepgfplotslibrary{groupplots}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{shapes,arrows,calc}
+\usetikzlibrary{external} 
+\tikzsetexternalprefix{../BTInterplay/images/thesis/} 
+\tikzsetexternalprefix{images/} 
+\tikzset{external/system call={lualatex -shell-escape -halt-on-error -interaction=batchmode -jobname "\image" "\texsource"}}
+\tikzexternalize
+
+\newcommand\tikzdir{../BTInterplay/tikz}
+\newcommand\imagedir{images}
+\newcommand{\includetikz}[1]{%
+    \ifcompileimages%
+        \tikzsetnextfilename{#1}%
+        \input{\tikzdir/#1}%
+    \else
+        \includegraphics{\imagedir/#1}
+    \fi
+}
+
+\newcommand{\includetikzscaled}[2][1.0]{%
+    \tikzsetnextfilename{#2}%
+    \ifcompileimages%
+        \tikzsetnextfilename{#2}%
+        \includegraphics[width=#1\linewidth]{\tikzdir/#2.tikz}
+    \else
+        \includegraphics{\imagedir/#2}
+    \fi
+}
+
+\input{../BTInterplay/mycolors.tex}
+
+\AtBeginDocument{% ...if you're using hyperref
+    \let\oldlabel\label% Copy original version of \label
+    \let\oldcref\cref% Copy original version of \ref
+}
+
+\newcommand{\addlabelprefix}[1]{%
+    \renewcommand{\label}[1]{\oldlabel{#1-##1}}% Update \label
+    \renewcommand{\cref}[1]{\oldcref{#1-##1}}% Update \ref
+}
+
+\DeclareMathOperator{\atanh}{atanh}
+
+% Function spaces and sun-star macros
+\newcommand{\PAIR}[3][]{\langle #2,#3 \rangle_{#1}}
+\newcommand{\STAR}[1]{#1^{\star}}
+\newcommand{\SUN}[1]{#1^{\odot}}
+\newcommand{\SUNSTAR}[1]{#1^{\odot\star}}
+\newcommand{\SUNSUN}[1]{#1^{\odot\odot}}
+\newcommand{\STARSTAR}[1]{#1^{\star\star}}
+\newcommand{\SUNSTARSTAR}[1]{#1^{\odot\star\star}}
+\newcommand{\rss}{\SUNSTAR{r}}
+\newcommand{\rsswp}[1]{\left[ #1 \right] \rss} % as above but with parentheses
+\newcommand{\BND}{\mathcal{L}}
+\newcommand{\LHS}[1]{\left(#1-\SUNSTAR{A}\right)}
+\newcommand{\LHSZ}{-\SUNSTAR{A}}
+\newcommand{\WSTAR}{\ensuremath{\text{weak}^{\star}}}
+\newcommand{\WSTARLY}{\ensuremath{\text{weakly}^{\star}}}
+\newcommand{\BPAR}{\ensuremath{B_1}} % For parameter-dependent perturbations of linear semigroups
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\id}{\operatorname{id}}
+
+
+% Fields
+\newcommand{\BAR}[1]{\bar{#1}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\RRR}[1]{\RR^{#1\star}} % For row vectors
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\CCC}[1]{\CC^{#1\star}} % For row vectors
+\newcommand{\KK}{\mathbb{K}}
+\newcommand{\KKK}[1]{\KK^{#1\star}} % For row vectors
+\DeclareMathOperator{\LIP}{Lip}
+
+% Redefine symbols for real and imaginary parts.
+\let\Re\relax
+\let\Im\relax
+\DeclareMathOperator{\Re}{Re}
+\DeclareMathOperator{\Im}{Im}
+
+% Miscellaneous
+\newcommand{\DEF}{\coloneqq}
+\newcommand{\FED}{\eqqcolon}
+\newcommand{\DOM}{\mathcal{D}}
+\newcommand{\INV}[1]{#1^{\mathrm{INV}}}
+\newcommand{\BINV}[1]{B^{\mathrm{INV}}_{#1}}
+\DeclareMathOperator{\DET}{det}
+\DeclareMathOperator{\DIM}{dim}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator*{\RES}{Res} % Starred to put limits under operator name.
+
+% Typesetting
+\newcommand{\BM}[1]{\boldsymbol{#1}} % Shorthand for ordinary bold math
+\renewcommand{\phi}{\varphi}
+
+% Notation for the local center manifold
+\newcommand{\CM}{\mathcal{W}^c_{\text{loc}}}
+\newcommand{\CMBOLD}{\BM{\mathcal{W}}^c_{\text{loc}}}
+
+% Names of software packages
+\usepackage{xspace}
+\newcommand{\MATLAB}{\texttt{MATLAB}\xspace}
+\newcommand{\OCTAVE}{\texttt{GNU Octave}\xspace}
+\newcommand{\DDEBIFTOOL}{\texttt{DDE-BifTool}\xspace}
+\newcommand{\MATCONT}{\texttt{MatCont}\xspace}
+\newcommand{\PYDELAY}{\texttt{pydelay}\xspace}
+\newcommand{\PYTHON}{\texttt{Python}\xspace}
+\newcommand{\JULIA}{\texttt{Julia}\xspace}
+
+
+
+\definecolor{var}{rgb}{0,0.25,0.25}
+\definecolor{comment}{rgb}{0,0.5,0}
+\definecolor{kw}{rgb}{0,0,0.5}
+\definecolor{str}{rgb}{0.5,0,0}
+\definecolor{darkblue}{cmyk}{1,0,0,0.8}
+\definecolor{darkred}{cmyk}{0,1,0,0.7}
+\definecolor{orange}{cmyk}{0,0.5,1,0}
+\definecolor{royalblue}{rgb}{0.00000,0.44700,0.74100}
+
+\definecolor{matlabYellow}{HTML}{FCFCDC}
+\definecolor{matlabrulecolor}{HTML}{A8A8A8}
+\definecolor{matlabGreen}{HTML}{379634}
+\definecolor{matlabLilas}{RGB}{170,55,241}
+
+% --- Set up the listings package --------------------------------------
+
+\usepackage{textcomp} % single quote in lstlisting environment
+
+\usepackage{listings}
+
+\lstset{basicstyle={\ttfamily\small},
+  commentstyle={\color{comment}},
+  identifierstyle={\color{var}},
+  keywordstyle={\color{kw}},
+  language=Matlab,
+  stringstyle={\color{str}},
+  upquote=true}
+
+\lstdefinestyle{customMatlab}{
+  % language=matlab,
+  breaklines,showstringspaces=false,
+  frame=top,frame=bottom,prebreak=...,upquote=true,
+  backgroundcolor = \color{matlabYellow},
+  keywordstyle=\color{blue},
+  morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+  identifierstyle=\color{black},
+  stringstyle=\color{matlabLilas},
+  commentstyle=\color{matlabGreen},
+  rulecolor=\color{matlabrulecolor},
+  emph=[1]{elseif,isempty,sqrt,acos,tanh,linspace,load,clf,plot,xlabel,ylabel,zlabel,hold,exist,clear,close,all,length,figure,eps,
+    colormap,real,size,axis,legend,text,pi,imag,beta,title,zeros,grid,view,strcmp,
+    get, gca, set, flipud},%
+  emphstyle=[1]\color{black} % we don't want to emph these words
+  % emph=[1]{for,end,break},emphstyle=[1]\color{red},
+}
+
+\lstdefinestyle{customBash}{language=bash,
+  basicstyle=\small\color{black}\ttfamily,
+  identifierstyle=\color{black}, 
+  keywordstyle=\color{black}, 
+  stringstyle=\color{black}, 
+  commentstyle=\color{black},
+  breaklines,
+  moredelim=[is][\color{blue}\bfseries\underbar]{?}{?},
+}
+
+\lstdefinestyle{matlabConsole}{language=bash,
+  basicstyle=\small\color{black}\ttfamily,
+  identifierstyle=\color{black}, 
+  keywordstyle=\color{black}, 
+  stringstyle=\color{black}, 
+  commentstyle=\color{black},
+  breaklines,
+  moredelim=[is][\color{blue}\bfseries\underbar]{?}{?},
+}
+
+% rule between MATLAB sections
+\newcommand{\matlabrule}{\vspace{-\baselineskip}\textcolor{matlabrulecolor}{\hrule}\vspace{2pt}}
+
+% Instruct cleveref to correctly format references to listings. 
+\crefname{lstlisting}{\lstlistingname}{\lstlistingname s}
+\renewcommand\lstlistingname{Listing}
+
+\crefname{section}{\textcolor{siamgreen}{section}}{\textcolor{siamgreen}{sections}}
+\crefname{figure}{\textcolor{siamgreen}{figure}}{\textcolor{siamgreen}{figures}}
+\Crefname{section}{\textcolor{siamgreen}{section}}{\textcolor{siamgreen}{sections}}
+\Crefname{figure}{\textcolor{siamgreen}{Figure}}{\textcolor{siamgreen}{Figures}}
+

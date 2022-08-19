@@ -1,0 +1,102 @@
+\section{Explicit example demonstrating incorrect predictor}
+\label{app:incorrect_predictor}
+
+Although the second-order homoclinic approximation derived
+in~\cite{Al-Hdaibat2016} for the smooth normal form \cref{eq:BT_smooth_nf} is
+correct, the parameter and center manifold transformation are incorrect. To see
+this, we suppose \cref{eq:ODE} is given by
+\begin{align}
+\label{eq:btnormalform_with_alpha2^3}
+\dot x = f(x,\alpha) = \begin{pmatrix}   x_1 \\
+ \alpha_1 + \alpha_2 x_1 + x_0^2 + x_0 x_1 + c_1 \alpha_2^3
+ \end{pmatrix},
+\end{align}
+for some arbitrary nonzero constant $c_1 \in \mathbb R$.  We will now compare
+two different methods for obtaining a second-order approximation to the
+homoclinic solution in \cref{eq:btnormalform_with_alpha2^3}. To keep the
+exposition as clear as possible, we focus solely on the parameters. For the
+first method we directly apply the singular rescaling 
+\[
+\alpha_1=-4\epsilon^4, \quad \alpha_2 = \eta \epsilon^2,
+\quad x_0= \epsilon^2, \quad x_1= \epsilon^3, \quad
+s=\epsilon t,
+\]
+to \cref{eq:btnormalform_with_alpha2^3}. This yields the system
+\[
+\begin{cases}
+\begin{aligned}
+  \dot u ={}& v, \\
+  \dot v ={}& -4 + u^2 + v\left( u + \tau \right)\epsilon +  c_1 \tau^3
+	\epsilon^2, \\
+\end{aligned}
+\end{cases}
+\]
+where the dot $\dot{}$ now represents the derivative with respect to $s$.
+Then, using the generalized Lindstedt-Poincar\'e method we obtain the approximation
+\begin{equation}
+\label{eq:first_predictor}
+				(\alpha_1, \alpha_2) = \left(-4 \epsilon^4, \frac{10}7 \epsilon^2 
++\frac{288-1250 c_1}{2401}\epsilon^4 + \mathcal O(\epsilon^5) \right)
+\end{equation}
+for the parameters. For the second method we use the predictor
+from~\cite{Al-Hdaibat2016}. That is, we use the second-order homoclinic
+predictor derived for the smooth normal form \cref{eq:BT_smooth_nf}. Then
+calculate the center manifold transformation, which for the two-dimensional
+systems reduces to a near-identity transformation, and parameter transformation
+to transfer the predictor to the original system. We obtain that the near-identity
+and parameter transformation are just the identities. Thus, we obtain the
+predictor
+\begin{equation}
+				\label{eq:second_predictor}	
+				(\alpha_1, \alpha_2) = \left(-4 \epsilon^4, \frac{10}7 \epsilon^2 
+				+\frac{288}{2401}\epsilon^4 + \mathcal O(\epsilon^5) \right).
+\end{equation}
+Obviously, this result is wrong.  To see why the latter second predictor
+doesn't contain the term $c_1$ we consider the near-identity transformation
+\begin{align}
+\label{eq:near_identity_tranformation}
+  \begin{cases}
+  \begin{aligned}
+    x &{}= w, \\ 
+    \alpha &{}= \beta+ \begin{pmatrix} -c_1 \\ 0 \end{pmatrix}\beta_2^3.
+  \end{aligned}
+  \end{cases}
+\end{align}
+Then system \cref{eq:btnormalform_with_alpha2^3} becomes
+\begin{align*}
+  \begin{cases}
+  \begin{aligned}
+     \dot w_0 &{}= w_1, \\
+		 \dot w_1 &{}= \beta_1 + \beta_2 w_1 + w_0^2 + w_0 w_1.
+  \end{aligned}
+  \end{cases}
+\end{align*}
+Using the second-order predictor from~\cite{Al-Hdaibat2016} for the smooth
+normal form we obtain
+\[
+    (\beta_1, \beta_2) = \left(-4 \epsilon^4, \frac{10}7 \epsilon^2 
+    +\frac{288}{2401}\epsilon^4 + \mathcal O(\epsilon^5) \right).
+\]
+Then using the near-identity transformation
+\cref{eq:near_identity_tranformation} yields the predictor
+\begin{equation*}
+				(\alpha_1, \alpha_2) = \left(-4 \epsilon^4 
+								- c_1 \left(\frac{10}7 \epsilon^2 
+								+\frac{288}{2401}\epsilon^4 + \mathcal O(\epsilon^5) \right)^3, 
+								\frac{10}7 \epsilon^2 
+				+\frac{288}{2401}\epsilon^4 + \mathcal O(\epsilon^5) \right).
+\end{equation*}
+To compare this predictor with \cref{eq:first_predictor} we eliminate $\epsilon$
+in both equations. This yields
+\begin{equation*}
+				\alpha_2(\alpha_1) = - \frac57 \sqrt{-\alpha_1} +
+				\frac{288-1250c_1}{2401} \alpha_1 + \mathcal O(\alpha_1^{\frac32}).
+\end{equation*}
+
+We conclude, as expected, that if the correct transformation is used between the
+normal form and the original system, we keep the correct order of accuracy for
+the approximation. In~\cite{Al-Hdaibat2016} the coefficients $H_{0003}$ and
+$K_{03}$ (among other coefficients) are not incorporated into the
+parameter-dependent center manifold transformation
+\cref{eq:H_expansion,eq:K_expansion} leading to the incorrect
+predictor \cref{eq:second_predictor}.

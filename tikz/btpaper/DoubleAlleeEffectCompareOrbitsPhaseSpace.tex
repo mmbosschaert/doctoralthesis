@@ -1,0 +1,26 @@
+\newcommand\pathToCSVFiles{./data/doubleAlleeEffect}
+\begin{tikzpicture}
+    \begin{axis}[
+        width=\textwidth*0.65,
+        height=\textwidth*0.5,
+        xlabel={$x$},
+        ylabel={$y$},
+        grid=both,
+        grid style={line width=.1pt, draw=gray!10},
+        legend pos=outer north east,
+        legend style = {font=\tiny},
+        ]
+        \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0.424404424120730, 0.213468551254270)};
+        \addlegendentry{Bogdanov--Takens point}
+        \addplot [color=royalblue, mark=*, only marks, mark size=.4pt] file {\pathToCSVFiles/homoclinicorbit_correc_1.csv};
+        \addlegendentry{Newton corrected solution}
+        \addplot [color=bittersweet] file {\pathToCSVFiles/homoclinicorbit_1.csv};
+        \addlegendentry{third-order homoclinic asymptotics}
+        \foreach \myvar in {2,3,4,5,6,7,8,9,10}{
+            \addplot [color=royalblue, mark=*, only marks, mark size=.4pt] file {\pathToCSVFiles/homoclinicorbit_correc_\myvar.csv};
+            \addplot [color=bittersweet] file {\pathToCSVFiles/homoclinicorbit_\myvar.csv};
+        };
+        % redraw to appear on top
+        \addplot [color=black, mark=*, only marks, mark size=.8pt] coordinates {(0.424404424120730, 0.213468551254270)};
+    \end{axis}
+\end{tikzpicture}

@@ -1,0 +1,2277 @@
+\paragraph{{\color{header1}Abstract}} In this paper we perform the
+parameter-dependent center manifold reduction near the generalized Hopf
+(Bautin), fold-Hopf, Hopf-Hopf and transcritical-Hopf bifurcations in delay
+differential equations (DDEs). This allows us to initialize the continuation of
+codimension one equilibria and cycle bifurcations emanating from these
+codimension two bifurcation points. The normal form coefficients are derived in
+the functional analytic perturbation framework for dual semigroups (sun-star
+calculus) using a normalization technique based on the Fredholm alternative.
+The obtained expressions give explicit formulas which have been implemented in
+the freely available numerical software package \DDEBIFTOOL. While our
+theoretical results are proven to apply more generally, the software
+implementation and examples focus on DDEs with finitely many discrete delays.
+Together with the continuation capabilities of \DDEBIFTOOL, this provides a
+powerful tool to study the dynamics near equilibria of such DDEs. The
+effectiveness is demonstrated on various models\footnote{Published as
+\bibentry{Switching2019}}.
+
+\section{Introduction}\label{switch:sec:introduction}
+Great interest has recently been shown in the analysis of degenerate Hopf bifurcations in delay differential equations (DDEs), see e.g. \cite{MR2296886, MR3020901, Xu2010, MR2819829, Wang2010Hopftranscritical, Ma2011, MR3178278, MR2775253, qesmi2014HH, Agrawal2016, MR2889930, MR3047823, MR3342118, Peng2013, MR3146341, MR3430930, Song2009}.  In the simplest case, often encountered in applications, such DDEs have the form
+%
+\begin{equation}
+  \label{switch:eq:discreteDDEs}
+  \dot{x}(t)=f(x(t),x(t-\tau_1),\ldots,x(t-\tau_m),\alpha), \qquad t \geq 0,
+\end{equation}
+%
+where  $x(t) \in \RR^n,\ \alpha \in \RR^p$, $f : \RR^{n \times (m+1)} \times \RR^p \to \RR^n$ is a smooth mapping and the delays $0 < \tau_1 < \cdots <\tau_m$ are constant. They are known as \emph{discrete} DDEs.
+
+Using the framework of perturbation theory for dual semigroups developed in \cite{Clement1987, Clement1988, Clement1989, Clement1989b} the existence of a finite dimensional smooth center manifold for DDEs can be rigorously established \cite{diekmann1995delay}. As a consequence the normalization method for local bifurcations of ODEs developed in \cite{Kuznetsov1999} can be lifted \cite{Janssens:Thesis} rather easily to the infinite dimensional setting of DDEs. One of the advantages of this normalization technique is that the center manifold reduction and the calculation of the normal form coefficients are performed simultaneously by solving the so-called \emph{homological equation}. The method gives explicit expressions for the coefficients rather than a procedure as developed in \cite{Faria1995201, Faria1995}. The critical normal form coefficients for all five generic codimension two bifurcations of equilibria of DDEs have been derived in \cite{Janssens:Thesis}. They were partially implemented into the fully \OCTAVE compatible \MATLAB package \DDEBIFTOOL \cite{DDEBIFTOOL,2014arXiv1406.7144S,Wage:Thesis:2014}. 
+
+In this chapter we will perform the parameter-dependent center manifold reduction and normalization for three codimension two Hopf cases: the \emph{generalized Hopf, fold-Hopf} and \emph{Hopf-Hopf} bifurcations. This will allow us to initialize the continuation of codimension one bifurcation curves of nonhyperbolic equilibria and cycles emanating from the codimension two points. These are the only codimension two bifurcation points of equilibria in generic DDEs where codimension one bifurcation curves of nonhyperbolic cycles could originate. We also treat the \emph{transcritical-Hopf} bifurcation which is frequently found in applications.
+
+The center manifold theorem for parameter-dependent DDEs as presented in \cite{diekmann1995delay} assumes explicitly that the equilibrium exists for all nearby parameter values. However, for a generic fold-Hopf bifurcation this assumption is not satisfied. An attempt to deal with this complication has been made in \cite{GuoMan2011parCM}, where it is discussed how to reduce a parameter-dependent DDE to a DDE without parameters by appending the trivial equation $\dot{\alpha}=0$. However, the reduction in \cite{GuoMan2011parCM} is based on the formal adjoint approach \cite{hale1969functional} and applies specifically to DDEs, while at times it lacks consistency. Therefore we demonstrate in this chapter how the reduction to the parameter-independent case can be done in the sun-star framework, enabling a rigorous approach to the existence of parameter-dependent center manifolds for a class of evolution equations that includes DDEs. This allows us to treat bifurcations of equilibria with zero eigenvalues in generic DDEs while at the same time achieving applicability of our results to other classes of delay equations.
+
+This chapter is organized as follows. In \cref{switch:sec:sunstar} we offer a concise review of perturbation theory for dual semigroups (also called sun-star calculus), both on an abstract level as well as in application to the analysis of classical DDEs as dynamical systems. We also recall from \cite{Janssens:Thesis} various results that are needed for the normalization.
+
+In \cref{switch:sec:pd} we show how the theory from the previous section also applies to parameter-dependent classical DDEs by converting them into a parameter-\emph{in}dependent system on a product state space. We again present the material in two stages: results are first established at a more abstract semigroup level and next applied to classical DDEs depending on parameters. In particular, we define the parameter-dependent local center manifold and give an explicit ODE for solutions that are confined to it.
+
+In \cref{switch:sec:normal-forms} we describe the general technique used to derive expressions for the normal form coefficients on the parameter-dependent center manifold in the infinite dimensional setting of classical DDEs.
+
+In \cref{switch:sec:Coefficients-of-parameter} the method is then applied to the generalized Hopf (Bautin), fold-Hopf, and Hopf-Hopf bifurcations in classical DDEs. We provide explicit expressions for all normal form coefficients necessary for the predictors of codimension one bifurcation curves, as well as explicit expressions for the predictors themselves. The \emph{critical} normal form coefficients for these bifurcations were already obtained in \cite{Janssens:Thesis}. Here we briefly re-derive them to ensure readability.
+
+In \cref{switch:sec:Implement} we provide explicit computational formulas for the evaluation of the linear and multilinear forms used in the normal form coefficients and predictors for the simplest subclass \cref{switch:eq:discreteDDEs} consisting of discrete DDEs. These formulas are implemented in version 3.2a of \DDEBIFTOOL.
+
+In \cref{switch:sec:Examples} we employ our implementation in \DDEBIFTOOL to illustrate the accuracy of the codimension one bifurcation curve predictors through various example models displaying all aforementioned codimension two Hopf cases. 
+
+All material related to the transcritical-Hopf bifurcation, including the normal form on the center manifold and the predictors, can be found in \cref{switch:Appendix_TH}, where a relevant example is also treated.
+
+The supplement in \cref{chapter:switching_supplement} provides a complete step-by-step walk-through of the examples in \cref{switch:sec:Examples,switch:sec:HT_example}, including all code to reproduce the obtained numerical results and figures.
+
+\section{Dual perturbation theory and classical DDEs}\label{switch:sec:sunstar}
+We begin by presenting those general elements of perturbation theory for dual semigroups that are useful for the study of classical DDEs as dynamical systems. Throughout we assume sun-reflexivity - a term that will be introduced in \cref{switch:sec:duality}. From \cref{switch:sec:ddecase} onward, we then explain how the general results apply to classical DDEs. The standard reference for this entire section is \cite{diekmann1995delay}, while for the underlying theory of semigroups of linear operators we recommend \cite{Engel2000, Engel2006}.
+
+\subsection{Duality structure and linear perturbation}\label{switch:sec:duality}
+The starting point is a $\mathcal{C}_0$-semigroup $T_0$ on a real or complex Banach space $X$. Let $A_0$ with domain $\DOM(A_0)$ be the infinitesimal generator (or: generator, for short) of $T_0$.  We denote by $\STAR{X}$ the topological dual space (or: dual space, for short) of $X$, and we use the prefix notation for the pairing between $\STAR{x} \in \STAR{X}$ and $x \in X$,
+\[
+\PAIR{\STAR{x}}{x} \DEF \STAR{x}(x).
+\]
+If $X$ is not reflexive then the adjoint semigroup $\STAR{T_0}$ is in general only $\WSTAR$ continuous on $\STAR{X}$ and $\STAR{A_0}$ generates $\STAR{T_0}$ only in the $\WSTAR$ sense. The maximal subspace of strong continuity
+\[
+\SUN{X} \DEF \left\{\STAR{x} \in \STAR{X}\,:\, t \mapsto \STAR{T_0}(t)\STAR{x} \text{ is norm-continuous on } \RR_+\right\}
+\]
+is invariant under $\STAR{T_0}$, and we have the characterization
+\[
+  \SUN{X} = \overline{\DOM(\STAR{A_0})},
+\]
+where the bar denotes the norm closure in $\STAR{X}$. By construction the restriction of $\STAR{T_0}$ to $\SUN{X}$ is a $\mathcal{C}_0$-semigroup that we denote by $\SUN{T_0}$. Its generator $\SUN{A_0}$ is the \emph{part} of $\STAR{A_0}$ in $\SUN{X}$,
+%
+\[
+  \DOM(\SUN{A_0}) = \left\{\SUN{x} \in \DOM(\STAR{A_0}) \,:\, \STAR{A_0}\SUN{x} \in \SUN{X}\right\}, \qquad \SUN{A_0}\SUN{x} = \STAR{A_0}\SUN{x}.
+\]
+%
+At this stage we again have a $\mathcal{C}_0$-semigroup $\SUN{T_0}$ with generator $\SUN{A_0}$ on a Banach space $\SUN{X}$ so we can iterate the above construction. On the dual space $\SUNSTAR{X}$ we obtain the adjoint semigroup $\SUNSTAR{T_0}$ with $\WSTAR$ generator $\SUNSTAR{A_0}$. By restriction to the maximal subspace of strong continuity $\SUNSUN{X} = \overline{\DOM(\SUNSTAR{A_0})}$ we end up with the $\mathcal{C}_0$-semigroup $\SUNSUN{T_0}$. Its generator $\SUNSUN{A_0}$ is the part of $\SUNSTAR{A_0}$ in $\SUNSUN{X}$.
+
+The canonical injection $j : X \to \SUNSTAR{X}$ defined by
+%
+\begin{equation}
+  \label{switch:eq:j}
+  \PAIR{jx}{\SUN{x}} \DEF \PAIR{\SUN{x}}{x}
+\end{equation}
+%
+maps $X$ into $\SUNSUN{X}$. If $j$ maps $X$ \emph{onto} $\SUNSUN{X}$ then $X$ is called \emph{sun-reflexive} with respect to $T_0$. One may define an equivalent norm on $X$ with respect to which $j$ becomes an isometry, but this need not be assumed. However, \emph{sun-reflexivity of $X$ with respect to $T_0$ will be assumed throughout}.
+
+With the abstract duality structure in place, we next turn our attention to perturbation. Let $L : X \to \SUNSTAR{X}$ be a bounded linear operator. Then there exists a unique $\mathcal{C}_0$-semigroup $T$ on $X$ that satisfies the linear integral equation
+%
+\begin{equation}
+  \label{switch:eq:T_T0_AIE}
+  T(t)x = T_0(t)x + j^{-1} \int_0^t \SUNSTAR{T_0}(t-\tau) L T(\tau)x \, d\tau, \qquad t \ge 0,\,x \in X,
+\end{equation}
+%
+where the $\WSTAR$ Riemann integral takes values in $\SUNSUN{X}$ and the running assumption of sun-reflexivity justifies the application of $j^{-1}$. By using \cref{switch:eq:T_T0_AIE} to express the difference $T - T_0$ of the perturbed and the unperturbed semigroups, one proves that the maximal subspaces of strong continuity $\SUN{X}$ and $\SUNSUN{X}$ are \emph{the same} for $T$ and $T_0$, so there is no need to distinguish them with a subscript. In particular, $X$ is sun-reflexive also with respect to $T$. On $\SUNSTAR{X}$ the perturbation $L$ appears additively in the action of $\SUNSTAR{A}$,
+%
+\begin{equation}
+  \label{switch:eq:A_sunstar}
+  \DOM(\SUNSTAR{A}) = \DOM(\SUNSTAR{A_0}), \qquad \SUNSTAR{A} = \SUNSTAR{A_0} + Lj^{-1}.
+\end{equation}
+%
+We recover the generator $A$ of $T$ by considering the part of $\SUNSTAR{A}$ in $\SUNSUN{X}$. As a consequence $L$ moves into the domain and we find
+\[
+  \DOM(A) = \left\{x \in X\,:\, jx \in \DOM(\SUNSTAR{A_0}) \text{ and } \SUNSTAR{A_0}jx + Lx \in \SUNSUN{X}\right\}, \quad Ax = j^{-1}(\SUNSTAR{A_0}jx + Lx).
+\]
+For proofs of the statements so far, see \cite[Appendix II.3 and Chapter III]{diekmann1995delay}. (Incidentally, the symbol $\odot$ is traditionally pronounced as \emph{sun}. This explains the name \emph{sun-star calculus}.)
+
+\subsection{Nonlinear perturbation and linearization}\label{switch:sec:nonlinear}
+The $\mathcal{C}_0$-semigroup $T$ arose as a linear perturbation of the original $\mathcal{C}_0$-semigroup $T_0$, so the next step is to introduce a nonlinear perturbation of $T$ itself. In keeping with the tradition for nonlinear problems \cite[Sections VII.1 and VIII.1]{diekmann1995delay} we only regard the case that $X$ is a \emph{real} Banach space, also see \cref{switch:rem:complex} below. Let $R : X \to \SUNSTAR{X}$ be a $C^k$-operator for some $k \ge 1$ such that
+\[
+  R(0) = 0, \qquad DR(0) = 0,
+\]
+and consider the nonlinear integral equation
+\begin{equation}%\tag{IE}
+  \label{switch:eq:aie}
+  u(t) = T(t)x + j^{-1} \int_{0}^{t}\SUNSTAR{T}(t-\tau)R(u(\tau))\,d\tau, \qquad t \ge 0,\, x \in X.
+\end{equation}
+Due to the nonlinearity, for a given initial condition $x \in X$ one can at most guarantee existence of a \emph{maximal solution} $u_x : I_x \to X$ of \cref{switch:eq:aie} on a forward time interval $I_x \DEF [0,t_x)$ for some $0 < t_x \le \infty$ \cite[Chapter VII]{diekmann1995delay}. The family of all such maximal solutions defines a nonlinear semiflow $\Sigma : \DOM(\Sigma) \to X$,
+%
+\
+\begin{equation}
+  \label{switch:eq:semiflow}
+  \DOM(\Sigma) \DEF \{(t,x) \in [0,\infty) \times X\,:\, t \in I_x\}, \qquad \Sigma(t, x) \DEF u_x(t),
+\end{equation}
+%
+that may in addition depend on parameters \cite[Defs. VII.2.1 and VII.2.9]{diekmann1995delay}. (For reasons discussed in \cref{switch:sec:pd}, we will treat parameter dependence differently and separately. Until then, the reader can consider all parameters to be held fixed and absent in the notation.) The domain of $\Sigma$ is open in $[0,\infty) \times X$ and $0 \in X$ is an equilibrium of $\Sigma$,
+\[
+  I_0 = [0,\infty), \qquad \Sigma(t,0) = 0, \qquad \forall\,t \ge 0.
+\]
+The semiflow $\Sigma$ is (in fact, uniformly) differentiable with respect to the state at $(t,0) \in \DOM(\Sigma)$, with the partial derivative
+\begin{equation}\label{switch:eq:linsigma}
+D_2\Sigma(t,0) = T(t), \qquad \forall\,t \ge 0,
+\end{equation}
+where $T$ is the $\mathcal{C}_0$-semigroup that satisfies \cref{switch:eq:T_T0_AIE}.
+
+\begin{remark} \label{switch:rem:complex}
+  For nonlinear problems it is customary to work on a real Banach space $X$. The reason is that these problems often come from concrete equations with nonlinear right-hand sides for which it is unclear if and how they can be extended to complex arguments. Consequently, if we want to analyze the linearization of $\Sigma$ at $0 \in X$ using spectral theory, then it becomes necessary to \emph{complexify} $X$ and the linear operators acting on $X$ \textup{\cite[Section III.7 and last part of Section IV.2]{diekmann1995delay}, \cite[Section 1.3]{Ruston1986}}. In particular, by the spectrum of $A$ we mean the spectrum of its complexification on the complexified Banach space.   
+\end{remark}
+
+\subsection{Critical local center manifolds}\label{switch:sec:criticalcm}
+As in \cref{switch:sec:nonlinear} we continue to assume that $T_0$ is a $\mathcal{C}_0$-semigroup on a \emph{real} Banach space $X$ that is sun-reflexive with respect to $T_0$. In addition we assume that $T_0$ is eventually compact and $L$ is a compact operator. This implies that the perturbed semigroup $T$ defined by \cref{switch:eq:T_T0_AIE} is eventually compact as well \cite[Theorem 2.8]{diekmann2007stability}.
+
+When considering solutions that exist for all (positive and negative) time - such as periodic orbits - it is useful to write \cref{switch:eq:aie} in the translation invariant form
+\begin{equation}
+  \label{switch:eq:AIE-st}
+  u(t) = T(t-s)u(s) + j^{-1} \int_{s}^{t} \SUNSTAR{T}(t-\tau)R(u(\tau))\,d\tau, \qquad -\infty < s \leq t < \infty.
+\end{equation}
+A \emph{solution} of \cref{switch:eq:AIE-st} is a continuous function $u : I \to X$ on some nondegenerate -- possibly unbounded -- interval $I \subseteq \RR$ that satisfies \cref{switch:eq:AIE-st} for all $s, t \in I$ with $s \le t$. Naturally, $u$ is a solution of \cref{switch:eq:AIE-st} if and only if
+\[
+  t - s \in I_{u(s)}, \qquad u(t) = \Sigma(t - s, u(s)), \qquad \forall\,s,t \in I \text{ with } s \le t,
+\]
+where $\Sigma : \DOM(\Sigma) \to X$ is the nonlinear semiflow from \cref{switch:eq:semiflow}. The interval $I$ is often left implicit.
+
+The general center manifold theorems from \cite[Chapter IX]{diekmann1995delay} for equations of the type \cref{switch:eq:AIE-st} apply to the particular case where $T$ is an eventually compact $\mathcal{C}_0$-semigroup on a real, sun-reflexive Banach space. Let us therefore suppose that $0 \in X$ is a nonhyperbolic equilibrium of $\Sigma$, so the generator $A$ of $T$ possesses $1 \le n_0 < \infty$ purely imaginary eigenvalues, counting algebraic multiplicities - see \cref{switch:rem:complex}. Let $X_0 \subseteq X$ be the \emph{real} center eigenspace corresponding to these eigenvalues. Then there exists a $C^k$-smooth $n_0$-dimensional \emph{local} center manifold $\CM$ that is tangent to $X_0$ at the origin. Any solution $u : I \to X$ of \cref{switch:eq:AIE-st} that lies on $\CM$ is differentiable on $I$ and satisfies
+%
+\begin{equation}
+  \label{switch:eq:aode}
+  j\dot{u}(t) = \SUNSTAR{A}j u(t) + R(u(t)), \qquad \forall\,t \in I,
+\end{equation}
+%
+where $\SUNSTAR{A}$ is the {\WSTAR} generator of $\SUNSTAR{T}$. We note that \cref{switch:eq:aode} is an identity in $\SUNSTAR{X}$.
+
+\subsection{The special case of classical DDEs}\label{switch:sec:ddecase}
+It will now be explained how the general results from \cref{switch:sec:duality,switch:sec:nonlinear,switch:sec:criticalcm} apply to classical DDEs. We choose the nonreflexive Banach space $X \DEF C([-h,0],\RR^n)$ as the state space, introduce a $C^k$-smooth operator $F:X \to \RR^n$, and consider an equation with a finite delay $0 < h < \infty$ of the form
+%
+\begin{equation}
+  \label{switch:eq:DDE}\tag{DDE}
+  \dot{x}(t)=F(x_t), \qquad t \ge 0,
+\end{equation}
+%
+with an initial condition
+%
+\begin{equation}
+  \label{switch:eq:DDE-ic}\tag{IC}
+  x_0 = \phi \in X.
+\end{equation}
+%
+For each $t \ge 0$, the function $x_t : [-h,0] \to \RR^n$ defined by
+\[
+  x_t(\theta) \DEF x(t + \theta), \qquad \forall\,\theta \in [-h,0],
+\]
+%
+is called the \emph{history} of the unknown function $x$ at time $t$. Equations of the type \cref{switch:eq:DDE} will be called \emph{classical} DDEs. Note that \cref{switch:eq:discreteDDEs} is quite literally a case in point. By a \emph{solution of the initial value problem} \crefrange{switch:eq:DDE}{switch:eq:DDE-ic} we mean a continuous function $x : [-h,t_+) \to \RR^n$ for some $0 < t_+ \le \infty$ that is differentiable on $[0,t_+)$ and satisfies \cref{switch:eq:DDE,switch:eq:DDE-ic}. When $t_+ = \infty$ we call $x$ a \emph{global solution}.
+
+We want to study \cref{switch:eq:DDE} near an equilibrium at the origin, so assume that $F(0)=0$ and split $F$ into its linear and nonlinear parts,
+%
+\[
+  F(\phi)=\int_0^h d\zeta(\theta) \phi(-\theta) + G(\phi), \qquad \phi \in X.
+\]
+%
+Here $\zeta : [0,h] \to \RR^{n \times n}$ is a matrix-valued function of bounded variation, normalized by the requirement that $\zeta(0) = 0$ and $\zeta$ is right-continuous on the open interval $(0,h)$. The integral is of the Riemann--Stieltjes type, and $G : X \to \RR^n$ is a $C^k$-smooth nonlinear operator with $G(0) = 0$ and $DG(0) = 0$. It is common to denote the linear part more succinctly as
+%
+\begin{equation}
+  \label{switch:eq:lindde_shorthand}
+  \PAIR{\zeta}{\phi} \DEF \int_0^h{d\zeta(\theta)\phi(-\theta}),
+\end{equation}
+%
+so that
+%
+\begin{equation}
+  \label{switch:eq:DDE-RHS}
+  F(\phi) = \PAIR{\zeta}{\phi} + G(\phi),  \qquad \phi \in X.
+\end{equation}
+%
+We first consider the case $G = 0$, whence \cref{switch:eq:DDE} reduces to the linear equation
+%
+\begin{equation}
+  \label{switch:eq:lindde}
+  \dot{x}(t) = \PAIR{\zeta}{x_t}, \qquad t \ge 0.
+\end{equation}
+%
+In order to understand the relationship between \cref{switch:eq:lindde} and \cref{switch:eq:T_T0_AIE} we begin by observing that the trivial DDE
+%
+\begin{equation}
+  \label{switch:eq:trivialdde}
+  \dot{x}(t) = 0, \qquad t \ge 0,
+\end{equation}
+%
+with initial condition \cref{switch:eq:DDE-ic} has the obvious solution
+%
+\[
+  x^{\phi}(t) =
+  \begin{cases}
+    \phi(t),& t \in [-h,0],\\
+    \phi(0),& t > 0.
+  \end{cases}
+\]
+%
+Using this solution, we define the strongly continuous \emph{shift semigroup} $T_0$ on $X$ by
+%
+\begin{equation}
+  \label{switch:eq:LDDE}
+ (T_0(t)\phi)(\theta) \DEF x^{\phi}(t + \theta) =
+  \begin{cases}
+    \phi(t + \theta),& t + \theta \in [-h,0],\\
+    \phi(0),& t + \theta > 0.
+  \end{cases}
+\end{equation}
+%
+We note that $T_0(h)$ is a compact operator, so $T_0$ is eventually compact. For this particular combination of $X$ and $T_0$ the abstract duality structure from \cref{switch:sec:duality} can be constructed systematically and explicitly \cite[Section II.5]{diekmann1995delay}. We only  summarize the few facts that will be used in the sequel.
+
+\begin{remark}[Notation]\label{switch:rem:dotnotation}
+For $\KK \in \{\RR, \CC\}$ let $\KK^n$ be the linear space of column vectors and let $\KKK{n}$ be the linear space of row vectors, both over $\KK$. Elements of $\KK^n$ are denoted by $q = (q_1,q_2,\ldots,q_n)$ - commas between the entries - while elements in $\KKK{n}$ are denoted by $p = (p_1 ~ p_2 ~ \cdots ~ p_n)$ - no commas between the entries. We sometimes use the pairing defined by the row-column matrix multiplication:
+%
+\[
+p \cdot q \DEF pq = \sum_{j=1}^n p_jq_j, \qquad p \in \KKK{n},\, q \in \KK^n.
+\]
+Note that the standard Hermitian inner product between two vectors $p^T,q \in \CC^n$ should be written as $\bar{p} \cdot q$ and {\em not} as $p\cdot q$.
+\end{remark}
+
+\begin{description}[wide]
+\item[On $\SUN{X}$:]
+  The maximal domain of strong continuity of $\STAR{T_0}$ has the representation
+  \begin{equation}
+    \label{switch:eq:xsun_dde}
+    \SUN{X} = \RRR{n} \times L^1([0,h],\RRR{n}),
+  \end{equation}
+  and the duality pairing between $\SUN{\phi} = (c,g) \in \SUN{X}$ and $\phi \in X$ is
+  \begin{equation}
+    \label{switch:eq:pairing_X_sun_X}
+    \PAIR{\SUN{\phi}}{\phi} = c\phi(0)+ \int_{0}^{h}g(\theta)\,\phi(-\theta)\,d\theta.
+  \end{equation}
+\item[On $\SUNSTAR{X}$:]
+  Switching to the dual space of \cref{switch:eq:xsun_dde} yields the representation
+  \[
+    \SUNSTAR{X} = \RR^n \times L^\infty([-h,0], \RR^n),
+  \]
+  and the duality pairing between $\SUNSTAR{\phi} = (a,\psi) \in \SUNSTAR{X}$ and $\SUN{\phi} = (c,g) \in \SUN{X}$ is
+  \begin{equation}
+    \label{switch:eq:pairing_X_sun_star_X_sun}
+    \PAIR{\SUNSTAR{\phi}}{\SUN{\phi}} = ca + \int_{0}^{h}g(\theta)\,\psi(-\theta)\,d\theta.
+  \end{equation}
+  The canonical injection \cref{switch:eq:j} sends $\phi \in X$ to $j\phi = (\phi(0), \phi)$,  mapping $X$ \emph{onto} $\SUNSUN{X}$. Therefore $X$ is sun-reflexive with respect to the shift semigroup $T_0$.
+\end{description}
+
+Next, we specify the linear and nonlinear perturbations $L$ and $R$ in \cref{switch:eq:T_T0_AIE,switch:eq:aie}, respectively, and we relate these two abstract integral equations in $X$ to the linear and nonlinear initial value problems for \cref{switch:eq:DDE}. For $i = 1,\ldots,n$ we denote $\rss_i \DEF (e_i, 0)$ where $e_i$ is the $i$th standard basis vector of $\RR^n$. It is conventional and convenient to introduce the shorthand
+\[
+  w \rss \DEF \sum_{i=1}^n{w_i\rss_i}, \qquad \forall\,w = (w_1,\ldots,w_n) \in \RR^n,
+\]
+and we note that $w\rss = (w, 0) \in \SUNSTAR{X}$. First we define the compact linear perturbation in \cref{switch:eq:T_T0_AIE} as
+\begin{equation}
+  \label{switch:eq:L}
+  L\phi \DEF \PAIR{\zeta}{\phi}\rss,
+\end{equation}
+where the pairing in the right-hand side is given by \cref{switch:eq:lindde_shorthand}. Now \cref{switch:eq:lindde} with \cref{switch:eq:DDE-ic} is equivalent to \cref{switch:eq:T_T0_AIE} with \cref{switch:eq:L} in the following sense: If $T$ is the unique $\mathcal{C}_0$-semigroup on $X$ satisfying \cref{switch:eq:T_T0_AIE} with \cref{switch:eq:L} then $x^{\phi} : [-h,\infty) \to \RR^n$ defined by
+\[
+  x^{\phi}_0 \DEF \phi, \qquad x^{\phi}(t) \DEF (T(t)\phi)(0), \qquad \forall\,t \ge 0,
+\]
+is the unique global solution of \cref{switch:eq:lindde} with \cref{switch:eq:DDE-ic} and
+\[
+  x^{\phi}_t = T(t)\phi, \qquad \forall\,t \ge 0.
+\]
+It remains to specify the nonlinear perturbation $R$ in \cref{switch:eq:aie} as
+\begin{equation}
+  \label{switch:eq:Rss}
+  R(\phi) \DEF G(\phi) \rss,
+\end{equation}
+where $G$ is the nonlinear operator appearing in the splitting \cref{switch:eq:DDE-RHS}. Let $\Sigma$ as in \cref{switch:eq:semiflow} be the nonlinear semiflow generated by the family of maximal solutions of \cref{switch:eq:aie} with \cref{switch:eq:Rss}. The equivalence between \crefrange{switch:eq:DDE}{switch:eq:DDE-ic} and \cref{switch:eq:aie} with \cref{switch:eq:Rss} can be formulated as follows \cite[Prop. VII.6.1]{diekmann1995delay}. The function $x^{\phi} : [-h, t_{\phi}) \to \RR^n$ defined by
+\[
+  x^{\phi}_0 \DEF \phi, \qquad x^{\phi}(t) \DEF \Sigma(t,\phi)(0), \qquad \forall\,t \in I_{\phi},
+\]
+is the \emph{maximal solution} of \crefrange{switch:eq:DDE}{switch:eq:DDE-ic}, in the sense that any other solution necessarily exists only on a subinterval $[-h,t_+)$ for some $0 < t_+ \le t_{\phi}$ and coincides with $x^{\phi}$ there. Moreover,
+\[
+  x^{\phi}_t = \Sigma(t,\phi), \qquad \forall\,t \in I_{\phi}.
+\]
+It is the content of \cref{switch:eq:linsigma} that generation and linearization commute: Starting with \cref{switch:eq:DDE}, linearization of the semiflow $\Sigma$ at the equilibrium $0 \in X$ yields precisely the eventually compact $\mathcal{C}_0$-semigroup $T$ corresponding to the linearized DDE \cref{switch:eq:lindde}.
+
+\subsection{Spectral computations for classical DDEs}
+ The eventual compactness of $T$ implies that the spectrum of its generator $A$ - see \cref{switch:rem:complex} - consists entirely of isolated eigenvalues of finite algebraic multiplicity. These will be called the \emph{eigenvalues of the equilibrium $0 \in X$}. It is clear from \cref{switch:eq:L} that $L$ is not just compact, but actually of finite rank. This implies that all spectral information about $A$ is contained in a holomorphic \emph{characteristic matrix function} $\Delta : \CC \to \CC^{n \times n}$ defined by
+\begin{equation}
+\label{switch:eq:CharMatrix}
+  \Delta(z) \DEF zI - \hat{\zeta}(z) \qquad \text{with} \qquad \hat{\zeta}(z) \DEF \int_0^h{e^{-z\theta}\,d\zeta(\theta)},
+\end{equation}
+where $\zeta$ is the \emph{real} kernel from \cref{switch:eq:lindde_shorthand} \cite[Sections IV.4 and IV.5]{diekmann1995delay}. In particular, the eigenvalues of $A$ are the roots of the \emph{characteristic equation}
+\begin{equation}
+  \label{switch:eq:main:det_delta}
+\DET{\Delta(z)} = 0,
+\end{equation}
+and the algebraic multiplicity of an eigenvalue equals its order as a root of \cref{switch:eq:main:det_delta}.
+
+We will be concerned exclusively with \emph{simple} eigenvalues, for which the geometric and algebraic multiplicities are both equal to one. Let $\lambda \in \CC$ be such a simple eigenvalue of $A$. There exist nonzero right and left null vectors  $q \in \CC^n$ and $p \in \CCC{n}$ of $\Delta(\lambda)$,
+%
+\[
+  \Delta(\lambda)q = 0, \qquad p\Delta(\lambda) = 0.
+\]
+%
+The second equation is of course equivalent to $p^T$ being a nonzero right null vector of $\Delta^T(\lambda)$. The one-dimensional eigenspaces of $A$ and $\STAR{A}$ corresponding to $\lambda$ are spanned by eigenfunctions $\phi$ and $\SUN{\phi}$, respectively, with
+%
+\begin{equation}
+  \label{switch:eq:eigenfunction}
+  \phi(\theta) = e^{\lambda\theta}q, \quad \theta \in [-h,0],
+\end{equation}
+and
+\begin{equation}
+  \label{switch:eq:eigenfunction1}
+  \SUN{\phi} = \left(p, \theta \mapsto p\int_{\theta}^{h}e^{\lambda(\theta-\tau)}\,d\zeta(\tau)\right), \quad \theta \in [0,h].
+\end{equation}
+%
+We note that we have implicitly used - and will use consistently - the complexifications of $X$ and of the representation \cref{switch:eq:xsun_dde} of $\SUN{X}$. For a simple eigenvalue $\lambda$,
+%
+\[
+  \PAIR{\SUN{\phi}}{\phi} \neq 0,
+\]
+%
+where the duality pairing is understood to be the complexification of \cref{switch:eq:pairing_X_sun_X}. This nonequality implies that the eigenfunctions can be normalized to satisfy $\PAIR{\SUN{\phi}}{\phi} = 1$. In fact, from \cref{switch:eq:pairing_X_sun_X,switch:eq:eigenfunction} one computes
+%
+\begin{equation}
+  \label{switch:eq:normpair}
+  \PAIR{\SUN{\phi}}{\phi} = p\Delta'(\lambda)q,
+\end{equation}
+%
+so this normalization can be effectuated by scaling $p$ and $q$ such that $p\Delta'(\lambda)q = 1$. Finally, it is easily seen that if $\mu \neq \lambda$ is another simple eigenvalue of $A$ with eigenvector $\psi$ and adjoint eigenvector $\SUN{\psi}$, then
+\begin{equation}
+  \label{switch:eq:zeropair}
+  \PAIR{\SUN{\phi}}{\psi} = 0, \qquad \PAIR{\SUN{\psi}}{\phi} = 0.
+\end{equation}
+
+\subsection{Solvability of linear operator equations} \label{switch:sec:solvability}
+When computing the normal form coefficients in \cref{switch:sec:Coefficients-of-parameter} using the homological equation as introduced in \cref{switch:sec:normal-forms}, we will frequently encounter linear operator equations of the form
+\begin{equation}
+  \label{switch:eq:general_system_sunstar}
+  (z I-\SUNSTAR{A})(v_0,v) = (w_0,w),
+\end{equation}
+where $z$ is a complex number, $(w_0,w) \in \SUNSTAR{X}$ is given and $(v_0,v) \in D(\SUNSTAR{A})$ is the unknown. In general, both $z$ and the right-hand side will have a nontrivial imaginary part, so here and from here onward, it is necessary to regard systems of the form \cref{switch:eq:general_system_sunstar} as the complexification of the original operator equations. We will however not attach additional subscripts to the operator symbols, hoping that this omission will not cause confusion.
+
+Since $\sigma(A)$ consists exclusively of point spectrum, there are two situations to consider depending on whether or not $z$ is an eigenvalue. If $z$ is \emph{not} an eigenvalue of $A$ then $z$ belongs to the resolvent set $\rho(A)$ of $A$ and \cref{switch:eq:general_system_sunstar} admits a unique solution,
+\[
+  (v_0,v) =  \left(z I-\SUNSTAR{A}\right)^{-1}(w_0,w).
+\]
+In order to actually find this solution, one needs a representation of the resolvent operator of $\SUNSTAR{A}$. The general result can be found in \cite[Corollary IV.5.4]{diekmann1995delay}, but here we only require a special case.
+\begin{lemma}\label{switch:lem:regular_solution}
+  Suppose that $z$ is not an eigenvalue of $A$, so \cref{switch:eq:general_system_sunstar} has a unique solution $(v_0, v)$. If the right-hand side is represented by
+  \[
+    (w_0, w) = \left(w_0, \theta \mapsto  e^{z\theta}\Delta^{-1}(z)\eta\right),
+  \]
+  for some fixed vector $\eta \in \CC^n$, then this solution has the representation
+  \[
+    v_0 = v(0), \qquad v(\theta) = \Delta^{-1}(z)\left(e^{z\theta}w_0  + \left(\Delta'(z) - I -\theta\Delta(z)\right)w(\theta) \right).
+  \]
+\end{lemma}
+\begin{proof}
+ Write $(w_0, w) = (w_0, 0) + (0, \theta \mapsto  e^{z\theta}\Delta^{-1}(z)\eta)$, use the linearity of $(zI - \SUNSTAR{A})^{-1}$ and apply both cases of \cite[Corollary 3.4]{Janssens:Thesis}.
+\end{proof}
+\par
+On the other hand, suppose that $z = \lambda$ is an eigenvalue. Then \cref{switch:eq:general_system_sunstar} need not be consistent. In fact, a solution exists if and only if
+\begin{equation}\tag{FSC}
+  \label{switch:eq:FSC}
+  \PAIR{(w_0,w)}{\SUN{\phi}} = 0, \qquad \forall\,\SUN{\phi} \in \mathcal{N}(\lambda I - \STAR{A}).
+\end{equation}
+A proof can be found in \cite[Lemma 3.2]{Janssens:Thesis}. This condition is often referred to as the \emph{Fredholm solvability condition}. We note that the duality pairing in \cref{switch:eq:FSC} may be evaluated in concrete cases using \cref{switch:eq:eigenfunction} and the complexification of \cref{switch:eq:pairing_X_sun_star_X_sun}. This will be done many times in \cref{switch:sec:Coefficients-of-parameter} when we apply \cref{switch:eq:FSC} to specific operator equations.
+\par
+If $z = \lambda$ is an eigenvalue and \cref{switch:eq:general_system_sunstar} is consistent, then clearly its solutions are not unique. The bordered \emph{operator} inverse
+\[
+\INV{(\lambda I - \SUNSTAR{A})} : \mathcal{R}(\lambda I - \SUNSTAR{A}) \to \DOM(\SUNSTAR{A}),
+\]
+is used to select a particular solution in a systematic and convenient way. For the case that $\lambda$ is a \emph{simple} eigenvalue, it assigns the unique solution of the extended linear system
+\begin{equation}
+  \label{switch:eq:bordop}
+(\lambda I - \SUNSTAR{A})(v_0,v) = (w_0,w), \qquad \PAIR{(v_0,v)}{\SUN{\phi}} = 0,
+\end{equation}
+to every $(w_0,w)$ for which \cref{switch:eq:general_system_sunstar} is consistent. The following lemma from \cite[Corollary 3.7]{Janssens:Thesis} gives an explicit representation for a special case, while a more general result can be found in \cite[Proposition 3.6]{Janssens:Thesis}.
+\begin{lemma}\label{switch:lem:bordered}
+  Let $z = \lambda$ be a simple eigenvalue with eigenvector $\phi$ and adjoint eigenvector $\SUN{\phi}$ as in \cref{switch:eq:eigenfunction}, normalized to $\PAIR{\SUN{\phi}}{\phi} = 1$. Suppose \cref{switch:eq:general_system_sunstar} is consistent for a given right-hand side of the form
+  \[
+    (w_0,w) = (\eta,0) + \kappa (q, \phi),
+  \]
+  where $\eta \in \CC^n$ and $\kappa \in \CC$. Then the unique solution $(v_0,v)$ of \cref{switch:eq:bordop} is given by
+  \[
+    v_0 = \xi + \gamma q, \qquad v(\theta) = e^{\lambda\theta}(v_0 - \kappa \theta q),
+  \]
+  with $\xi = \INV{\Delta}(\lambda)(\eta + \kappa\Delta'(\lambda)q)$ and $\gamma = -p\Delta'(\lambda)\xi + \frac{1}{2}\kappa p \Delta''(\lambda)q$.
+\end{lemma}
+In \cref{switch:sec:Coefficients-of-parameter} we will use the shorthand notation
+\[
+  v = \BINV{\lambda}(\eta,\kappa),
+\]
+for the solution in \cref{switch:lem:bordered}. We observe that the expression for $\xi$ itself involves a bordered {\em matrix} inverse,
+\[
+\INV{\Delta}(\lambda) : \mathcal{R}(\Delta(\lambda)) \to \CC^n,
+\]
+which assigns the unique solution of the extended linear system
+\[
+  \Delta(\lambda)x = y, \qquad p\cdot x = 0,
+\]
+to every $y \in \CC^n$ for which the system $\Delta(\lambda)x = y$ is consistent - also see \cref{switch:rem:dotnotation} for the notation. In practice, $x=\INV{\Delta}(\lambda)y$ can be obtained by solving the nonsingular bordered \emph{matrix} system
+\[
+\begin{pmatrix}
+\Delta(\lambda) & q\\
+p & 0
+\end{pmatrix}\begin{pmatrix}
+x\\
+s
+\end{pmatrix}=\begin{pmatrix}
+y\\
+0
+\end{pmatrix}
+\]
+for the unknown $(x,s) \in \CC^{n+1}$ that necessarily satisfies $s = 0$. The properties of (finite dimensional) bordered linear systems and their role in numerical bifurcation analysis are discussed more extensively in \cite{Keller1987Numerical} and \cite[Chapter 3]{govaerts2000numerical}.
+ 
+\section{Parameter dependence and classical DDEs}\label{switch:sec:pd}
+In \cref{switch:sec:pd:motivation} we motivate our approach by explaining why the standard literature result does not apply to the problem at hand. This is most easily done at the concrete level of classical DDEs. The structure of the remaining subsections parallels that of \cref{switch:sec:sunstar}. Namely, we first solve the problem of parameter dependence at the more abstract level of dual perturbation theory. In the final \cref{switch:sec:pd:ddes} we then return to classical DDEs to see how the general results apply in this special case.
+
+\subsection{Motivation}\label{switch:sec:pd:motivation}
+We are concerned with the situation where the right-hand side of \cref{switch:eq:DDE} depends explicitly on parameters. Specifically, we consider
+%
+\begin{equation}
+  \label{switch:eq:pd-DDE}
+  \dot{x}(t)= F(x_t, \alpha), \qquad t \ge 0,
+\end{equation}
+%
+where $F: X \times \RR^p \to \RR^n$ is $C^k$-smooth for some $k \ge 1$ with $F(0,0) = 0$. We assume that at the critical parameter value $\alpha = 0$ the linearization of \cref{switch:eq:pd-DDE} has $1 \le n_0 < \infty$ purely imaginary eigenvalues, counting multiplicities. The goal of \cref{switch:sec:pd} is to obtain a parameter-dependent family of local center manifolds for a class of evolution equations that includes \cref{switch:eq:pd-DDE}.
+
+In \cite[Section IX.9.1]{diekmann1995delay} this problem is approached as follows. One augments \cref{switch:eq:pd-DDE} with a trivial equation for the constant parameter dynamics. This gives the system
+\begin{equation}
+  \label{switch:eq:pd:augmented}
+  \left\{
+    \begin{aligned}
+      \dot{x}(t) &= F(x_t,\mu(t)),\\
+      \dot{\mu}(t) &= 0,
+    \end{aligned}
+  \right.
+  \qquad t \ge 0,
+\end{equation}
+on the state space $\BM{X} \DEF X \times \RR^p$, with $X = C([-h,0],\RR^n)$ as before in \cref{switch:sec:ddecase}. Then the right-hand side of the first equation of \cref{switch:eq:pd:augmented} is split as
+\begin{equation}
+  \label{switch:eq:pd:splitting_book}
+  F(\phi,\alpha) = D_1F(0,0)\phi + \tilde{G}(\phi,\alpha),
+\end{equation}
+which defines $\tilde{G} : \BM{X} \to \RR^n$, cf. \cite[(9.7) in Section IX.9.1]{diekmann1995delay}. The first term on the right of \cref{switch:eq:pd:splitting_book} acts only on the $X$-component of the state in $\BM{X}$, so the semigroup $\tilde{\BM{T}}$ on $\BM{X}$ obtained by perturbing the shift-semigroup $\BM{T}_0$ is \emph{diagonal}.
+
+However, there is an obstruction. In order to satisfy the hypotheses of the parameter-\emph{in}dependent center manifold theorem, $\tilde{G}$ must be a pure nonlinearity on $\BM{X}$, i.e.
+\[
+\tilde{G}(0,0) = 0, \qquad D_1\tilde{G}(0,0) = 0, \qquad D_2\tilde{G}(0,0) = 0.
+\]
+The first two of these conditions are clearly fulfilled, but in general there is no reason for the third condition to be met. It \emph{does} hold when $\tilde{G}(0,\alpha) = 0$ for all $\alpha \in \RR^p$ in a neighborhood of zero, i.e. when the zero equilibrium of \cref{switch:eq:pd-DDE} persists under small parameter variations. For a generic fold-Hopf bifurcation - as well as for a generic Bogdanov-Takens bifurcation that we do not discuss here - \emph{there is no such persistence}.
+
+In this article, the above difficulty is resolved by considering instead of \cref{switch:eq:pd:splitting_book} the splitting
+\begin{equation}
+  \label{switch:eq:pd:splitting}
+  F(\phi,\alpha) = D_1F(0,0)\phi + D_2F(0,0)\alpha + G(\phi,\alpha).
+\end{equation}
+Using this splitting, \cref{switch:eq:pd:augmented} is written as
+\begin{equation}
+  \label{switch:eq:pd-DDE12}
+  \left\{
+    \begin{aligned}
+      \dot{x}(t) &= D_1F(0,0)x_t + D_2F(0,0)\mu(t) + G(x_t, \mu(t)),\\
+      \dot{\mu}(t) &= 0,
+    \end{aligned}
+  \right.
+  \qquad t \ge 0.
+\end{equation}
+Now \emph{both} $D_1F(0,0)$ \emph{as well as} $D_2F(0,0)$ appear in the perturbation of $\BM{T}_0$. As a consequence the perturbed semigroup $\BM{T}$ is no longer diagonal, but still simple enough for a complete analysis. Moreover,
+\begin{equation}
+  \label{switch:eq:G_conditions}
+  G(0,0) = 0, \qquad D_1G(0,0) = 0, \qquad D_2G(0,0) = 0,
+\end{equation}
+so the  parameter-independent center manifold theorem can be applied without having to assume equilibrium persistence. Of course $G = \tilde{G}$ and $\BM{T} = \tilde{\BM{T}}$ whenever $D_2F(0,0) = 0$.
+
+\begin{remark}\label{switch:rem:more_general}
+ In a first attempt we regarded the augmented system \cref{switch:eq:pd:augmented} as a classical DDE on the state space $C([-h,0], \RR^{n + p})$, also see \textup{\cite{GuoMan2011parCM}}, but we found this approach to be a bit unsatisfactory. Namely, the proofs in \cref{switch:sec:pd:duality,switch:sec:spectral_bold,switch:sec:nonlinear_bold,switch:sec:cm_bold} do not depend on the details of the class of delay equations under consideration, so their structure is most clearly explained at a more abstract level. Had we insisted on working in the state space $C([-h,0], \RR^{n + p})$, then that structure would have been obfuscated by the appearance of inessential details particular to classical DDEs. 
+\end{remark}
+
+\subsection{Duality structure and linear perturbation}\label{switch:sec:pd:duality}
+We work in the setting of \cref{switch:sec:duality}. Namely, let $T_0$ be a $\mathcal{C}_0$-semigroup on a real or complex Banach space $X$ that is sun-reflexive with respect to $T_0$. We write $\KK \in \{\RR, \CC\}$ for the underlying scalar field - as in \cref{switch:rem:dotnotation}. Define $\BM{T}_0$ on $\BM{X}$ by
+\begin{equation}
+  \label{switch:eq:T0_bold}
+  \BM{T}_0(t) \DEF \diag{(T_0(t), I_p)}.
+\end{equation}
+The procedure of taking adjoints and restrictions (twice) then yields semigroups $\STAR{\BM{T}_0}$, $\SUN{\BM{T}_0}$, $\SUNSTAR{\BM{T}_0}$ and $\SUNSUN{\BM{T}_0}$ on $\STAR{\BM{X}} \simeq \STAR{X} \times \KK^p$, $\SUN{\BM{X}} \simeq \SUN{X} \times \KK^p$, $\SUNSTAR{\BM{X}} \simeq \SUNSTAR{X} \times \KK^p$ and $\SUNSUN{\BM{X}} \simeq \SUNSUN{X} \times \KK^p$. (The symbol $\simeq$ indicates an identification via a natural isometric isomorphism.) It is straightforward to check that on $\SUNSTAR{\BM{X}}$ we have
+%
+\begin{equation}
+  \label{switch:eq:T0_sun_star_bold}
+  \SUNSTAR{\BM{T}_0}(t) \ = \diag{(\SUNSTAR{T_0}(t), I_p)},
+\end{equation}
+%
+and that the canonical injection $\BM{j} : \BM{X} \to \SUNSTAR{\BM{X}}$ has the form
+%
+\begin{equation}
+  \label{switch:eq:j_bold}
+  \BM{j} = \diag{(j, I_p)},
+\end{equation}
+%
+where $j : X \to \SUNSTAR{X}$ is the canonical injection from \cref{switch:eq:j}. In particular, $\BM{X}$ is sun-reflexive with respect to $\BM{T}_0$.
+
+As in \cref{switch:sec:duality} we now introduce a bounded linear perturbation $\BM{L} : \BM{X} \to \SUNSTAR{\BM{X}}$ of $\BM{T}_0$. We let it be of the form
+%
+\begin{equation}
+  \label{switch:eq:B_bold}
+  \BM{L} =
+  \begin{pmatrix}
+    L& L_p\\
+    0& 0
+  \end{pmatrix},
+\end{equation}
+%
+with $L : X \to \SUNSTAR{X}$ and $L_p : \KK^p \to \SUNSTAR{X}$ bounded linear operators. Perturbing $T_0$ by $L$ and $\BM{T}_0$ by $\BM{L}$ yields $\mathcal{C}_0$-semigroups $T$ on $X$ and $\BM{T}$ on $\BM{X}$, respectively. Let $A$ and $\BM{A}$ be their generators.
+
+\begin{remark}
+  There are at least two equivalent ways to compute $\BM{T}$ and $\BM{A}$ on $\BM{X}$ and their {\WSTAR} counterparts $\SUNSTAR{\BM{T}}$ and $\SUNSTAR{\BM{A}}$ on $\SUNSTAR{\BM{X}}$. One approach - suggested to us by Odo Diekmann - uses integrated semigroup theory to calculate first $\BM{T}$ and next $\SUNSTAR{\BM{T}}$. Then $\SUNSTAR{\BM{A}}$ and $\BM{A}$ are calculated, in that order.
+
+  Here we go the other way around: We start by calculating $\SUNSTAR{\BM{A}}$ and use it to obtain $\SUNSTAR{\BM{T}}$. If desired $\BM{A}$ and $\BM{T}$ can then be found by application of \cref{switch:eq:j_bold} and its inverse. This approach is more elementary - we use only theory that was already introduced in \cref{switch:sec:duality} - and it yields the same outcome, as it should.
+\end{remark}
+
+\begin{proposition}\label{switch:prop:A_sun_star_bold}
+  The {\WSTAR} generator $\SUNSTAR{\BM{A}}$ of $\SUNSTAR{\BM{T}}$ has the representation
+  %
+  \[
+    \DOM(\SUNSTAR{\BM{A}}) = \DOM(\SUNSTAR{A})\times \KK^p, \qquad \SUNSTAR{\BM{A}} =
+    \begin{pmatrix}
+      \SUNSTAR{A}& L_p\\
+      0& 0
+    \end{pmatrix},
+  \]
+  %
+  where $\SUNSTAR{A}$ is the {\WSTAR} generator of $\SUNSTAR{T}$.
+\end{proposition}
+\begin{proof}
+  According to the general theory of \cref{switch:sec:duality} and \cref{switch:eq:A_sunstar} in particular, we have
+  %
+  \[
+    \DOM(\SUNSTAR{\BM{A}}) = \DOM(\SUNSTAR{\BM{A}_0}), \qquad \SUNSTAR{\BM{A}} = \SUNSTAR{\BM{A}_0} + \BM{L}\BM{j}^{-1},
+  \]
+  %
+  From \cref{switch:eq:T0_sun_star_bold} we see that
+  %
+  \[
+    \DOM(\SUNSTAR{\BM{A}_0}) = \DOM(\SUNSTAR{A_0})\times \KK^p, \qquad \SUNSTAR{\BM{A}_0} = \diag{(\SUNSTAR{A_0}, 0)}.
+  \]
+  %
+  Using \cref{switch:eq:j_bold,switch:eq:B_bold} we calculate
+  %
+  \[
+    \SUNSTAR{\BM{A}_0} + \BM{L}\BM{j}^{-1} =
+    \begin{pmatrix}
+      \SUNSTAR{A_0}& 0\\
+      0& 0
+    \end{pmatrix} +
+    \begin{pmatrix}
+      L& L_p\\
+      0& 0
+    \end{pmatrix}
+    \begin{pmatrix}
+      j^{-1}& 0\\
+      0& I_p
+    \end{pmatrix},
+  \]
+  %
+  and the result follows.
+\end{proof}
+
+\begin{lemma}\label{switch:lem:Lp}
+  Let $\SUN{L_p} : \SUN{X} \to \KK^p$ be the restriction of $\STAR{L_p}$ to $\SUN{X}$. Then $\SUNSTAR{L_p} = L_p$.
+\end{lemma}
+\begin{proof}
+  We begin by noting that - strictly speaking - this statement involves two canonical identifications. Namely, let $i : \SUN{X} \to \SUNSTARSTAR{X}$ and $i_p : \KK^p \to \STARSTAR{{\KK^p}}$ be the canonical injection and bijection, respectively. Then $\SUN{L_p} \DEF \STAR{L_p} i$ and we need to prove that $\SUNSTAR{L_p}i_p = L_p$. For this it is not difficult to show that
+  \[
+    \PAIR{\SUNSTAR{L_p}i_p\alpha}{\SUN{\phi}} = \PAIR{L_p\alpha}{\SUN{\phi}},
+  \]
+  for all $\alpha \in \KK^p$ and for all $\SUN{\phi} \in \SUN{X}$.
+\end{proof}
+
+For the purpose of notation, we define the \emph{integrated semigroup} $\SUNSTAR{W}$ for  $\SUNSTAR{T}$ as
+\begin{equation}\label{switch:eq:integrated_semigroup}
+  \SUNSTAR{W}(t)\SUNSTAR{\phi} \DEF \int_0^t{\SUNSTAR{T}(\tau)\SUNSTAR{\phi}\,d\tau}, \qquad t \ge 0.
+\end{equation}
+with on the right a {\WSTAR} Riemann integral of the same type as the integral in \cref{switch:eq:T_T0_AIE}.
+
+\begin{proposition}\label{switch:prop:T_bold_sun_star}
+  The semigroup $\SUNSTAR{\BM{T}}$ that is {\WSTARLY} generated by $\SUNSTAR{\BM{A}}$ has the representation
+  %
+  \begin{equation}\label{switch:eq:T_bold_sun_star}
+    \SUNSTAR{\BM{T}}(t) =
+    \begin{pmatrix}
+      \SUNSTAR{T}(t)& \SUNSTAR{W}(t)L_p\\
+      0& I_p
+    \end{pmatrix}, \qquad t \ge 0.
+  \end{equation}
+  %
+\end{proposition}
+\begin{proof}
+  We define a one-parameter family $\BM{S}$ of bounded linear operators on $\SUN{\BM{X}}$ by
+  \[
+    \BM{S}(t) =
+    \begin{pmatrix}
+      \SUN{T}(t)& 0\\
+      \SUN{L_p}\SUN{W}(t)& I_p
+    \end{pmatrix}, \qquad t \ge 0,
+  \]
+  where
+  \[
+    \SUN{W}(t)\SUN{\phi} \DEF \int_0^t{\SUN{T}(\tau)\SUN{\phi}\,d\tau}, \qquad t \ge 0.
+  \]
+  It is easy to check that $\BM{S}$ is a $\mathcal{C}_0$-semigroup on $\SUN{\BM{X}}$. By \cref{switch:lem:Lp} the adjoint semigroup $\STAR{\BM{S}}(t)$ equals the right-hand side of \cref{switch:eq:T_bold_sun_star} for all $t \ge 0$. We will show that the {\WSTAR} generator $\SUNSTAR{\BM{A}}$ of $\SUNSTAR{\BM{T}}$ is also the {\WSTAR} generator of $\STAR{\BM{S}}$. This will then imply that $\SUNSTAR{\BM{T}} = \STAR{\BM{S}}$.
+  \par
+We use \cref{switch:prop:A_sun_star_bold}. Let $\BM{C}$ be the generator of $\BM{S}$, so $\STAR{\BM{C}}$ is the {\WSTAR} generator of $\STAR{\BM{S}}$. For any $(\SUNSTAR{\phi}, \alpha)$ in $\SUNSTAR{\BM{X}}$ and any $t > 0$ we have
+\[
+  \frac{1}{t}\left(\STAR{\BM{S}}(t)(\SUNSTAR{\phi}, \alpha) - (\SUNSTAR{\phi}, \alpha) \right) = \frac{1}{t}
+  \begin{pmatrix}
+    \SUNSTAR{T}(t)\SUNSTAR{\phi} - \SUNSTAR{\phi}\\
+    0
+  \end{pmatrix} +
+  \frac{1}{t}
+  \begin{pmatrix}
+    \SUNSTAR{W}(t)L_p\alpha\\
+    0
+  \end{pmatrix}.
+\]
+We note that $t^{-1}\SUNSTAR{W}(t)L_p\alpha \to L_p\alpha$ {\WSTARLY} as $t \downarrow 0$. It follows that the right-hand side converges {\WSTARLY} if and only if $\SUNSTAR{\phi} \in D(\SUNSTAR{A})$ and in that case the {\WSTAR}-limit equals $(\SUNSTAR{A}\SUNSTAR{\phi} + L_p\alpha, 0) = \SUNSTAR{\BM{A}}(\SUNSTAR{\phi}, \alpha)$. We conclude that $\STAR{\BM{C}} = \SUNSTAR{\BM{A}}$.
+\end{proof}
+
+\subsection{Spectral theory and the center eigenspace}\label{switch:sec:spectral_bold}
+Let $T_0$ be a $\mathcal{C}_0$-semigroup on a complex Banach space $X$ that is sun-reflexive with respect to $T_0$. For the purpose of spectral theory, we explicitly take $\CC$ as the underlying scalar field. In examples, $X$ will often be a complexification of a real Banach space, see \cref{switch:rem:complex}.
+
+We are interested in a description of the spectrum and the corresponding (generalized) eigenspaces of the generator $\BM{A}$ of $\BM{T}$. In particular, \cref{switch:prop:compact_bold,switch:prop:real_center_subspace_bold} below guarantee, respectively, the existence and smooth parametrization of the parameter-dependent local center manifold in \cref{switch:sec:cm_bold}. 
+
+\begin{proposition}\label{switch:prop:spectrum_bold}
+  The spectrum $\sigma(\SUNSTAR{\BM{A}}) = \sigma(\SUNSTAR{A}) \cup \{0\}$ with resolvent operator
+  %
+   \begin{equation}
+    \label{switch:eq:resolvent_bold}
+    R_z(\SUNSTAR{\BM{A}}) =
+    \begin{pmatrix}
+      R_z(\SUNSTAR{A})& z^{-1}R_z(\SUNSTAR{A})L_p\\
+      0 & z^{-1}I_p
+    \end{pmatrix},
+  \end{equation}
+  %
+  for every $z$ in the resolvent set $\rho(\SUNSTAR{\BM{A}})$.
+\end{proposition}
+\begin{proof}
+  From \cref{switch:prop:A_sun_star_bold} we have
+  \[
+    z I - \SUNSTAR{\BM{A}} =
+    \begin{pmatrix}
+      z I - \SUNSTAR{A}& -L_p\\
+      0& z I_p
+    \end{pmatrix}.
+  \]
+  This upper triangular operator matrix has a bounded inverse if and only if \emph{both} entries on its diagonal have bounded inverses, which happens if and only if $z \in \rho(\SUNSTAR{A})$ \emph{and} $z \neq 0$. In that case, the inverse is given precisely by the stated expression for $R_z(\SUNSTAR{\BM{A}}) \DEF (z I - \SUNSTAR{\BM{A}})^{-1}$.
+\end{proof}
+
+\emph{In addition we assume that $T_0$ is eventually compact and the perturbation $L$ in \cref{switch:eq:B_bold} is compact.} As a consequence, the spectral analysis of $\SUNSTAR{\BM{A}}$ reduces to an analysis of the poles of its resolvent operator \cite[Corollary V.3.2]{Engel2000}, \cite[Section V.10]{Taylor1980}.
+
+\begin{proposition}\label{switch:prop:compact_bold}
+  $\BM{T}$ is an eventually compact $\mathcal{C}_0$-semigroup.
+\end{proposition}
+\begin{proof}
+The eventual compactness of $T_0$, the finite rank of $I_p$ and \cref{switch:eq:T0_bold} together imply that $\BM{T}_0$ is eventually compact. Since $L_p$ has finite rank and $L$ is compact by assumption, it follows from \cref{switch:eq:B_bold} that $\BM{L}$ is compact, so $\BM{T}$ is eventually compact by \cite[Theorem 2.8]{diekmann2007stability}.
+\end{proof}
+
+\begin{theorem}
+  \label{switch:thm:eigspaces_bold}
+  The generalized eigenspace corresponding to $\lambda \in \sigma(\SUNSTAR{\BM{A}})$ is given by
+  %
+  \[
+    \mathcal{M}_{\lambda}(\SUNSTAR{\BM{A}}) =
+    \begin{cases}
+      \mathcal{M}_{\lambda}(\SUNSTAR{A}) \times \{0\}, &\text{if } \lambda \neq 0,\\
+      \mathcal{M}_0(\SUNSTAR{A}) \times \{0\} \oplus
+    \left\{ \left(\Gamma_0L_p\alpha, \alpha\right) \,:\, \alpha \in \CC^p \right\}, &\text{if } \lambda = 0,
+    \end{cases}
+  \]
+  %
+  where $\Gamma_0$ is a bounded linear operator on $\SUNSTAR{X}$ mapping into $\SUNSUN{X}$.
+\end{theorem}
+\begin{proof}
+  Let $\lambda \in \sigma(\SUNSTAR{\BM{A}})$ be arbitrary. Taking residues at $z = \lambda$ in \cref{switch:eq:resolvent_bold}, we obtain
+  %
+  \begin{equation}
+    \label{switch:eq:P_bold}
+    \SUNSTAR{\BM{P}_{\lambda}} =
+    \begin{pmatrix}
+      \SUNSTAR{P_{\lambda}}& \Gamma_{\lambda}L_p\\
+      0& I_p\delta_{\lambda}
+    \end{pmatrix}, \qquad \Gamma_{\lambda} \DEF \RES_{z=\lambda}{z^{-1}R_z(\SUNSTAR{A})},
+  \end{equation}
+  %
+  where $\delta_{\lambda} \DEF \delta_{\lambda,0}$ is the Kronecker delta and $\SUNSTAR{\BM{P}_{\lambda}}$ and $\SUNSTAR{P_{\lambda}}$ are the spectral projectors corresponding to $\lambda$ for $\SUNSTAR{\BM{A}}$ and $\SUNSTAR{A}$. (If $\lambda$ is in the resolvent set of the respective operator, then the residue - hence the spectral projector - is identically zero.) $\Gamma_{\lambda}$ is pointwise equal to a contour integral with an integrand in the closed subspace $\SUNSUN{X}$ of $\SUNSTAR{X}$, so $\Gamma_{\lambda}$ maps into $\SUNSUN{X}$.
+
+  We will now calculate the range of $\SUNSTAR{\BM{P}_{\lambda}}$ from \cref{switch:eq:P_bold}. In general,
+  %
+  \begin{equation}
+    \label{switch:eq:gen_eigenspace_bold}
+    \mathcal{M}_{\lambda}(\SUNSTAR{\BM{A}}) =
+    \left\{
+      \begin{pmatrix}
+        \SUNSTAR{P_{\lambda}}\SUNSTAR{\phi}\\
+        0
+      \end{pmatrix}
+      +
+      \begin{pmatrix}
+        \Gamma_{\lambda}L_p\alpha\\
+        \alpha\delta_{\lambda}
+      \end{pmatrix}
+      \,:\, (\SUNSTAR{\phi},\alpha) \in \SUNSTAR{\BM{X}}
+    \right\}.
+  \end{equation}
+  %
+  First we assume that $\lambda \neq 0$, so $\delta_{\lambda} = 0$. We are going to show that
+  %
+   \begin{equation}\label{switch:eq:lambda_not_zero}
+    \left\{\SUNSTAR{P_{\lambda}}\SUNSTAR{\phi} + \Gamma_{\lambda}L_p\alpha \,:\, (\SUNSTAR{\phi}, \alpha) \in \SUNSTAR{\BM{X}}\right\} = \mathcal{M}_{\lambda}(\SUNSTAR{A}).
+  \end{equation}
+  %
+   Together with \cref{switch:eq:gen_eigenspace_bold} this will then prove the theorem for $\mathcal{M}_{\lambda}(\SUNSTAR{\BM{A}})$. To verify \cref{switch:eq:lambda_not_zero} let $p \in \NN$ be the order of $\lambda$ as a pole of $R_z(\SUNSTAR{A})$. For $n = 1,\ldots,p$ let $B_n$ be the coefficient of $(z - \lambda)^{-n}$ in the Laurent series for $R_z(\SUNSTAR{A})$. A small computation shows that
+  %
+  \begin{equation}
+    \label{switch:eq:Gamma}
+    \Gamma_{\lambda} = \sum_{k=1}^p{(-1)^{k+1}\lambda^{-k}B_k}.
+  \end{equation}
+  %
+  From \cite[Section V.10]{Taylor1980} we recall the relation $B_{n+1} = (\SUNSTAR{A} - \lambda I)^n B_1$ for all $n \in \NN$. Since $B_1 = \SUNSTAR{P_{\lambda}}$ and its range $\mathcal{M}_{\lambda}(\SUNSTAR{A})$ is an invariant subspace of $\SUNSTAR{A}$, this relation implies that $B_k$ takes values in $\mathcal{M}_{\lambda}(\SUNSTAR{A})$ for all $k = 1,\ldots,p$, so the same is true for $\Gamma_{\lambda}$ by \cref{switch:eq:Gamma}. From this it follows that \cref{switch:eq:lambda_not_zero} holds.
+  \par
+  For the remaining case $\lambda = 0$ we have $\delta_{\lambda} = 1$, so from \cref{switch:eq:gen_eigenspace_bold} we get the direct sum
+  \[
+    \mathcal{M}_0(\SUNSTAR{\BM{A}}) =
+    \left\{
+      \begin{pmatrix}
+        \SUNSTAR{P_0}\SUNSTAR{\phi}\\
+        0
+      \end{pmatrix}
+      \,:\, \SUNSTAR{\phi} \in \SUNSTAR{X}
+    \right\}
+    \oplus
+    \left\{
+      \begin{pmatrix}
+        \Gamma_0L_p\alpha\\
+        \alpha
+      \end{pmatrix}
+      \,:\, \alpha \in \CC^p
+    \right\}.
+  \]
+  The first summand equals $\mathcal{M}_0(\SUNSTAR{A}) \times \{0\}$ and this gives the result.
+\end{proof}
+
+\begin{corollary}
+  \label{switch:cor:center_subspace_bold}
+  The center eigenspace $\BM{X}_0$ corresponding to the purely imaginary eigenvalues of $\BM{A}$ is given by
+  \[
+    \BM{X}_0 = X_0 \times \{0\} \oplus \left\{ \left(j^{-1}\Gamma_0L_p\alpha, \alpha \right) \,:\, \alpha \in \CC^p \right\},
+  \]
+  with $\DIM{\BM{X}_0} = \DIM{X_0} + p$.
+\end{corollary}
+\begin{proof}
+  By \cref{switch:prop:spectrum_bold} we have the disjoint union $\sigma(\SUNSTAR{\BM{A}}) = (\sigma(\SUNSTAR{A}) \setminus \{0\}) \cup \{0\}$. Using this and \cref{switch:thm:eigspaces_bold} we first compute the center eigenspace for $\SUNSTAR{\BM{A}}$ as
+  \[
+    \SUNSTAR{\BM{X}_0} = \SUNSTAR{X_0} \times \{0\} \oplus \{(\Gamma_0L_p\alpha,\alpha)\,:\,\alpha \in \CC^p\},
+  \]
+  and then we apply $\BM{j}^{-1}$ from \cref{switch:eq:j_bold} to both sides of this equality.
+\end{proof}
+
+In \cref{switch:sec:nonlinear_bold,switch:sec:cm_bold,switch:sec:pd:ddes} we will consider nonlinear problems on a real Banach space. In this case spectral analysis must be preceded by complexification, see \cref{switch:rem:complex} and in particular \cite[last part of Section IV.2]{diekmann1995delay}.
+
+\begin{proposition}
+  \label{switch:prop:real_center_subspace_bold}
+  Suppose that $X = Y_{\CC}$ is a complexification of a real Banach space $Y$ and let $Y_0 \subseteq Y$ be the \emph{real} center eigenspace associated with $X_0$. Then the \emph{real} center eigenspace $\BM{Y}_0$ associated with $\BM{X}_0$ is
+  \begin{equation}
+    \label{switch:eq:Y0bold}
+    \BM{Y}_0 = Y_0 \times \{0\} \oplus \left\{\left(Q\alpha, \alpha \right) \,:\, \alpha \in \RR^p \right\} \subseteq Y \times \RR^{p},
+  \end{equation}
+  where $Q : \RR^p \to Y$ is a bounded linear operator. Furthermore, $\iota : \BM{Y}_0 \to Y_0 \times \RR^p$ defined by $\iota(\psi, \alpha) \DEF (\psi - Q\alpha, \alpha)$ is a linear isomorphism.
+\end{proposition}
+\begin{proof}
+  $\BM{X}$ is naturally identified with $\BM{Y}_{\CC}$ where $\BM{Y} = Y \times \RR^p$. Let $\BM{P}_{\Lambda}$ with range $\BM{X}_0$ be the spectral projector on $\BM{X}$ for the spectral set $\Lambda = \overline{\Lambda}$ of all purely imaginary eigenvalues of $\BM{A}_{\CC}$. A direct generalization of \cite[Corollary IV.2.19]{diekmann1995delay} implies that $\BM{P}_{\Lambda}$ is the complexification of a projector $\BM{P}_{\Lambda}^Y$ on $\BM{Y}$ and the range $\BM{Y}_0$ of $\BM{P}_{\Lambda}^Y$ - identified with a subspace of $\BM{Y}$ - is the real center eigenspace for $\BM{A}$. Also, $\Gamma_0$ on $\SUNSTAR{X}$ is self-conjugate by \cref{switch:eq:P_bold}. Together with \cref{switch:cor:center_subspace_bold} this implies \cref{switch:eq:Y0bold}. It is easily verified that the linear operator $\iota$ is an isomorphism.
+\end{proof}
+
+\begin{remark}\label{switch:rem:X0Y0}
+We will not make a \emph{notational} distinction between the real and complex center eigenspaces, indicating both $X_0$ and $Y_0$ with $X_0$ and both $\BM{X}_0$ and $\BM{Y}_0$ with $\BM{X}_0$, respectively. We hope that the underlying scalar field will be clear from the immediate context.
+\end{remark}
+
+\subsection{Nonlinear perturbation}\label{switch:sec:nonlinear_bold}
+Let $T_0$ be a $\mathcal{C}_0$-semigroup on a \emph{real} Banach space $X$ that is sun-reflexive with respect to $T_0$. Introduce a nonlinear perturbation $\BM{R} : \BM{X} \to \SUNSTAR{\BM{X}}$ of the form
+\begin{equation}\label{switch:eq:R_bold}
+  \BM{R}(\phi,\alpha) = (R(\phi,\alpha), 0),
+\end{equation}
+where $R : \BM{X} \to \SUNSTAR{X}$ is $C^k$-smooth, satisfying
+%
+\begin{equation}\label{switch:eq:R_conditions}
+  R(0,0) = 0, \qquad D_1{R}(0,0) = 0, \qquad D_2{R}(0,0) = 0.
+\end{equation}
+%
+We associate with $\BM{T}$ and $\BM{R}$ the integral equation
+%
+\begin{equation}
+  \label{switch:eq:aie_bold}
+  \BM{u}(t) = \BM{T}(t - s)\BM{u}(s) + \BM{j}^{-1}\int_s^t{\SUNSTAR{\BM{T}}(t - \tau)\BM{R}(\BM{u}(\tau))\,d\tau}, \qquad -\infty < s \le t < \infty.
+\end{equation}
+%
+We expect all nontrivial dynamics to be contained in the first component, and this is indeed the case:
+%
+\begin{proposition}\label{switch:prop:aie_bold}
+  The function $\BM{u} = (u, u_p) : I \to \BM{X}$ is a solution of \cref{switch:eq:aie_bold} if and only if $u_p$ is constant on $I$ and $u : I \to X$ is a solution of
+  %
+  \begin{equation}\label{switch:eq:aie_bold_1st}
+    u(t) = T(t - s)u(s) + j^{-1}\int_s^t{\SUNSTAR{T}(t - \tau)(L_p\alpha + R(u(\tau),\alpha))\,d\tau}, \qquad -\infty < s \le t < \infty,
+  \end{equation}
+  %
+  where $\alpha \in \RR^p$ denotes the constant value of $u_p$.
+\end{proposition}
+\begin{proof}
+  We use \cref{switch:prop:T_bold_sun_star,switch:eq:j_bold}. For any continuous function $\BM{u} = (u, u_p) : I \to \BM{X}$ we compute
+  \[
+    \BM{T}(t - s)\BM{u}(s) = \BM{j}^{-1}\SUNSTAR{\BM{T}}(t - s)\BM{j}\BM{u}(s) =
+    \begin{pmatrix}
+      T(t - s)u(s) + j^{-1}\SUNSTAR{W}(t - s)L_p u_p(s)\\
+      u_p(s)
+    \end{pmatrix},
+  \]
+  while another computation shows that
+  \[
+    \BM{j}^{-1}\int_s^t{\SUNSTAR{\BM{T}}(t - \tau)\BM{R}(\BM{u}(\tau))\,d\tau} =
+    \begin{pmatrix}
+      j^{-1}\int_s^t{\SUNSTAR{T}(t - \tau)R(\BM{u}(\tau))\,d\tau}\\
+      0
+    \end{pmatrix}.
+  \]
+  From the above together with the definition \cref{switch:eq:integrated_semigroup} of $\SUNSTAR{W}(t)$ we see that \cref{switch:eq:aie_bold} is equivalent to the system
+  \[
+    \left\{
+      \begin{aligned}
+        u(t) &= T(t - s)u(s) + j^{-1}\int_s^t{\SUNSTAR{T}(t - \tau)(L_p u_p(s) + R(u(\tau),u_p(\tau)))\,d\tau},\\
+        u_p(t) &= u_p(s),
+      \end{aligned}
+    \right.
+  \]
+   for $-\infty < s \le t < \infty$. The statement now follows.
+\end{proof}
+
+\subsection{Parameter-dependent local center manifolds}\label{switch:sec:cm_bold}
+We consider again a $\mathcal{C}_0$-semigroup $T_0$ on a \emph{real} Banach space $X$ that is sun-reflexive with respect to $T_0$. We also assume that $T_0$ is eventually compact and $L$ in \cref{switch:eq:B_bold} is compact, so \cref{switch:prop:compact_bold} implies that $\BM{T}$ is eventually compact. If furthermore the nonlinearity $\BM{R}$ satisfies \cref{switch:eq:R_conditions}, then all conditions are fulfilled for the application of the center manifold theory from \cite[Chapter IX]{diekmann1995delay} to \cref{switch:eq:aie_bold}.
+
+Therefore, if the generator $A$ of $T$ has $1 \le n_0 < \infty$ purely imaginary eigenvalues, counting algebraic multiplicities, then by \cref{switch:prop:real_center_subspace_bold} the \emph{real} center eigenspace $\BM{X}_0$ has dimension $n_0 + p$. There exists a $C^k$-smooth local center manifold $\CMBOLD$ in $\BM{X}$ that is tangent at the origin to $\BM{X}_0$. In fact, \cref{switch:prop:real_center_subspace_bold} implies that $\CMBOLD$ is the image of a $C^k$-smooth map
+\[
+  \BM{\mathcal{C}} : U \times U_p \subseteq X_0 \times \RR^p \to \BM{X},
+\]
+where $U \subseteq X_0$ and $U_p \subseteq \RR^p$ are neighborhoods of the origin. Since \cref{switch:eq:R_bold} has a zero in the second component, it follows from \cite[(5.1) in Section IX.5]{diekmann1995delay} that $\BM{\mathcal{C}}$ has the form
+\begin{equation}
+  \label{switch:eq:cmmap_bold}
+\BM{\mathcal{C}}(\phi, \alpha) = (\mathcal{C}(\phi, \alpha), \alpha), \qquad \forall\,(\phi, \alpha) \in U \times U_p,
+\end{equation}
+where $\mathcal{C} : U \times U_p \to X$ is the first component function.
+
+\begin{definition}\label{switch:def:cm_alpha}
+  The image $\CM(\alpha) \DEF \mathcal{C}(U, \alpha)$ is a \emph{local center manifold for \cref{switch:eq:aie_bold_1st} at $\alpha \in U_p$}.
+\end{definition}
+
+It is a direct consequence of the above definition that for every $\alpha \in U_p$ we can parametrize $\CM(\alpha)$ by coordinates on the real center eigenspace $X_0$ that depend $C^k$-smoothly on $\alpha$. This will be important for the discussion of the normalization method following \cref{switch:eq:ODEonCM} in \cref{switch:sec:normal-forms}.
+
+\begin{proposition}
+  If $\alpha \in U_p$ is sufficiently small then $\CM(\alpha)$ is locally positively invariant for the semiflow generated by \cref{switch:eq:aie_bold_1st}.
+\end{proposition}
+\begin{proof}
+  Let $\BM{\Sigma}$ and $\Sigma$ be the semiflows generated by \cref{switch:eq:aie_bold,switch:eq:aie_bold_1st}, respectively. By \cref{switch:prop:aie_bold},
+  \begin{equation}
+    \label{switch:eq:sigmasigma}
+    \BM{\Sigma}(s, (\psi, \alpha)) = (\Sigma(s, \psi), \alpha), \qquad \forall\,\psi \in X,\alpha \in \RR^p,
+  \end{equation}
+  and for all $s$ in a common interval of existence $I_{\psi,\alpha}$. By \cite[Theorem IX.5.3(i)]{diekmann1995delay} there exists $\delta > 0$ such that if $(\psi, \alpha) \in \CMBOLD$ and if
+  \[
+    \|\BM{\Sigma}(s, (\psi, \alpha))\| = \|\Sigma(s, \psi)\| + |\alpha| \le \delta, \qquad \forall\,s \in [0,t],
+  \]
+  then $\BM{\Sigma}(t, (\psi, \alpha)) \in \CMBOLD$ which by \cref{switch:eq:sigmasigma} implies that $\Sigma(t, \psi) \in \CM(\alpha)$.
+
+  We note that if $\psi \in \CM(\alpha)$ then by \cref{switch:eq:cmmap_bold} it follows that $(\psi, \alpha) \in \CMBOLD$. Therefore, if $|\alpha| \le \frac{\delta}{2}$ and $\psi \in \CM(\alpha)$ then
+  \[
+    \|\Sigma(s, \psi)\| \le \frac{\delta}{2}, \qquad \forall\,s \in [0,t]
+  \]
+  implies that $\Sigma(t, \psi) \in \CM(\alpha)$. This is precisely local positive invariance of $\CM(\alpha)$ for $\Sigma$.
+\end{proof}
+
+Next we consider a solution $u : I \to X$ of \cref{switch:eq:aie_bold_1st} that lies in $\CM(\alpha)$. By \cref{switch:prop:aie_bold} the function $\BM{u} = (u, \alpha) : I \to \BM{X}$ is a solution of \cref{switch:eq:aie_bold}. Also, since $u$ lies in $\CM(\alpha)$ we see from \cref{switch:eq:cmmap_bold} that $\BM{u}$ lies in $\CMBOLD$ and therefore satisfies the differential equation
+\[
+  \BM{j}\dot{\BM{u}}(t) = \SUNSTAR{\BM{A}}\BM{j}\BM{u}(t) + \BM{R}(\BM{u}(t)), \qquad \forall\,t \in I,
+\]
+cf. \cref{switch:eq:aode}. By \cref{switch:eq:j_bold,switch:prop:A_sun_star_bold,switch:eq:R_bold} the first component of this equation gives the differential equation
+\begin{equation}
+  \label{switch:eq:ode_on_cm_abstract}
+  j\dot{u}(t) = \SUNSTAR{A}ju(t) + L_p\alpha + R(u(t),\alpha), \qquad \forall\,t \in I,
+\end{equation}
+that is satisfied by $u$.
+
+In summary,
+
+\begin{theorem}[Parameter-dependent local center manifold]
+  \label{switch:thm:cmabstract}
+  Let $T_0$ be an eventually compact $\mathcal{C}_0$-semigroup on a sun-reflexive real Banach space $X$ and let $T$ be the $\mathcal{C}_0$-semigroup on $X$ defined by \cref{switch:eq:T_T0_AIE} where $L$ is a compact perturbation. Suppose that the generator $A$ of $T$ has $1 \le n_0 < \infty$ purely imaginary eigenvalues with corresponding $n_0$-dimensional real center eigenspace $X_0$. Furthermore, assume that $R$ is $C^k$-smooth and \cref{switch:eq:R_conditions} holds.
+
+  Then there exists a $C^k$-smooth map $\mathcal{C} : U \times U_p \to X$ defined in a neighborhood of the origin in $X_0 \times \RR^p$ and such that for every sufficiently small $\alpha \in \RR^p$ the manifold $\CM(\alpha) \DEF \mathcal{C}(U,\alpha)$ is locally positively invariant for the semiflow generated by \cref{switch:eq:aie_bold_1st} at parameter value $\alpha$. Furthermore, any solution $u : I \to X$ of \cref{switch:eq:aie_bold_1st} that lies on $\CM(\alpha)$ satisfies \cref{switch:eq:ode_on_cm_abstract}.  
+\end{theorem}
+
+\subsection{The special case of parameter-dependent classical DDEs}\label{switch:sec:pd:ddes}
+In this section we will formulate a corollary of \cref{switch:thm:cmabstract} that applies specifically to the parameter-dependent classical DDE \cref{switch:eq:pd-DDE}. As in \cref{switch:sec:ddecase} our starting point is \cref{switch:eq:pd-DDE12} with $F = 0$,
+%
+\begin{equation}
+  \label{switch:eq:trivialdde_bold}
+  \left\{
+    \begin{aligned}
+      \dot{x}(t) &= 0,\\
+      \dot{\mu}(t) &= 0,
+    \end{aligned}
+  \right.
+  \qquad t \ge 0,
+\end{equation}
+%
+in the unknown $(x, \mu)$ with initial condition $(\phi,\alpha)$ in the state space $\BM{X} \DEF X \times \RR^p$ where $X \DEF C([-h,0],\RR^n)$. So, we interpret the first component of \cref{switch:eq:trivialdde_bold} as a DDE but the second component as an ODE. By comparison with \cref{switch:eq:trivialdde} it is clear that the solution of the initial value problem for \cref{switch:eq:trivialdde_bold} defines a $\mathcal{C}_0$-semigroup $\BM{T}_0$ on $\BM{X}$,
+\[
+ \BM{T}_0(t) \DEF \diag{(T_0(t), I_p)},
+\]
+with $T_0$ the eventually compact shift semigroup on $X$ from \cref{switch:eq:LDDE} and $I_p$ the identity on $\RR^p$. Next, we specify the perturbations $L$ and $L_p$ in \cref{switch:eq:B_bold} as
+\[
+  L\phi = (D_1F(0,0)\phi)\rss, \qquad L_p\alpha = (D_2F(0,0)\alpha)\rss.
+\]
+Then $L$ is of finite rank, so certainly it is compact. Finally, we choose the nonlinear perturbation $R$ in \cref{switch:eq:R_bold} as
+\begin{equation}
+  \label{switch:eq:pd:Rdde}
+  R(\phi,\alpha) = G(\phi,\alpha)\rss,
+\end{equation}
+where $G$ is defined by the splitting in \cref{switch:eq:pd:splitting}. Then \cref{switch:eq:G_conditions} implies that the conditions in \cref{switch:eq:R_conditions} hold.
+
+\begin{corollary}[Parameter-dependent local center manifold for classical DDEs]\label{switch:cor:cmdde}
+Consider the particular case of the classical DDE in \cref{switch:eq:pd-DDE},
+\[
+  \dot{x}(t)= F(x_t, \alpha), \qquad t \ge 0,
+\]
+where $F: X \times \RR^p \to \RR^n$ is $C^k$-smooth for some $k \ge 1$ with $F(0,0) = 0$. Let $T$ be the $\mathcal{C}_0$-semigroup on $X$ corresponding to the linearization of \cref{switch:eq:pd-DDE} at $0 \in X$ for the critical parameter value $\alpha = 0$. Suppose that the generator $A$ of $T$ has $1 \le n_0 < \infty$ purely imaginary eigenvalues with corresponding $n_0$-dimensional real center eigenspace $X_0$.
+
+Then there exists a $C^k$-smooth map $\mathcal{C} : U \times U_p \to X$ defined in a neighborhood of the origin in $X_0 \times \RR^p$ and such that for every sufficiently small $\alpha \in \RR^p$ the manifold $\CM(\alpha) \DEF \mathcal{C}(U,\alpha)$ is locally positively invariant for the semiflow generated by \cref{switch:eq:pd-DDE} at parameter value $\alpha$.
+
+Furthermore, if the history $x_t$ associated with a solution of \cref{switch:eq:pd-DDE} exists on some nondegenerate interval $I$ and $x_t \in \CM(\alpha)$ for all $t \in I$, then $u : I \to X$ defined by $u(t) \DEF x_t$ is differentiable and satisfies
+\[
+  j\dot{u}(t) = \SUNSTAR{A}ju(t) + (D_2F(0,0)\alpha)\rss + G(u(t),\alpha)\rss, \qquad \forall\,t \in I,
+\]
+where $\SUNSTAR{A}$ is the {\WSTAR} generator of $\SUNSTAR{T}$ and the operator $G : X \times \RR^p \to \RR^n$ defined by \cref{switch:eq:pd:splitting},
+\[
+  G(\phi,\alpha) \DEF F(\phi, \alpha) - D_1F(0,0)\phi - D_2F(0,0)\alpha,
+\]
+is the nonlinear part of $F$.
+\end{corollary}
+
+\begin{remark}\label{switch:rem:nonsmooth}
+  For discrete DDEs \cref{switch:eq:discreteDDEs} one may want to use one or more of the discrete delays $\tau_1,\ldots,\tau_m$ as parameters. However, in this case $F$ is typically no longer $C^1$-smooth. For example, consider the case that \cref{switch:eq:pd-DDE} is a discrete DDE of the form
+  \[
+    \dot{x}(t) = M_0x(t) + \cdots + M_j x(t - (\tau_j + \alpha)) + \cdots + M_m
+    x(t - \tau_m) + \mathcal O(\|x_t\|^2), \qquad t \ge 0.
+  \]
+  where $M_0,\ldots,M_m \in \RR^{n \times n} \setminus \{0\}$ are constant matrices with $M_j$ nonsingular, $\alpha$ is a scalar parameter that varies in a neighborhood of its critical value $\alpha = 0$ and the remainder is of class $C^{\infty}$ and independent of $\alpha$. It follows that $F$ corresponding to the above DDE is given by
+  \[
+    F(\phi,\alpha) = M_0 \phi(0) + \cdots + M_j\phi(-(\tau_j + \alpha)) + \cdots
+    + M_m\phi(-\tau_m) + \mathcal O(\|\phi\|^2),
+  \]
+  but $F$ is not $C^1$-smooth in any neighborhood of $(0,0)$. To see this, fix $\phi \in X$ arbitrarily close to $0 \in X$ but such that $\phi$ is not differentiable at $\theta = -\tau_j$. Then
+  \[
+    \frac{1}{\alpha}\left[F(\phi,\alpha) - F(\phi,0)\right] = \frac{M_j}{\alpha}\left[\phi(-(\tau_j + \alpha)) - \phi(-\tau_j)\right]
+  \]
+  which does not have a limit as $\alpha \to 0$, implying that $D_2F(\phi,0)$ does not exist.
+
+  There are (at least) two possible ways around this complication. Firstly, if there is only a single discrete delay among the parameters, then of course the problem can be avoided by a linear rescaling of time. Secondly, one can elaborate on the observation that history functions \emph{on} local center manifolds have a higher degree of regularity than arbitrary points in $X$, see \textup{\cite[Remark IX.9.2]{diekmann1995delay}} and also \cite{Hale1979}. Indeed, from the above example it is clear that $D_2F(\phi,0)$ exists as soon as $\phi \in C^1([-h,0],\RR^n)$.
+\end{remark}
+
+\section{\phantom{ }Normal forms on the parameter-dependent center \phantom{ }manifold\label{switch:sec:normal-forms}}
+The normalization technique described in this section goes back to \cite{Coullet1983competinginstabilities}. In \cite{Kuznetsov1999} it was applied to obtain expressions for the critical normal form coefficients of all generic codimension one and two bifurcations of equilibria in ODEs, also see \cite[\S 8.7]{Kuznetsov2004}. In this context, these expressions are independent of the (finite) dimension of the phase space and they involve only critical eigenvectors of the Jacobian matrix and its transpose as well as higher order derivatives of the right-hand side at the critical equilibrium. These properties make them suitable for both symbolic and numerical evaluation.
+\par
+In \cite{Kuznetsov2008} the same technique was applied to parameter-dependent normal forms to start the continuation of nonhyperbolic cycles emanating from generalized Hopf, fold-Hopf and Hopf-Hopf bifurcation points of ODEs. The resulting predictors were implemented in the freely available software package \MATCONT \cite{matcont1}, a \MATLAB toolbox for continuation and bifurcation analysis of finite dimensional dynamical systems. This makes it possible to verify transversality conditions and to initialize the continuation of the nonhyperbolic cycles mentioned above. A similar switching problem for iterated maps was solved earlier in \cite{Govaerts2007maps}.
+\par
+In \cite{Janssens:Thesis} the normalization technique was lifted to an infinite dimensional setting, providing explicit expressions for the critical normal form coefficients of generic codimension one and two equilibrium bifurcations in classical DDEs. These expressions were partially implemented in the software \DDEBIFTOOL. This package can be considered as the DDE equivalent of \MATCONT in command line mode.
+\par
+In this section we extend the normalization method from \cite{Janssens:Thesis} to include parameters in the spirit of \cite{Kuznetsov2008}. Suppose $0 \in X$ is an equilibrium of \cref{switch:eq:pd-DDE} at the critical parameter value $0 \in \RR^p$ and assume there are $n_0 \ge 1$ eigenvalues of this equilibrium on the imaginary axis, counting algebraic multiplicities. Let $P_0$ be the corresponding \emph{real} spectral projector on $X$, so the range $X_0$ of $P_0$ is the \emph{real} $n_0$-dimensional center eigenspace. \Cref{switch:cor:cmdde} applies to give a parameter-dependent local center manifold $\CM(\alpha)$ for \cref{switch:eq:pd-DDE}.
+\par
+We allow for the introduction of a new parameter $\beta$ such that $\alpha = K(\beta)$ for some locally defined $C^k$-diffeomorphism $K : \RR^p \to \RR^p$ that is to be determined below, up to a certain order. If $u : I \to X$ with $u(t) \DEF x_t \in \CM(\alpha)$ is as in \cref{switch:cor:cmdde}, then $u$ is differentiable on $I$ and satisfies
+\begin{equation}
+  \label{switch:eq:ODEonCM}
+  j\dot{u}(t) = \SUNSTAR{A}ju(t) + (D_2F(0,0)K(\beta))\rss + R(u(t),K(\beta)), \qquad \forall\,t \in I,
+\end{equation}
+where $R$ encodes the nonlinear part of $F$ as in \cref{switch:eq:pd:Rdde}. Choose a basis $\Phi$ of $X_0$ and let $\mathcal{H} : \RR^{n_0} \times \RR^p \to X$ be a locally defined $C^k$-smooth parametrization of $\CM(\alpha)$ with respect to $\Phi$ and in terms of the new parameter $\beta$, see the remark following \cref{switch:def:cm_alpha}. For every $t \in I$ we define $v(t) \in \RR^{n_0}$ as the coordinate vector of $P_0 u(t)$ with respect to $\Phi$. Then $v : I \to \RR^{n_0}$ satisfies a parameter-dependent ordinary differential equation of the form
+\begin{equation}
+  \label{switch:eq:ODEexpansion}
+  \dot{v} = \sum_{|\nu|+|\mu| \geq 1}\frac{1}{\nu!\mu!}g_{\nu\mu}v^{\nu}\beta^{\mu},
+\end{equation}
+where the $C^k$-smooth vector field on the right has been expanded up to some sufficiently large - but finite - order. The multi-indices $\nu$ and $\mu$ have lengths $n_0$ and $p$, respectively. \emph{We assume that \cref{switch:eq:ODEexpansion} is a smooth normal form with unfolding parameters $\beta$}. Since $\mathcal{H}$ parametrizes $\CM(\alpha)$,
+\[
+  u(t) = \mathcal{H}(v(t), \beta), \qquad t \in I,
+\]
+with both $u$ and $v$ depending on the parameters, although this is left implicit in the notation. Substituting the above relation into \cref{switch:eq:ODEonCM} produces the \emph{homological equation}
+\begin{equation}
+  \label{switch:eq:homological_equation}
+  \tag{HOM}
+  \SUNSTAR{A}j\mathcal{H}(v,\beta)+(D_2F(0,0)K(\beta))\rss + R(\mathcal{H}(v,\beta),K(\beta)) = jD_1\mathcal{H}(v,\beta)\dot{v},
+\end{equation}
+with $\dot{v}$ given by the parameter-dependent normal form \cref{switch:eq:ODEexpansion}. The unknowns in \cref{switch:eq:homological_equation} are $\mathcal{H}$, $K$ and the normal form coefficients $g_{\nu\mu}$ from \cref{switch:eq:ODEexpansion}.  For $r, s \ge 0$ with $r + s \ge 1$ we denote by $D_1^rD_2^sF(0,0) : X^r \times [\RR^p]^s \rightarrow \RR^n$ the mixed Fr\'echet derivative of order $r + s$, evaluated at $(0,0) \in X \times \RR^p$, with the understanding that at most one of the factor spaces $X^r$ or $[\RR^p]^s$ is absent if either $r = 0$ or $s = 0$. We expand the nonlinearity $R$ as
+\begin{equation}
+  \label{switch:eq:Rexpansion}
+  R(\phi,\alpha)=\sum_{r + s > 1}\frac{1}{r!s!}D_1^rD_2^sF(0,0)(\phi^{(r)},\alpha^{(s)})\rss,
+\end{equation}
+where $\phi^{(r)} \DEF (\phi,\dots,\phi)\in X^r$ and $\alpha^{(s)} \DEF (\alpha,\dots,\alpha)\in [\RR^p]^s$. The mappings $\mathcal{H}$ and $K$ can be expanded as
+\begin{equation}
+  \label{switch:eq:HKexpansion}
+\mathcal{H}(v,\beta)\ =\sum_{|\nu|+|\mu| \geq 1}\dfrac{1}{\nu!\mu!}H_{\nu\mu}v^{\nu}\beta^{\mu}, \qquad K(\beta)=\sum_{|\mu| \geq 1}\dfrac{1}{\mu!}K_{\mu}\beta^{\mu}.
+\end{equation}
+Substituting \cref{switch:eq:ODEexpansion,switch:eq:Rexpansion,switch:eq:HKexpansion} into \cref{switch:eq:homological_equation}, collecting coefficients of terms $v^{\nu}\beta^{\mu}$ from lower to higher order and solving the resulting linear systems, one can solve recursively for the unknown coefficients $g_{\nu\mu}$, $H_{\nu\mu}$ and $K_{\mu}$ by applying the Fredholm alternative and taking ordinary or bordered inverses, as explained in \cref{switch:sec:solvability}.
+
+\section{Coefficients of parameter-dependent normal forms and predictors\label{switch:sec:Coefficients-of-parameter}}
+We will now use the method outlined in \cref{switch:sec:normal-forms} to derive the coefficients needed for the predictors of the nonhyperbolic equilibria and cycles emanating from generalized Hopf, fold-Hopf, and Hopf-Hopf bifurcations and to write these predictors explicitly as in \cite{Kuznetsov2008}. While doing so, we also obtain the critical normal form coefficients, which were first derived in \cite{Janssens:Thesis}. The transcritical-Hopf bifurcation is treated in \cref{switch:Appendix_TH}. We focus exclusively on classical DDEs depending on two active parameters, so $p=2$.
+
+For the derivation of the coefficients in this section it is sufficient to expand the nonlinearity $R$ in \cref{switch:eq:Rexpansion} and the parameter transformation $K$ in \cref{switch:eq:HKexpansion} as
+\begin{equation}
+  \label{switch:eq:R_truncated}
+  \begin{aligned}
+    R(u,\alpha) ={}& \Bigl(\tfrac{1}{2} B(u,u) + A_1(u,\alpha)+\tfrac{1}{6} C(u,u,u) + \tfrac{1}{2} B_1(u,u,\alpha)\\
+    &\phantom{\Bigl(}+ \tfrac{1}{24} D(u,u,u,u) + \tfrac{1}{6} C_1(u,u,u,\alpha) + \tfrac{1}{120} E(u,u,u,u,u)\\
+    &\phantom{\Bigl(}+ \mathcal O(\|u\|\|\alpha\|^2+\|\alpha\|^2+\|u\|^4\|\alpha\|+\|u\|^6) \Bigr) \rss
+  \end{aligned}
+\end{equation}
+and
+\begin{equation}
+  \label{switch:eq:K_truncated}
+  \alpha = K(\beta)=K_{10} \beta_1  + K_{01} \beta_2 + \mathcal O(\|\beta\|^2).
+\end{equation}
+Here $u \in X$, while $\alpha,\beta \in \RR^2$ and $B$, $A_1$, $C$, $B_1$, $D$, $C_1$ and $E$ are the standard multilinear forms arising from the expansion of $F$ (or equivalently: $G$) at $(0,0) \in X \times \RR^p$. For example,
+\begin{align*}
+  &B(u,u) = D^2_1F(0,0)(u,u), &&A_1(u,\alpha) = D_1^1D^1_2F(0,0)(u,\alpha),\\
+  &B_1(u,u,\alpha) = D^2_1D^1_2F(0,0)(u,u,\alpha), &&\text{etc.}
+\end{align*}
+These multilinear forms are $ \RR^n$-valued on real-valued arguments and linearly extended (complexified) to $ \CC^n$-valued multilinear forms on complex-valued arguments. Finally, we introduce
+\begin{equation}
+\label{switch:eq:J_1} 
+J_1 \DEF \ D_2F(0,0). 
+\end{equation}
+Explicit formulas to compute the multilinear forms for the special case of discrete DDEs \cref{switch:eq:discreteDDEs} are given in \cref{switch:sec:Implement}.
+
+The following three subsections have a similar structure. First, we formulate relevant bifurcation conditions and give the corresponding smooth normal form on the parameter-dependent local center manifold. Then we write explicitly the case-specific homological equation and the center manifold expansion. Next, we compute the critical and parameter-related coefficients of the normal form. Finally, we use asymptotic expressions for equilibrium and cycle bifurcations in the normal form on the local center manifold to construct the corresponding predictors.
+
+\subsection{Generalized Hopf bifurcation}\label{switch:sec:GH_coef}
+Suppose that \cref{switch:eq:pd-DDE} has an equilibrium $x=0$ at the critical parameter value $\alpha_{0}=(0,0)\in \RR^{2}$ with purely imaginary simple eigenvalues
+\begin{equation}
+\lambda_{1,2}=\pm i\omega_{0},\ \ \omega_{0}>0,\label{switch:eq:GH_eigenvalues}
+\end{equation}
+which are the only eigenvalues on the imaginary axis. Furthermore, suppose that the first Lyapunov coefficient $\ell_{1}(0)=0$, while the second Lyapunov coefficient $\ell_{2}(0)\neq0$. Then the restriction of \cref{switch:eq:pd-DDE} to the two-dimensional center manifold $\CM(\alpha)$ can be transformed into the smooth local normal form
+\begin{equation}
+\label{switch:eq:GH_nf_alpha}
+\dot{z}=\lambda(\alpha)z+c_{1}(\alpha)z|z|^{2}+c_{2}(\alpha)z|z|^{4}+\mathcal{O}(|z|^{6}),
+\end{equation}
+see \cite[\S 33]{Arnold_1983} or \cite[\S 8.3, Lemma 8.3]{Kuznetsov2004}, where $\lambda(\alpha)$, $c_{1}(\alpha)$ and $c_{2}(\alpha)$ are complex-valued smooth functions with $\ell_{1}(0)=\frac{1}{\omega_0}\Re\,c_{1}(0)=0$ and $\ell_{2}(0)=\frac{1}{\omega_0}\Re\,c_{2}(0)\neq0$. Separating real and imaginary parts, we write
+\[
+\begin{cases}
+\begin{aligned}
+\lambda(\alpha) & =\mu(\alpha)+i\omega(\alpha),\\
+c_{1}(\alpha) & =\Re c_{1}(\alpha)+i\Im c_{1}(\alpha),
+\end{aligned}
+\end{cases}
+\]
+which defines the real-valued smooth functions $\mu(\alpha)$ and $\omega(\alpha)$. Assume that the map $\alpha\mapsto(\mu(\alpha),\Re c_{1}(\alpha))$ is regular at $\alpha=0$ and define new parameters $\beta=(\beta_{1},\beta_2)=(\mu(\alpha),\Re c_{1}(\alpha))$.
+
+In the next step, we could now introduce these new parameters in \cref{switch:eq:GH_nf_alpha} and truncate the resulting smooth normal form \cref{switch:eq:ODEexpansion} to fifth order. Indeed, this is the approach taken in \cref{switch:sec:fold-Hopf,switch:sec:HH_coef,switch:Appendix_TH}. However, given that we are interested in obtaining a \emph{linear} approximation \cref{switch:eq:K_truncated} of the parameter transformation $K$, for the case of the generalized Hopf bifurcation it is advantageous to instead follow \cite{Kuznetsov2008} and \cite{Beyn2002149}, expand $\lambda(\alpha)$ and $c_{1}(\alpha)$ in the normal form \cref{switch:eq:GH_nf_alpha} in the \emph{original} parameters $\alpha$ and truncate to fifth order,
+\begin{equation}
+  \label{switch:eq:GH_nf_alpha_truncated}
+  \dot{z}=\left(i\omega_{0}+\gamma_{110}\alpha_{1}+\gamma_{101}\alpha_{2}\right)z
+  +\left(c_{1}(0)+\gamma_{210}\alpha_{1}+\gamma_{201}\alpha_{2}\right)z|z|^{2}+c_{2}(0)z|z|^{4},
+\end{equation}
+with $\gamma_{jkl} \in \CC$. Namely, this approach greatly simplifies the systems obtained from the homological equation. Only in \cref{switch:sec:genh_predictors} shall we use the  parameters $\beta$ for the purpose of expressing the predictors for the codimension one branches.
+
+\begin{remark}
+  We note that this approach is less practical if one is interested in a \emph{higher order} approximation of $\alpha$ in terms of $\beta$ - i.e. a higher order approximation of the parameter transformation $K$ - as needed for example in \cite{Al-Hdaibat2016}.  
+\end{remark}
+
+Since the eigenvalues \cref{switch:eq:GH_eigenvalues} are simple, there exist eigenfunctions $\phi$ and $\SUN{\phi}$ such that
+\[
+A\phi=i\omega_{0}\phi, \qquad \STAR{A}\SUN{\phi}=i\omega_{0}\SUN{\phi}, \qquad \PAIR{\SUN{\phi}}{\phi} = 1.
+\]
+The eigenfunctions $\phi$ and $\SUN{\phi}$ are explicitly given by \cref{switch:eq:eigenfunction,switch:eq:eigenfunction1} with $q\in \CC^n$ and $p \in \CCC{n}$ satisfying
+\[
+\Delta(i\omega_{0})q=0, \qquad p\Delta(i\omega_{0})=0, \qquad p\Delta'(i\omega_0)q = 1.
+\]
+Any point $y\in X_{0}$ in the real critical eigenspace can be represented as
+\[
+y=z\phi+\bar{z}\bar{\phi},\qquad z\in \CC,
+\]
+where $z=\PAIR{\SUN\phi}{y}$. The homological equation \cref{switch:eq:homological_equation} becomes
+\begin{multline}
+  \label{switch:eq:homological_equationGH}
+  \SUNSTAR{A}j\mathcal{H}(z,\bar{z},\beta(\alpha))+J_{1}\alpha \rss +R(\mathcal{H}(z,\bar{z},\beta(\alpha)),\alpha) =\\
+  j\left(D_{z}\mathcal{H}(z,\bar{z},\beta(\alpha))\dot{z}+D_{\bar{z}}\mathcal{H}(z,\bar{z},\beta(\alpha))\dot{\bar{z}} \right),
+\end{multline}
+where $\dot{z}$ is given by \cref{switch:eq:GH_nf_alpha_truncated} and $\mathcal{H}$ admits the expansion
+\begin{equation}
+  \label{switch:eq:GH_H}
+  \mathcal{H}(z,\bar{z},\beta(\alpha)) = z\phi+\bar{z}\bar{\phi} + H_{0010}\alpha_1 +H_{0001}\alpha_2~
+  +\sum_{j+k+|\mu| \geq 2}\dfrac{1}{j!k!\mu!}H_{jk\mu}z^{j}\bar{z}^{k}\alpha^{\mu}
+\end{equation}
+and $R$ is given by \cref{switch:eq:R_truncated}.
+
+\subsubsection{Critical normal form coefficients}
+We start by calculating the critical normal form coefficients following \cite{Janssens:Thesis}. Collecting the coefficients of the quadratic terms $z^{2}$ and $z\bar{z}$ in the homological equation \cref{switch:eq:homological_equationGH} yields two nonsingular linear systems:
+\begin{align*}
+\LHS{2i\omega_{0}} jH_{2000}  &= B(\phi,\phi) \rss , \\
+-\SUNSTAR{A}jH_{1100} &= B(\phi,\bar{\phi}) \rss .
+\end{align*}
+They are solved using \cref{switch:lem:regular_solution} to give
+\begin{align*}
+H_{2000}(\theta) & =e^{2i\omega_{0}\theta}\Delta^{-1}(2i\omega_0)B(\phi,\phi),\\
+H_{1100}(\theta) & =\Delta^{-1}(0)B(\phi,\bar{\phi}).
+\end{align*}
+For the cubic terms, the system corresponding to $z^3$ is also nonsingular,
+\[
+\LHS{3i\omega_{0}} jH_{3000} = \rsswp{3B(\phi,H_{2000})+C(\phi,\phi,\phi)},
+\]
+with solution
+\[
+  H_{3000}(\theta) =e^{3i\omega_{0}\theta}\Delta^{-1}(3i\omega_0)\left(3B\left(\phi,H_{2000}\right)+C\left(\phi,\phi,\phi\right)\right).
+\]
+On the other hand, the system corresponding to $z^2\bar{z}$ is singular,
+\[
+  \LHS{i\omega_{0}} jH_{2100} = \rsswp{ B\left(\bar{\phi},H_{2000}\right)+2B\left(\phi,H_{1100}\right)+C\left(\phi,\phi,\bar{\phi}\right)}-2c_{1}(0) j\phi.
+\]
+The Fredholm solvability condition \cref{switch:eq:FSC} requires that
+\[
+c_1(0)=\frac{1}{2} p \cdot \left(B\left(\bar{\phi},H_{2000}\right)+2B\left(\phi,H_{1100}\right)+C\left(\phi,\phi,\bar{\phi}\right)\right),
+\]
+and from \cref{switch:lem:bordered} we then obtain the unique solution satisfying $\PAIR{\SUN{\phi}}{H_{2100}} = 0$ as
+\[
+H_{2100}(\theta) = \BINV{i\omega_{0}}\left( B\left(\bar{\phi},H_{2000}\right)+2B\left(\phi,H_{1100}\right)+C\left(\phi,\phi,\bar{\phi}\right),-2c_1(0)\right)(\theta).
+\]
+We continue by collecting the coefficients corresponding to the fourth-order terms $z^{3}\bar{z}$ and $z^{2}\bar{z}^{2}$ in the homological equation \cref{switch:eq:homological_equationGH}. The corresponding nonsingular systems may be solved using \cref{switch:lem:regular_solution} and the fact that $\Re(c_1(0))=0$. For $H_{2200}$ this easily gives
+\begin{align*}
+  H_{2200}(\theta) &= \Delta^{-1}(0)[2B(\bar{\phi},H_{2100})  + 2B(\phi,\BAR{H}_{2100}) + B(\BAR{H}_{2000},H_{2000})\\
+                   & \qquad + 2B(H_{1100},H_{1100}) + C(\phi,\phi,\BAR{H}_{2000}) + 4C(\phi,\bar{\phi},H_{1100}) \\
+                   & \qquad + C(\bar{\phi},\bar{\phi},H_{2000}) +  D(\phi,\phi,\bar{\phi},\bar{\phi})],
+\end{align*}
+but for $H_{3100}$ the solution is a bit more subtle. The linear system is
+\begin{align*}
+\LHS{2i\omega_{0}} jH_{3100} &= \left[B\left(\bar{\phi},H_{3000}\right)+3B\left(\phi,H_{2100}\right)+3B\left(H_{1100},H_{2000}\right) + 3C\left(\phi,\bar{\phi},H_{2000}\right) \right. \\
+ & \qquad \left. + 3C\left(\phi,\phi,H_{1100}\right)+D\left(\phi,\phi,\phi,\bar{\phi}\right) \right] \rss -6 c_1(0) jH_{2000},
+\end{align*}
+so \cref{switch:lem:regular_solution} applies with $w_0 = [\cdots] - 6c_1(0)H_{2000}(0)$ and $w = -6c_1(0)H_{2000}$ and we find
+\[
+  \begin{aligned}
+    H_{3100}(\theta) &=e^{2i\omega_0\theta}\Delta^{-1}(2i\omega_0)[B(\bar{\phi},H_{3000}) + 3B(\phi,H_{2100}) + 3B(H_{1100},H_{2000}) \\
+    & \qquad + 3C(\phi,\bar{\phi},H_{2000}) + 3C(\phi,\phi,H_{1100}) + D(\phi,\phi,\phi,\bar{\phi})]\\
+    & \qquad - 6c_1(0)\Delta^{-1}(2i\omega_0)[\Delta'(2i\omega_0) - \theta\Delta(2i\omega_0)]H_{2000}(\theta).
+  \end{aligned}
+\]
+The critical normal form coefficient $c_{2}(0)$ is calculated by applying \cref{switch:eq:FSC} to the singular linear system corresponding to the fifth-order term $z^{3}\bar{z}^{2}$ in the homological equation \cref{switch:eq:homological_equationGH}. This gives
+\begin{align*}
+	c_{2}(0) & =\frac{1}{12}p \cdot \left[2B\left(\bar{\phi},H_{3100}\right)+3B\left(\phi,H_{2200}\right)+B\left(\overline{H}_{2000},H_{3000}\right)+6B\left(H_{1100},H_{2100}\right) \right.\\
+ &\qquad+3B\left(\overline{H}_{2100},H_{2000}\right)+6C\left(\bar{\phi},H_{1100},H_{2000}\right)+6C\left(\phi,\bar{\phi},H_{2100}\right)+C\left(\bar{\phi},\bar{\phi},H_{3000}\right)\\
+ &\qquad+3C\left(\phi,\phi,\overline{H}_{2100}\right)+3C\left(\phi,\overline{H}_{2000},H_{2000}\right)+6C\left(\phi,H_{1100},H_{1100}\right)\\
+ &\qquad\left. +D\left(\phi,\phi,\phi,\overline{H}_{2000}\right)+6D\left(\phi,\phi,\bar{\phi},H_{1100}\right)+3D\left(\phi,\bar{\phi},\bar{\phi},H_{2000}\right) \right. \\ &\qquad \left. +E\left(\phi,\phi,\phi,\bar{\phi},\bar{\phi}\right)\right].
+\end{align*}
+The second Lyapunov coefficient is now given by $\ell_2(0)=\frac{1}{\omega_0} \Re(c_2(0))$.
+
+We remark that the expression for the third-order coefficient $c_1(0)$ had already been obtained by various other methods, see the chapter on Hopf bifurcation in \cite{diekmann1995delay} and the references therein, well before being re-derived in \cite{Janssens:Thesis} as a by-product of computing the fifth-order critical normal form for the \emph{generalized} Hopf bifurcation using the method from \cref{switch:sec:normal-forms}.
+
+\subsubsection{Parameter-related coefficients}
+Next we derive the parameter-related coefficients that provide a linear approximation to the parameter transformation. Collecting the coefficients of the terms $\alpha$ and $z\alpha$ in the homological equation \cref{switch:eq:homological_equationGH} yields the systems
+\begin{align*}
+\LHSZ jH_{00\mu} & =J_{1}v_{\mu} \; \rss,\\
+\LHS{i\omega_{0}} j H_{10\mu}
+	& = \rsswp{A_1\left(\phi,v_{\mu}\right)+B\left(\phi,H_{00\mu}\right)}-\gamma_{1\mu}j\phi,
+\end{align*}
+where $\mu=(10),(01)$ and $v_{10}=(1,0),v_{01}=(0,1)$. We solve these systems using \cref{switch:sec:solvability}. By the first part of \cref{switch:lem:regular_solution} the first system has the (constant) solutions
+\[
+H_{00\mu}(\theta)=\Delta^{-1}(0)J_{1}v_{\mu}
+\]
+and \cref{switch:eq:FSC} gives
+\[
+\gamma_{1\mu}=p\cdot \left(A_{1}\left(\phi,v_{\mu}\right)+B\left(\phi,H_{00\mu}\right)\right).
+\]
+Using \cref{switch:lem:bordered} we obtain the solutions
+\[
+H_{10\mu}(\theta)=\BINV{i\omega_{0}}(A_{1}\left(\phi,v_{\mu}\right)+B\left(\phi,H_{00\mu}\right),-\gamma_{1\mu})(\theta)
+\]
+for the second equation. To determine $\gamma_{2\mu}$ we first collect the coefficients corresponding to the $z^{2}\alpha$ and $z\bar{z}\alpha$ terms in the homological equation \cref{switch:eq:homological_equationGH}. We obtain the equations
+\begin{align*}
+\LHS{2i\omega_{0}}jH_{20\mu}
+	& = \left[A_{1}\left(H_{2000},v_{\mu}\right)
+		+2B\left(\phi,H_{10\mu}\right) + B\left(H_{2000},H_{00\mu}\right)
+		+B_1\left(\phi,\phi,v_{\mu}\right) \right. \\
+ 	& \left. \qquad
+ 	+ C\left(\phi,\phi,H_{00\mu}\right) \right] \rss -2\gamma_{1\mu}jH_{2000}, \\
+\LHSZ jH_{11\mu}
+	& = \left[A_{1}\left(H_{1100},v_{\mu}\right)
+		+2\Re\left(B\left(\bar{\phi},H_{10\mu}\right)\right)+B\left(H_{1100},H_{00\mu}\right)
+		+B_1\left(\phi,\bar{\phi},v_{\mu}\right) \right. \\
+	& \left. \qquad 
+	+ C\left(\phi,\bar{\phi},H_{0\mu}\right) \right] \rss - 2\Re(\gamma_{1\mu}) jH_{1100}.
+%\LHS{i\omega_{0}}jH_{21\mu}
+%	& = \left[ A_{1}\left(H_{2100},v_{\mu}\right)
+%    + B\left(\bar{\phi},H_{20\mu}\right)
+% 	+2B\left(\phi,H_{11\mu}\right)
+% 	+B\left(H_{2100},H_{00\mu}\right) \right. \\
+% 	& \qquad+B\left(H_{2000},H_{01\mu}\right)
+% 	+2B\left(H_{1100},H_{10\mu}\right)
+% 	+B_1\left(H_{2000},\bar{\phi},v_{\mu}\right)\\
+% 	& \qquad + 2B_1\left(\phi,H_{1100},v_{\mu}\right)
+% 	+2C\left(\phi,\bar{\phi},H_{10\mu}\right)
+% 	+C\left(H_{2000},\bar{\phi},H_{00\mu}\right)\\
+% 	& \qquad + C\left(\phi,\phi,H_{01\mu}\right)
+% 	+2C\left(\phi,H_{1100},H_{00\mu}\right) \\
+% 	& \left. \qquad +C_{1}\left(\phi,\phi,\bar{\phi},v_{\mu}\right)
+% 	+D\left(\phi,\phi,\bar{\phi},H_{00\mu}\right)  \right] \rss  \\
+% 	&\qquad -j\left(2\gamma_{2\mu}\phi
+% 	+\left(2\gamma_{1\mu}+\bar{\gamma}_{1\mu}\right)H_{2100}
+% 	+2c_{1}(0)H_{10\mu} \right).
+\end{align*}
+\cref{switch:lem:regular_solution} implies that solutions of the first two equations are given by
+\begin{align*}
+    H_{20\mu}(\theta) &=e^{2i\omega_0\theta}\Delta^{-1}(2i\omega_0)\left[A_1\left(H_{2000},v_{\mu}\right)+2B\left(\phi,H_{10\mu}\right) +B\left(H_{2000},H_{00\mu}\right)+B_1\left(\phi,\phi,v_{\mu}\right) \right.\\
+    & \qquad \left.+C\left(\phi,\phi,H_{00\mu}\right)\right] -2\gamma_{1\mu}\Delta(2i\omega_0)^{-1}\left(\Delta'(2i\omega)-\theta\Delta(2i\omega_0)\right) H_{2000}(\theta), \\
+    H_{11\mu}(\theta) & =\Delta^{-1}(0)\left[A_{1}\left(H_{1100},v_{\mu}\right)+2\Re\left(B\left(\bar{\phi},H_{10\mu}\right)\right)+B\left(H_{1100},H_{00\mu}\right)+B_1\left(\phi,\bar{\phi},v_{\mu}\right) \right.\\
+& \qquad \left.+C\left(\phi,\bar{\phi},H_{0\mu}\right)\right]-2\Re(\gamma_{1\mu})\Delta(0)^{-1}\left(\Delta'(0)-\theta\Delta(0)\right)\,H_{1100}(\theta).
+\end{align*}
+Applying \cref{switch:eq:FSC} to $z^2\bar{z}\alpha$ terms in the homological equation \cref{switch:eq:homological_equationGH} results in
+\begin{align*}
+\gamma_{2\mu} & =\frac{1}{2}~p\cdot \left[A_{1}\left(H_{2100},v_{\mu}\right)+B\left(\bar{\phi},H_{20\mu}\right)+2B\left(\phi,H_{11\mu}\right)+B\left(H_{2100},H_{00\mu}\right) \right.\\
+ & \qquad+B\left(H_{2000},\bar H_{10\mu}\right)+2B\left(H_{1100},H_{10\mu}\right)+B_1\left(H_{2000},\bar{\phi},v_{\mu}\right)+2B_1\left(\phi,H_{1100},v_{\mu}\right)\\
+ & \qquad+2C\left(\phi,\bar{\phi},H_{10\mu}\right)+C\left(H_{2000},\bar{\phi},H_{00\mu}\right)+C\left(\phi,\phi,H_{01\mu}\right)+2C\left(\phi,H_{1100},H_{00\mu}\right)\\
+ & \qquad+\left. C_{1}\left(\phi,\phi,\bar{\phi},v_{\mu}\right)+D\left(\phi,\phi,\bar{\phi},H_{00\mu}\right)\right].
+\end{align*}
+
+\subsubsection{Hopf and LPC predictors} \label{switch:sec:genh_predictors}
+Using the above introduced parameters $(\beta_{1},\beta_{2})$ we can rewrite \cref{switch:eq:GH_nf_alpha} as
+\[
+\dot{z}=(\beta_{1}+i\omega(\beta))z+(\beta_{2}+i \Im c_1(\beta))z|z|^{2}+c_{2}(\beta)z|z|^{4}+\mathcal{O}(|z|^{6}),
+\]
+where 
+\begin{equation}
+\label{switch:Eq:omega_expansion}
+\omega(\beta)=\omega_{0}+\omega_1\beta_1+\omega_2\beta_2+{\mathcal O}(\|\beta\|^2). 
+\end{equation}
+%For convenience, we abuse notations and write $\omega(\beta)$ and $c_j(\beta)$ instead of $\omega(\alpha(\beta))$ and $c_j(\alpha(\beta))$, respectively. Also note that the higher-order terms in the normal forms can smoothly depend on the corresponding parameters. Similar conventions are adopted in other cases ahead.
+Note that to simplify notation, we write here $\omega(\beta)$ and $c_j(\beta)$ instead of $\omega(\alpha(\beta))$ and $c_j(\alpha(\beta))$, respectively. Similar conventions are adopted in other cases ahead. 
+
+The parameters $\alpha$ and $\beta$ are related via
+\begin{equation}
+\label{switch:eq:GH_alpha}
+\alpha=\left(\Re \begin{pmatrix}
+\gamma_{110} & \gamma_{101}\\
+\gamma_{210} & \gamma_{201}
+\end{pmatrix}\right)^{-1}\beta + {\mathcal O}(\|\beta\|^2),
+\end{equation}
+so for the coefficient $\omega_2$ in \cref{switch:Eq:omega_expansion} we get
+\begin{equation}
+\label{switch:eq:GH_derivative_b_1}
+\omega_2=\Im\left(
+\begin{pmatrix}
+  \gamma_{110} & \gamma_{101}
+\end{pmatrix}
+\left(\Re
+  \begin{pmatrix}
+\gamma_{110} & \gamma_{101}\\
+\gamma_{210} & \gamma_{201}
+\end{pmatrix}
+\right)^{-1}
+\begin{pmatrix}
+0\\
+1
+\end{pmatrix}
+\right).
+\end{equation}
+
+Now we are ready to specify the predictors for the original parameter-dependent DDE \cref{switch:eq:pd-DDE}, using \cite{Kuznetsov2008}. To approximate the Hopf parameter values $\alpha$ and the corresponding equilibrium, we  merely substitute $\beta$ from 
+\begin{equation}
+\label{switch:eq:GH_approximation_Hopf}
+(\beta_{1},\beta_{2},z)=(0,\epsilon,0)
+\end{equation}
+with small $\epsilon\neq0$ into \cref{switch:eq:GH_alpha}, and then put the result together with $z=0$ into \cref{switch:eq:GH_H}.
+
+To approximate the LPC parameter values at which there is a cycle with a nontrivial multiplier $1$, we substitute $\beta$ from
+\begin{equation}
+\label{switch:eq:GH_approximation_LPC}
+\beta_{1}=0,\qquad\beta_{2}=-2 \Re(c_{2}(0)) \epsilon^{2}, \qquad  \epsilon>0,
+\end{equation}
+into \cref{switch:eq:GH_alpha}. The cycle period is approximated by 
+\begin{equation}
+\label{switch:eq:GH_approximation_LPC_T}
+T = 2\pi\left/\left(\omega_0+\left(\Im(c_{1}(0))-2\Re c_2(0) \omega_{2} \right)\epsilon^{2} \right) \right.,
+\end{equation}
+with $\omega_2$ given by \cref{switch:eq:GH_derivative_b_1}. 
+To obtain a predictor for the periodic orbit in the phase space, we put
+$z=\epsilon e^{i\psi}$ and the obtained $\alpha$ values into \cref{switch:eq:GH_H}. Truncating to the second order in $\epsilon$ then yields
+\begin{align*}
+u & =2\Re(e^{i\psi}\phi)\epsilon+\left(H_{1100}-2\Re(c_{2}(0))H_{0001}+\Re(e^{2i\psi}H_{2000})\right)\epsilon^{2}, \qquad \psi\in[0,2\pi].
+\end{align*}
+
+\subsection{Fold-Hopf bifurcation\label{switch:sec:fold-Hopf}}
+Suppose that \cref{switch:eq:pd-DDE} has an equilibrium $x=0$ at the critical parameter value $\alpha_{0}=(0,0)\in \RR^{2}$ with simple eigenvalues
+\begin{equation}
+\lambda_{1}=0,\qquad\lambda_{2,3}=\pm i\omega_{0},\ \omega_{0}>0,\label{switch:eq:FH_eigenvalues}
+\end{equation}
+which are the only eigenvalues on the imaginary axis. The restriction of \cref{switch:eq:pd-DDE} to the three-dimensional center manifold $\CM(\alpha)$ can generically be transformed to the smooth local normal form
+\begin{equation}
+\begin{cases}
+\begin{aligned}
+\dot{z}_{0} & =\gamma(\alpha)+g_{200}(\alpha)z_{0}^{2}+g_{011}(\alpha)|z_{1}|^{2}+g_{300}(\alpha)z_{0}^{3}+g_{111}(\alpha)z_{0}|z_{1}|^{2}\\
+ & \qquad+\mathcal{O}\left(\|\left(z_{0},z_{1},\overline{z}_{1}\right)\|^{4}\right),\\
+\dot{z}_{1} & =\lambda(\alpha)z_{1}+g_{110}(\alpha)z_{0}z_{1}+g_{210}(\alpha)z_0^2z_{1}+g_{021}(\alpha)z_{1}|z_{1}|^{2}
+	+ \mathcal{O}\left(\|\left(z_{0},z_{1},\overline{z}_{1}\right)\|^{4}\right),
+\end{aligned}
+\end{cases}\label{switch:eq:fold-Hopf_poincare_normal_form}
+\end{equation}
+see \cite[\S 8.5, Lemma 8.9]{Kuznetsov2004}, where $z_{0}\in \RR$, $z_{1}\in \CC$, $\gamma(0)=0,\lambda(0)=i\omega_{0}$ and the smooth functions $g_{jkl}(\alpha)$ are real in the first equation and complex in the second. Let $\lambda(\alpha) =\mu(\alpha)+i\omega(\alpha)$ and suppose that the map $\alpha\mapsto(\gamma(\alpha),\mu(\alpha))$ is regular at $\alpha=0$. Introducing new parameters $\beta=(\beta_{1},\beta_{2}) = (\gamma(\alpha),\mu(\alpha))$, we obtain the truncated normal form
+%
+\begin{equation}
+\begin{cases}
+\begin{aligned}
+  \dot{z}_{0} & =\beta_{1}
+  +g_{200}(\beta)z_{0}^{2}+g_{011}(\beta)|z_{1}|^{2}+g_{111}(\beta)z_{0}|z_{1}|^{2}+g_{300}(\beta)z_{0}^{3},\\
+  \dot{z}_{1} & =(\beta_{2}
+  +i\omega_{0}+ib_1(\beta))z_{1}+g_{110}(\beta)z_{0}z_{1}+g_{210}(\beta)z_{0}^{2}z_{1}+g_{021}(\beta)z_{1}|z_{1}|^{2},
+\end{aligned}
+\end{cases}
+\label{switch:eq:FH-nf}
+\end{equation}
+%
+where 
+\begin{equation}
+\label{switch:Eq:b_expand}
+b_1(\beta)=\omega_1\beta_1+\omega_2\beta_2+ \mathcal O(\|\beta\|^2).
+\end{equation}
+Letting $z_{1}=\rho e^{i\psi}$ and separating the real and imaginary parts yields the system
+%
+\begin{equation}
+\begin{cases}
+\begin{aligned}
+  \dot{z}_{0} & =\beta_{1}
+  +g_{200}(\beta)z_{0}^{2}+g_{011}(\beta)\rho^{2}+g_{111}(\beta)z_{0}\rho^{2}+g_{300}(\beta)z_{0}^{3},\\
+  \dot{\rho} & =\rho\left(\beta_{2}
+    +\Re(g_{110}(\beta))z_{0}+\Re(g_{210}(\beta))z_{0}^{2}+\Re(g_{021}(\beta))\rho^{2}\right),\\
+  \dot{\psi} & =\omega_{0}
+  +b_{1}(\beta)+\Im(g_{110}(\beta))z_{0}+\Im(g_{210}(\beta))z_{0}^{2}+\Im(g_{021}(\beta))\rho^{2},
+\end{aligned}
+\end{cases}\label{switch:eq:FH_nf_phi_psi}
+\end{equation}
+where the first two equations are decoupled from the third.
+\medskip
+\par
+Since the eigenvalues \cref{switch:eq:FH_eigenvalues} are simple, there exist eigenfunctions $\phi_{0,1}$ and $\SUN{\phi_{0,1}}$ satisfying
+\[
+A\phi_0=0,\qquad A\phi_1=i\omega_0\phi_1,\qquad \STAR{A}\SUN{\phi_0}=0,\qquad \STAR{A}\SUN{\phi_1}=i\omega_0\SUN{\phi_1},
+\]
+as well as the mutual normalization condition
+\[
+\PAIR{\SUN{\phi_i}}{\phi_j} =\delta_{ij},\qquad 0\leq i,j\leq 1.
+\]
+The eigenfunctions $\phi_{0,1}$ and $\SUN{\phi_{0,1}}$ can be explicitly computed using \cref{switch:eq:eigenfunction,switch:eq:eigenfunction1} with $q_{0}\in \RR^{n}$, $q_{1} \in \CC^n$, $p_{0} \in \RRR{n}$ and $p_{1} \in \CCC{n}$ satisfying
+\[
+\Delta(0)q_{0}=0, \qquad \Delta(i\omega_{0})q_{1}=0,\qquad p_{0}\Delta(0)=0,\qquad p_{1}\Delta(i\omega_{0})=0,
+\]
+as well as
+\[
+  p_0\Delta'(0)q_0 = 1, \qquad p_1\Delta'(i\omega_0)q_1 = 1.
+\]
+Any point $y\in X_{0}$ in the real critical eigenspace can be represented as
+\[
+y=z_{0}\phi_{0}+z_{1}\phi_{1}+\bar{z}_{1}\bar{\phi}_{1},\qquad (z_0, z_1) \in \RR \times \CC,
+\]
+where $z_{0}=\PAIR{\SUN{\phi_0}}{y} $ and $z_1=\PAIR{\SUN{\phi_1}}{y}$. Therefore, the homological equation \cref{switch:eq:homological_equation} can be written as
+\begin{equation}
+  \label{switch:eq:FH_HOM}
+  \begin{multlined}
+    \SUNSTAR{A}j\mathcal{H}(z,\beta)+J_{1}(\beta)\rss+R(\mathcal{H}(z,\beta),K(\beta)) =\\
+    \qquad \qquad j\left( D_{z_{0}}\mathcal{H}(z,\beta)\dot{z}_{0}+D_{z_{1}}\mathcal{H}(z,\beta)\dot{z}_{1}+D_{\bar{z}_{1}}\mathcal{H}(z,\beta)\dot{\bar{z}}_{1}\right),
+  \end{multlined}
+\end{equation}
+where $z=(z_0,z_1,\bar{z}_1)$, $\beta=(\beta_1,\beta_2)$ and $\dot{z}$ is given by the normal form \cref{switch:eq:FH-nf}. Here, the mapping $\mathcal{H}$ admits the expansion
+\begin{equation}
+  \label{switch:eq:FH_H}
+  \begin{aligned}
+    \mathcal{H}(z_{0},z_{1},\bar{z}_{1},\beta) &= z_{0}\phi_{0}+z_{1}\phi_{1}+\bar{z}_{1}\bar{\phi}_{1} + H_{00010}\beta_1+H_{00001}\beta_2\\
+    &+ \displaystyle \sum_{j+k+l+|\mu|\geq 2}\dfrac{1}{j!k!l!\mu!}H_{jkl\mu}z_{0}^{j}z_{1}^{k}\bar{z}_{1}^{l}\beta^{\mu},
+  \end{aligned}
+\end{equation}
+and the functions $R$ and $K$ are as in \cref{switch:eq:R_truncated} and \cref{switch:eq:K_truncated}, respectively.
+
+\subsubsection{Critical normal form coefficients}
+We start by computing the critical normal form coefficients following \cite{Janssens:Thesis}. Collecting the quadratic terms $z_{0}^{2}$, $z_{1}^{2}$, $z_{0}z_{1}$ and $z_{1}\bar{z}_{1}$ in \cref{switch:eq:FH_HOM} we obtain one nonsingular and three singular linear systems. By  \cref{switch:eq:FSC} the singular systems are consistent if and only if
+\begin{align*}
+g_{200}(0)=\frac{1}{2} & p_{0} \cdot B(\phi_{0},\phi_{0}),\qquad g_{110}(0)=p_{1} \cdot B(\phi_{0},\phi_{1}),\qquad g_{011}(0)=p_{0} \cdot B(\phi_{1},\bar{\phi}_{1}).
+\end{align*}
+This yields the three quadratic normal form coefficients. The corresponding solutions may then be obtained using \cref{switch:lem:regular_solution,switch:lem:bordered}. Namely,
+\begin{align*}
+H_{20000}(\theta) & = \BINV{0}(B(\phi_{0},\phi_{0}),-2g_{200}(0))(\theta),\\
+H_{02000}(\theta) & = e^{2i\omega_{0}\theta}\Delta^{-1}(2i\omega_{0})B(\phi_{1},\phi_{1}),\\
+H_{11000}(\theta) & = \BINV{i\omega_{0}}(B(\phi_{0},\phi_{1}),-g_{110}(0))(\theta),\\
+H_{01100}(\theta) & = \BINV{0}(B(\phi_{1},\bar{\phi}_{1}),-g_{011}(0))(\theta).
+\end{align*}
+For the four remaining cubic normal form coefficients, we collect the coefficients of the resonant terms $z_{0}^{j}z_{1}^{k}\bar{z}_{1}^{l}$  in \cref{switch:eq:FH_HOM} with $j+k+l=3$. This yields four singular linear systems. As before, by \cref{switch:eq:FSC} these systems are consistent if and only if
+\begin{align*}
+g_{300}(0) & =\frac{1}{6}p_{0} \cdot \left(3B(\phi_{0},H_{20000})+C(\phi_{0},\phi_{0},\phi_{0})\right),\\
+g_{111}(0) & =p_{0} \cdot \left(B(\phi_{0},H_{01100})+B(\phi_{1},\bar{H}_{11000})+B(\bar{\phi}_{1},H_{11000})+C(\phi_{0},\phi_{1},\bar{\phi}_{1})\right),\\
+g_{210}(0) & =\frac{1}{2}p_{1} \cdot \left(2B(\phi_{0},H_{11000})+B(\phi_{1},H_{20000})+C(\phi_{0},\phi_{0},\phi_{1})\right),\\
+g_{021}(0) & =\frac{1}{2}p_{1} \cdot \left(2B(\phi_{1},H_{01100})+B(\bar{\phi}_{1},H_{02000})+C(\phi_{1},\phi_{1},\bar{\phi}_{1})\right).
+\end{align*}
+
+\subsubsection{Parameter-related coefficients}
+The parameter-related linear terms in \cref{switch:eq:FH_HOM} give
+\begin{align*}
+\LHSZ jH_{00010} & = J_{1}K_{10}\rss-j\phi_{0},\\
+\LHSZ jH_{00001} & = J_{1}K_{01}\rss.
+\end{align*}
+Let $\gamma=(\gamma_{1}~\gamma_{2})=p_{0}J_{1}$. Then by \cref{switch:eq:FSC} we obtain the orthogonal frame
+\begin{equation}
+K_{10}=s_{1}+\delta_{1}s_{2},\qquad K_{01}=\delta_{2}s_{2},\label{switch:eq:FH_Ks}
+\end{equation}
+where
+\[
+s_{1}^{T}=\gamma/\|\gamma\|^{2},\qquad s_{2}^{T}=(-\gamma_{2}~\gamma_{1})
+\]
+and $\delta_{1,2}\in \RR$ are constants. Using \cref{switch:lem:bordered} from \cref{switch:sec:solvability} we get
+\begin{equation}
+\begin{aligned}
+H_{00010}(\theta) & =\INV{\Delta}(0)\left(J_{1}K_{10}-\Delta'(0)q_{0}\right)+\delta_{3}q_{0}+\theta q_{0}\\
+ & =r_{1}+\delta_{1}r_{2}+\delta_{3}q_{0}-r_{3}(\theta),\\
+H_{00001}(\theta) & = \delta_{2}r_{2}+\delta_{4}q_{0},
+\end{aligned}\label{switch:eq:FH_H000mu}
+\end{equation}
+where
+\[
+r_{1}=\INV{\Delta}(0)\left(J_{1}s_{1}\right),\qquad r_{2}=\INV{\Delta}(0)\left(J_{1}s_{2}\right),\qquad r_{3}(\theta)=\INV{\Delta}(0)\left(\Delta'(0)q_{0}\right)-\theta q_{0},
+\]
+and the real constants $\delta_{3}$ and $\delta_{4}$ are not chosen such that $\PAIR{\SUN{\phi_0}}{H_{00010}} =0$ and $\PAIR{\SUN{\phi_0}}{H_{00001}} =0$, but will be determined below. Collecting the $z_{0}\beta$ and $z_{1}\beta$ terms in the homological equation \cref{switch:eq:FH_HOM} yields the systems
+\begin{align} \label{switch:eq:FH_secondorder_systems}
+\begin{split}
+\LHSZ jH_{10010} & = \rsswp{B(\phi_{0},H_{00010}) +A_{1}(\phi_{0},K_{10})} - jH_{20000},\\
+\LHSZ jH_{10001} & = \rsswp{B(\phi_{0},H_{00001})+A_{1}(\phi_{0},K_{01})},\\
+\LHS{i\omega_{0}} jH_{01010} & = \rsswp{B(\phi_{1},H_{00010})+A_{1}(\phi_{1},K_{10})}
+	-j\left(i\omega_{1} \phi_{1}+H_{11000}\right),\\
+\LHS{i\omega_{0}} jH_{01001}
+	& = \rsswp{B(\phi_{1},H_{00001})+A_{1}(\phi_{1},K_{01})}-\left(1+i\omega_{2}\right) j\phi_{1}.
+\end{split}
+\end{align}
+To determine $\delta_i(i=1,2,3,4)$ we substitute \cref{switch:eq:FH_Ks,switch:eq:FH_H000mu} into \cref{switch:eq:FH_secondorder_systems}. Then by \cref{switch:eq:FSC} we obtain the system
+\begin{multline*}
+\begin{pmatrix}
+p_{0} \cdot B(\phi_{0},r_{2})+p_{0} \cdot A_{1}(\phi_{0},s_{2}) & 2 g_{200}(0)\\
+\Re(p_{1} \cdot B(\phi_{1},r_{2})+p_{1} \cdot A_{1}(\phi_{1},s_{2})) & \Re(g_{110}(0))
+\end{pmatrix} \begin{pmatrix}
+\delta_{1} & \delta_2\\
+\delta_{3} & \delta_4
+\end{pmatrix} = \\ \begin{pmatrix}
+-p_{0} \cdot \left(A_{1}(\phi_{0},s_{1})+B(\phi_{0},r_{1}-r_3)\right)		& 0\\
+-\Re(p_{1} \cdot \left(A_{1}(\phi_{1},s_{1})+B(\phi_{1},r_{1}-r_3))\right)	& 1
+\end{pmatrix}.
+\end{multline*}
+Subsequently, the coefficients $\omega_{1}$ and $\omega_{2}$ in the expansion \cref{switch:Eq:b_expand}
+are given by
+\begin{align*}
+\omega_{1} & =\Im\left(p_{1} \cdot B(\phi_{1},H_{00010})+p_{1} \cdot A_{1}(\phi_{1},K_{10})\right),\\
+\omega_{2} & =\Im\left(p_{1} \cdot B(\phi_{1},H_{00001})+p_{1} \cdot A_{1}(\phi_{1},K_{01})\right).
+\end{align*}
+
+\subsubsection{Hopf, fold, and Neimark-Sacker predictors} \label{switch:sec:fold-Hopf_predictors}
+To approximate the fold and Hopf curves and their corresponding equilibria in \cref{switch:eq:FH_nf_phi_psi}, one should substitute the expressions for $\beta$ and the equilibrium coordinates into the expansions \cref{switch:eq:FH_H} and \cref{switch:eq:K_truncated}. It follows that the fold curve is approximated by
+\[
+\left(z_0,\rho,\beta_{1},\beta_{2}\right)=\left(0,0,0,\epsilon\right)
+\]
+and the Hopf curve by
+\[
+\left(z_0,\rho,\beta_{1},\beta_{2}\right)=\left(-\frac{\beta_{2}}{\Re(g_{110}(0))},0,-\frac{g_{200}(0)}{\Re(g_{110}(0))^{2}}\epsilon^{2},\epsilon\right),
+\]
+for $|\epsilon|$ small. 
+
+To approximate the periodic orbit at the Neimark-Sacker bifurcation where it has a pair of complex multipliers with unit absolute value, we substitute $z_{1}=\epsilon e^{i\psi}$ and 
+\begin{equation}
+\begin{cases}
+\begin{aligned}
+\beta_{1} & =-g_{011}(0)\epsilon^{2},\\
+\beta_{2} & =\dfrac{\Re(g_{110}(0))\left(2\Re(g_{021}(0))+g_{111}(0)\right)-2\Re(g_{021}(0))g_{200}(0)}{2g_{200}(0)}\epsilon^{2}, \\
+z_0&=-\dfrac{2\Re\left(g_{021}(0)\right)+g_{111}(0)}{2g_{200}(0)}\epsilon^{2},
+\end{aligned}
+\end{cases}\label{switch:eq:FH_NS_predictor}
+\end{equation}
+into \cref{switch:eq:FH_H}, see \cite{Kuznetsov2008}. After a truncation this gives
+\begin{align*}
+u & =2\Re\left(e^{i\psi}\phi_{1}\right)\epsilon+\left(\frac{\Re(g_{110}(0))\left(2\Re(g_{021}(0))+g_{111}(0)\right)-2\Re(g_{021}(0))g_{200}(0)}{2g_{200}(0)}H_{00001} \right. \\
+	& \phantom{=} \left. -g_{011}(0)H_{00010}+H_{01100}-\left(\frac{2\Re(g_{021}(0))+g_{111}(0)}{2g_{200}(0)}\right)\phi_{0}+\Re\left(e^{2i\psi}\bar{H}_{02000}\right)\right)\epsilon^{2},
+\end{align*}
+where $\psi \in [0,2\pi]$. The period of the cycle is approximated by
+\[
+T =2\pi\left/\left(\omega_0+\omega_{1}\beta_{1}+\omega_{2}\beta_{2}+\Im(g_{110}(0))z_{0}+\Im(g_{021}(0))\epsilon^{2}\right)\right..
+\]
+Here $(z_{0},\beta_{1},\beta_{2})$ are as in \cref{switch:eq:FH_NS_predictor}, and all other quantities are defined earlier.
+
+\subsection{Hopf-Hopf bifurcation}
+\label{switch:sec:HH_coef}
+Suppose that \cref{switch:eq:pd-DDE} has an equilibrium $x=0$ at the critical parameter value $\alpha_{0}=(0,0)\in \RR^{2}$ with two pairs of simple purely imaginary eigenvalues
+\begin{equation}
+  \label{switch:eq:HH_eigenvalues}
+\lambda_{1,4}=\pm i\omega_{1},\qquad\lambda_{2,3}=\pm i\omega_{2},
+\end{equation}
+where $\omega_{1}>\omega_{2}>0$. When no other eigenvalues on the imaginary axis exist, this phenomenon is called the Hopf-Hopf or double-Hopf bifurcation. Assume furthermore that the nonresonance conditions $k\omega_{1}\neq l\omega_{2}$ with $0 < k+l \leq 5$ are satisfied. Then the restriction of \cref{switch:eq:pd-DDE} to the four-dimensional center manifold $\CM(\alpha)$ can be transformed to the smooth local normal form
+\begin{equation*}
+\begin{cases}
+\begin{aligned}
+\dot{z}_{1} & =\lambda_{1}(\alpha)z_{1}+g_{2100}(\alpha)z_{1}|z_{1}|^{2}+g_{1011}(\alpha)z_{1}|z_{2}|^{2}+g_{3200}(\alpha)z_{1}|z_{1}|^{4}\\
+ & \qquad+g_{2111}(\alpha)z_{1}|z_{1}|^{2}|z_{2}|^{2}+g_{1022}(\alpha)z_{1}|z_{2}|^{4}+\mathcal{O}\left(\|z_{1},\overline{z_{1}},z_{2},\overline{z_{2}}\|^{6}\right),\\
+\dot{z}_{2} & =\lambda_{2}(\alpha)z_{2}+g_{1110}(\alpha)z_{2}|z_{1}|^{2}+g_{0021}(\alpha)z_{2}|z_{2}|^{2}+g_{2210}(\alpha)z_{2}|z_{1}|^{4}\\
+ & \qquad+g_{1121}(\alpha)z_{2}|z_{1}|^{2}|z_{2}|^{2}+g_{0032}(\alpha)z_{2}|z_{2}|^{4}+\mathcal{O}\left(\|z_{1},\overline{z_{1}},z_{2},\overline{z_{2}}\|^{6}\right),
+\end{aligned}
+\end{cases}\label{switch:eq:HH_nf}
+\end{equation*}
+see \cite[\S 8.6, Lemma 8.13]{Kuznetsov2004}, where $z_{1,},z_{2}\in \CC^{2}$ and $g_{jklm}(\alpha)$ are smooth complex-valued functions.
+Let
+\[
+\begin{cases}
+\begin{aligned}
+\lambda_{1}(\alpha) & =\mu_{1}(\alpha)+i\nu_{1}(\alpha),\\
+\lambda_{2}(\alpha) & =\mu_{2}(\alpha)+i\nu_{2}(\alpha),
+\end{aligned}
+\end{cases}
+\]
+where $\mu_{1,2}(\alpha)$ and $\nu_{j}(\alpha)$ are smooth functions such that $\mu_1(0)=\mu_2(0)=0, \ \nu_{j}(0)=\omega_{j}\  (j=1,2)$ and suppose that the map $\alpha\mapsto(\mu_{1}(\alpha),\mu_{2}(\alpha))$ is regular at $\alpha=0$. Then we can introduce new parameters $\beta=(\beta_{1},\beta_{2})=(\mu_1(\alpha),\mu_2(\alpha))$ to obtain the normal form
+\[
+\begin{cases}
+\begin{aligned}
+\dot{z}_{1} & =(\beta_{1}+i\nu_{1}(\beta))z_{1}+g_{2100}(\beta)z_{1}|z_{1}|^{2}+g_{1011}(\beta)z_{1}|z_{2}|^{2}+g_{3200}(\beta)z_{1}|z_{1}|^{4}\\
+ & \qquad+g_{2111}(\beta)z_{1}|z_{1}|^{2}|z_{2}|^{2}+g_{1022}(\beta)z_{1}|z_{2}|^{4}+\mathcal{O}\left(\|z_{1},\overline{z_{1}},z_{2},\overline{z_{2}}\|^{6}\right),\\
+\dot{z}_{2} & =(\beta_{2}+i\nu_{2}(\beta))z_{2}+g_{1110}(\beta)z_{2}|z_{1}|^{2}+g_{0021}(\beta)z_{2}|z_{2}|^{2}+g_{2210}(\beta)z_{2}|z_{1}|^{4}\\
+ & \qquad+g_{1121}(\beta)z_{2}|z_{1}|^{2}|z_{2}|^{2}+g_{0032}(\beta)z_{2}|z_{2}|^{4}+\mathcal{O}\left(\|z_{1},\overline{z_{1}},z_{2},\overline{z_{2}}\|^{6}\right).
+\end{aligned}
+\end{cases}
+\]
+Truncate the normal form to third order
+\begin{equation}
+\begin{cases}
+\begin{aligned}
+\dot{z}_{1} & =\left(\beta_{1}+i\omega_{1}+ib_1(\beta)\right)z_{1}+g_{2100}(\beta)z_{1}|z_{1}|^{2}+g_{1011}(\beta)z_{1}|z_{2}|^{2},\\
+\dot{z}_{2} & =\left(\beta_{2}+i\omega_{2}+ib_2(\beta)\right)z_{2}+g_{1110}(\beta)z_{2}|z_{1}|^{2}+g_{0021}(\beta)z_{2}|z_{2}|^{2},
+\end{aligned}
+\end{cases}\label{switch:eq:HH_nf-1}
+\end{equation}
+where
+\begin{equation}
+b_j(\beta)=b_{j1}\beta_1+b_{j2}\beta_2 + \mathcal O(\|\beta\|^2),\ \ j =1,2.
+\label{switch:Eq:nu_expand}    
+\end{equation}
+Letting $\left(z_{1},z_{2}\right)=\left(\rho_{1}e^{i\psi_{1}},\rho_{2}e^{i\psi_{2}}\right)$
+and separating the real and imaginary parts yields
+\begin{equation}
+\begin{cases}
+\begin{aligned}
+\dot{\rho_{1}}& = \rho_{1}\left(\beta_{1}+\Re(g_{2100}(\beta))\rho_{1}^{2}+\Re(g_{1011}(\beta))\rho_{2}^{2}\right),\\
+\dot{\rho_{2}}& = \rho_{2}\left(\beta_{2}+\Re(g_{1110}(\beta))\rho_{1}^{2}+\Re(g_{0021}(\beta))\rho_{2}^{2}\right),\\
+\dot{\psi}_{1}& = \omega_{1}+b_1(\beta)+\Im(g_{2100}(\beta))\rho_{1}^{2}+\Im(g_{1011}(\beta))\rho_{2}^{2},\\
+\dot{\psi}_{2}& = \omega_{2}+b_2(\beta)+\Im(g_{1110}(\beta))\rho_{1}^{2}+\Im(g_{0021}(\beta))\rho_{2}^{2}.
+\end{aligned}
+\end{cases}\label{switch:eq:HH-polor_coordinates}
+\end{equation}
+\medskip
+\par
+Since the eigenvalues \cref{switch:eq:HH_eigenvalues} are simple, there exist eigenfunctions $\phi_{1,2}$ and $\SUN{\phi_{1,2}}$,
+\begin{equation}
+A\phi_{1}=i\omega_{1}\phi_{1},\qquad A\phi_{2}=i\omega_{2}\phi_{2},\qquad \STAR{A}\SUN{\phi_1}=i\omega_1\SUN{\phi_1},\qquad \STAR{A}\SUN{\phi_2}=i\omega_2\SUN{\phi_2},\label{switch:eq:HH_eigenfunctions}
+\end{equation}
+satisfying the mutual normalization conditions
+\[
+\PAIR{\SUN{\phi_i}}{\phi_j} = \delta_{ij}, \qquad 1 \leq i,j \leq 2.
+\]
+The eigenfunctions $\phi_{1,2}$ and $\SUN{\phi_{1,2}}$ can be explicitly computed using \cref{switch:eq:eigenfunction,switch:eq:eigenfunction1} with $q_{1,2} \in \CC^n$ and $p_{1,2} \in \CCC{n}$ such that both
+\[
+\Delta(i\omega_{1})q_{1}=0,\qquad\Delta(i\omega_{2})q_{2}=0,\qquad p_{1}\Delta(i\omega_{1})=0,\qquad p_{2}\Delta(i\omega_{2})=0,
+\]
+as well as
+\[
+  p_1\Delta'(i\omega_1)q_1 = 1, \qquad p_2\Delta'(i\omega_2)q_2 = 1.
+\]
+Any point $y\in X_{0}$ in the real critical eigenspace can be represented as
+\[
+y=z_{1}\phi_{1}+\bar{z}_{1}\bar{\phi}_{1}+z_{2}\phi_{2}+\bar{z}_{2}\bar{\phi}_{2},\qquad z_{1,2}\in \CC,
+\]
+where $z_1=\PAIR{\SUN{\phi_1}}{y}$ and $z_2=\PAIR{\SUN{\phi_2}}{y}$. Therefore, the homological equation \cref{switch:eq:homological_equation} can be written as
+\begin{equation}
+  \label{switch:eq:HH_homological_eq}
+  \begin{multlined}
+    \SUNSTAR{A}\mathcal{H}(z,\beta)+J_{1}(\beta) \rss +R(\mathcal{H}(z,\beta),K(\beta)) =\\
+    j\left(D_{z_{1}}\mathcal{H}(z,\beta)\dot{z}_{1}+D_{\bar{z}_{1}}\mathcal{H}(z,\beta)\dot{\bar{z}}_{1}+D_{z_{2}}\mathcal{H}(z,\beta)\dot{z}_{2}+D_{\bar{z}_{2}}\mathcal{H}(z,\beta)\dot{\bar{z}}_{2}\right),
+  \end{multlined}
+\end{equation}
+where $z=(z_{1},\bar{z}_{1},z_{2},\bar{z}_{2})$, $\beta=(\beta_1,\beta_2)$ and $\dot{z}$ is given by the normal form \cref{switch:eq:HH_nf-1}. The mapping $\mathcal{H}$ admits the expansion
+\begin{equation}
+  \label{switch:eq:H_expansion-1-2}
+  \begin{aligned}
+    \mathcal{H}(z_{1},\bar{z}_{1},z_{2},\bar{z}_{2},\beta_{1},\beta_{2})&= z_{1}\phi_{1}+\bar{z}_{1}\bar{\phi}_{1}+z_{2}\phi_{2}+\bar{z}_{2}\bar{\phi}_{2}+H_{000010}\beta_1 + H_{000001}\beta_2\\
+    &+ \sum_{j+k+l+m+|\mu| \geq 2}\dfrac{1}{j!k!l!m!\mu!}H_{jklm\mu}z_{1}^{j}\bar{z}_{1}^{k}z_{2}^{l}\bar{z}_{2}^{m}\beta^{\mu}
+  \end{aligned}
+\end{equation}
+and the functions $R$ and $K$ are as in \cref{switch:eq:R_truncated} and \cref{switch:eq:K_truncated}, respectively.
+
+\subsubsection{Critical normal form coefficients}
+For initialization of the Neimark-Sacker curves \cref{switch:eq:HH_NS_asymptotics} we need the cubic critical normal form coefficients $g_{2100}(0)$, $g_{1011}(0)$, $g_{1110}(0)$ and $g_{0021}(0)$. We compute these coefficients following \cite{Janssens:Thesis}.
+
+Collecting the coefficients of the quadratic terms $|z_{1}|^{2},z_{1}^{2},z_{1}z_{2},|z_{2}|^{2},z_{1}\bar{z}_{2}$ and $z_{2}\bar{z}_{1}$ in the homological equation \cref{switch:eq:HH_homological_eq}, we obtain six nonsingular linear systems. By \cref{switch:lem:regular_solution} their solutions are
+\begin{align*}
+H_{110000}(\theta)& = \Delta^{-1}(0)B(\phi_{1},\bar{\phi}_{1}),\\
+H_{200000}(\theta)& = e^{2i\omega_{1}\theta}\Delta^{-1}(2i\omega_{1})B(\phi_{1},\phi_{1}),\\
+H_{101000}(\theta)& = e^{i\left(\omega_{1}+\omega_{2}\right)\theta}\Delta^{-1}(i\left(\omega_{1}+\omega_{2}\right))B(\phi_{1},\phi_{2}),\\
+H_{001100}(\theta)& = \Delta^{-1}(0)B(\phi_{2},\bar{\phi}_{2}),\\
+H_{100100}(\theta)& = e^{i\left(\omega_{1}-\omega_{2}\right)\theta}\Delta^{-1}(i\left(\omega_{1}-\omega_{2}\right))B(\phi_{1},\bar{\phi}_{2}),\\
+H_{002000}(\theta)& = e^{2i\omega_{2}\theta}\Delta^{-1}(2i\omega_{2})B(\phi_{2},\phi_{2}).
+\end{align*}
+The desired cubic critical normal form coefficients are obtained by collecting the coefficients of the resonant cubic terms $z_{1}|z_{1}|^{2}$, $z_1|z_{2}|^{2}$, $|z_{1}|^{2}z_2$ and $|z_{2}|^{2}z_{2}$ in the homological equation. This leads to four singular linear systems. By \cref{switch:eq:FSC} these systems are solvable if and only if
+\begin{align*}
+g_{2100}(0) & =\frac{1}{2}p_{1}\cdot \left(2B(\phi_{1},H_{110000})+B(\bar{\phi}_{1},H_{200000})+C(\phi_{1},\phi_{1},\bar{\phi}_{1})\right),\\
+g_{1011}(0) & =p_{1}\cdot \left(B(\bar{\phi}_{2},H_{101000})+B(\phi_{1},H_{001100})+B(\phi_{2},H_{100100})+C(\phi_{1},\phi_{2},\bar{\phi}_{2})\right),\\
+g_{1110}(0) & =p_{2}\cdot \left(B(\bar{\phi}_{1},H_{101000})+B(\phi_{1},\bar{H}_{100100})+B(\phi_{2},H_{110000})+C(\phi_{1},\bar{\phi}_{1},\phi_{2})\right),\\
+g_{0021}(0) & =\frac{1}{2}p_{2}\cdot \left(2B(\phi_{2},H_{001100})+B(\bar{\phi}_{2},H_{002000})+C(\phi_{2},\phi_{2},\bar{\phi}_{2})\right).
+\end{align*}
+
+\subsubsection{Parameter-related coefficients}
+The linear terms in \cref{switch:eq:HH_homological_eq} give back the eigenfunctions \cref{switch:eq:HH_eigenfunctions} and the parameter-related equations
+\[
+\LHSZ jH_{0000\mu}=J_{1}K_{\mu} \rss,
+\]
+where $\mu=(10),(01)$. Let
+\begin{equation}
+K_{\mu}=\gamma_{1\mu}e_{1}+\gamma_{2\mu}e_{2},\label{switch:eq:HH_Kmu}
+\end{equation}
+where $e_{1}=(1,0)$, $e_{2}=(0,1)$ and $\gamma_{i\mu}(i=1,2)\in \RR$ are constants to be determined. Then \cref{switch:lem:regular_solution} from \cref{switch:sec:solvability} implies
+\begin{align}
+H_{0000\mu}(\theta) & =\gamma_{1\mu}\Delta^{-1}(0)J_{1}e_{1}+\gamma_{2\mu}\Delta^{-1}(0)J_{1}e_{2}.\label{switch:eq:HH_H000mu}
+\end{align}
+Collecting in \cref{switch:eq:HH_homological_eq} the $z_{i}\beta_{j}$-terms with $1\leq i,j\leq 2$ yields the systems
+\begin{align}
+\begin{split}\label{switch:eq:HH_secondorder_systems}
+\LHS{i\omega_{1}} jH_{100010}
+	& = \rsswp{A_{1}(\phi_{1},K_{10})+B(\phi_{1},H_{000010})} - (1+ib_{11})j\phi_{1},\\
+\LHS{i\omega_{1}} jH_{100001}
+	& =\rsswp{A_{1}(\phi_{1},K_{01})+B(\phi_{1},H_{000001})}-ib_{12} j\phi_{1},\\
+\LHS{i\omega_{2}} jH_{001010}
+	& =\rsswp{A_{1}(\phi_{2},K_{10})+B(\phi_{2},H_{000010})}-ib_{21} j\phi_{2},\\
+\LHS{i\omega_{2}} jH_{001001}
+	& =\rsswp{A_{1}(\phi_{2},K_{01})+B(\phi_{2},H_{000001})}-(1+ib_{22})j\phi_{2}.
+\end{split}
+\end{align}
+To determine $\gamma_{i\mu}(i=1,2)$ we substitute \cref{switch:eq:HH_Kmu,switch:eq:HH_H000mu} into \cref{switch:eq:HH_secondorder_systems}. Then by \cref{switch:eq:FSC} we obtain the system
+\[
+\Re\left[\begin{pmatrix}
+\Gamma_{11} & \Gamma_{12}\\
+\Gamma_{31} & \Gamma_{32}
+\end{pmatrix}\right]\begin{pmatrix}
+\gamma_{110} & \gamma_{210}\\
+\gamma_{101} & \gamma_{201}
+\end{pmatrix}=\begin{pmatrix}
+1 & 0 \\
+0 & 1
+\end{pmatrix},
+\]
+where
+\[
+\Gamma_{ij} \DEF A_1(\phi_i,e_j) + B(\phi_i,\Delta^{-1}(0) J_1 e_j), \qquad 1\leq i,j \leq 2.
+\]
+Note that $\Delta^{-1}(0)J_{1}e_{i}$ is a constant function of $\theta$.
+
+It now follows from \cref{switch:eq:HH_secondorder_systems} that the coefficients $b_{11},b_{12},b_{21}$ and $b_{22}$, introduced in \cref{switch:Eq:nu_expand} and needed for the second order approximation of the periods, are given by
+\begin{align*}
+b_{11} & =\Im\left(p_{1}\cdot \left(A_{1}(\phi_{1},K_{10})+B(\phi_{1},H_{000010})\right)\right),\\
+b_{12} & =\Im\left(p_{1}\cdot \left(A_{1}(\phi_{1},K_{01})+B(\phi_{1},H_{000001})\right)\right),\\
+b_{21} & =\Im\left(p_{2}\cdot \left(A_{1}(\phi_{2},K_{10})+B(\phi_{2},H_{000010})\right)\right),\\
+b_{22} & =\Im\left(p_{2}\cdot \left(A_{1}(\phi_{2},K_{01})+B(\phi_{2},H_{000001})\right)\right).
+\end{align*}
+
+\subsubsection{Hopf and Neimark-Sacker predictors\label{switch:sec:HH_pedictors}}
+To approximate the Hopf curves and their corresponding equilibria in \cref{switch:eq:HH-polor_coordinates}, one should substitute the expressions for the equilibrium coordinates and $\beta$, i.e.
+\[
+(\rho_{1},\rho_{2})=\left(\sqrt{-\frac{\beta_{1}}{\Re(g_{2100}(0))}},0\right),\qquad(\rho_{1},\rho_{2})=\left(0,\sqrt{-\frac{\beta_{2}}{\Re(g_{0021}(0))}}\right)
+\]
+and
+\[
+H_{1}=\left\{ \left(\beta_{1},\beta_{2}\right):\beta_{1}=0\right\} ,\qquad\text{and}\qquad H_{2}=\left\{ \left(\beta_{1},\beta_{2}\right):\beta_{2}=0\right\},
+\]
+into the expansions \cref{switch:eq:H_expansion-1-2} and \cref{switch:eq:K_truncated}. 
+
+For the approximation of the Neimark-Sacker periodic orbits we follow \cite{Kuznetsov2008} and substitute $(z_1,z_2)=(\epsilon e^{i\psi_{1}},0)$ and $(z_1,z_2)=(0,\epsilon e^{i\psi_{2}})$ with
+\begin{subequations}
+\begin{align}
+(\rho_{1},\rho_{2},\beta_{1},\beta_{2}) &= \left(\epsilon,0,-\Re(g_{2100}(0))\epsilon^{2},-\Re(g_{1110}(0))\epsilon^{2}\right),\label{switch:eq:HH_NS1_pm}\\
+(\rho_{1},\rho_{2},\beta_{1},\beta_{2}) &= \left(0,\epsilon,-\Re(g_{1011}(0))\epsilon^{2},-\Re(g_{0021}(0))\epsilon^{2}\right),\label{switch:eq:HH_NS2_pm}
+\end{align}\label{switch:eq:HH_NS_asymptotics}
+\end{subequations}
+respectively, into \cref{switch:eq:H_expansion-1-2} with $\epsilon>0$. After a truncation, we obtain
+\begin{align*}
+	u_1 & =2\Re\left(e^{i\psi_{1}}\phi_{1}\right)\epsilon+\Bigl(-\Re(g_{1110}(0))H_{000001}-\Re(g_{2100}(0))H_{000010} \Bigr.\\
+	& \phantom{=} \left.+H_{110000}+\Re\left(e^{2i\psi_{1}}H_{200000}\right)\right)\epsilon^{2}, \qquad \psi_1\in[0,2\pi]
+\end{align*}
+and
+\begin{align*}
+u_2 & =2\Re\left(e^{i\psi_{2}}\phi_{2}\right)\epsilon+\Bigl(-\Re(g_{0021}(0))H_{000001}-\Re(g_{1011}(0))H_{000010}\Bigr.\\
+	& \phantom{=} \left.+H_{001100}+\Re\left(e^{2i\psi_{2}}H_{002000}\right)\right)\epsilon^{2}, \qquad \psi_2\in[0,2\pi].
+\end{align*}
+Approximations for the period of each cycle for the Neimark-Sacker predictors are
+\begin{equation*}
+\begin{cases}
+\begin{aligned}
+T_{1} & =2\pi \left/\left(\omega_{1}+b_{11}\beta_{1}+b_{12}\beta_{2}+\Im(g_{2100}(0))\epsilon^{2}\right)\right.,\\
+T_{2} & =2\pi\left/\left(\omega_{2}+b_{21}\beta_{1}+b_{22}\beta_{2}+\Im(g_{0021}(0))\epsilon^{2}\right)\right. .
+\end{aligned}
+\end{cases}
+\label{switch:eq:HH_period_predictors}
+\end{equation*}
+Here we should use $(\beta_{1},\beta_{2})$ as in \cref{switch:eq:HH_NS1_pm,switch:eq:HH_NS2_pm} and $b_{jk}$ computed above.
+
+
+\section{Computation of derivatives for discrete DDEs}
+\label{switch:sec:Implement}
+All predictors described in the previous sections are implemented in version 3.2a of \DDEBIFTOOL for models of the type \cref{switch:eq:discreteDDEs}. The discrete DDE \cref{switch:eq:discreteDDEs} is a particular instance of \cref{switch:eq:pd-DDE} with $h=\tau_m$ and
+$$
+F(\phi, \alpha) = f(\Xi \phi, \alpha),
+$$
+where the linear evaluation operator $\Xi: X \to \RR^{n \times (m+1)}$ is defined by
+\begin{equation}
+  \label{switch:Eq:Handle}
+  \Xi \phi \DEF \left(\phi(-\tau_0),\phi(-\tau_{1}),\dots,\phi(-\tau_{m})\right).
+\end{equation}
+with the convention $\tau_0 \DEF 0$. In particular, by the chain rule,
+\[
+D_1F(0,0)\phi = D_1f(0,0)\Xi\phi = \sum_{j=0}^m{D_{1,j}f(0,0)\phi(-\tau_j)}, \qquad \phi \in X,
+\]
+with $M_j \DEF D_{1,j+1}f(0,0) \in \RR^{n \times n}$ the partial derivative of $f$ at the origin with respect to its $j$th state argument. So, if \cref{switch:eq:discreteDDEs} has an equilibrium at the origin for $\alpha = 0$, then the linear part of the splitting \cref{switch:eq:DDE-RHS} at $\alpha = 0$ is precisely the right-hand side of the above equation. Therefore $\zeta : [0,h] \to \RR^{n \times n}$ must be such that
+$$
+\PAIR{\zeta}{\phi} = \sum_{j=0}^m{M_j\phi(-\tau_j)}, \qquad \forall\,\phi \in X.
+$$
+Hence $\zeta$ has jump discontinuities $M_j$ at the points $\tau_j$ for $j = 0,\ldots,m$ and is constant otherwise. So, in this case the characteristic matrix \cref{switch:eq:CharMatrix} is given by
+\[
+\Delta(z) = z I  - \sum_{j=0}^m  M_j {\rm e}^{-z \tau_j}, \qquad z \in \CC.
+\]
+The multilinear forms appearing in \cref{switch:eq:R_truncated} can be expressed in terms of the derivatives of the function  $f: \RR^{n \times (m+1)} \times \RR^p \to \RR^n$ from \cref{switch:eq:discreteDDEs}. For $r, s \ge 0$ with $r + s \ge 1$ the mixed derivative of order $r + s$ of $f$ at $(0,0)$ is an $(r + s)$-linear form on $[\RR^{n \times (m + 1)}]^r \times [\RR^p]^s$, with the understanding that at most one factor may be absent in case $r = 0$ or $s = 0$. Let $Q, Q^{1},\ldots,Q^{r}$ be matrices in $\RR^{n \times (m + 1)}$ and let $\alpha, \alpha^{1},\ldots,\alpha^{s}$ be vectors in $\RR^p$. Then this derivative acts as
+\begin{multline}
+  \label{switch:eq:derivsf}
+  D_1^r D_2^s f(0,0)(Q^1,\ldots,Q^r, \alpha^1,\ldots,\alpha^s) =\\
+  \sum_{j,k,\ell} \left.\frac{\partial^{r + s} f(Q, \alpha)}{\partial q_{j_1k_1}\ldots \partial q_{j_rk_r}\partial \alpha_{\ell_1} \ldots \partial \alpha_{\ell_s}}\right|_{(Q, \alpha) = (0,0)} q^1_{j_1k_1}\cdots q^r_{j_rk_r}\alpha^1_{\ell_1}\cdots\alpha^s_{\ell_s},
+\end{multline}
+where the multidimensional sum runs over
+\[
+1 \le j_1, \ldots, j_r \le n, \qquad 0 \le k_1, \ldots, k_r \le m, \qquad 1 \le \ell_1, \ldots, \ell_s \le p.
+\]
+The multilinear forms appearing in \cref{switch:eq:R_truncated}, as well as \cref{switch:eq:J_1}, are computed from \cref{switch:eq:derivsf} by composition with $\Xi$ from \cref{switch:Eq:Handle} as
+\begin{equation*}
+\label{switch:eq:multilinearforms}
+D_1^rD_2^s F(0,0)(\phi_1,\ldots,\phi_r, \alpha_1, \ldots, \alpha_s) = D_1^rD_2^sf(0,0)(\Xi \phi_1,\ldots, \Xi \phi_r, \alpha_1, \ldots, \alpha_s),
+\end{equation*}
+for $\phi_1,\ldots,\phi_r \in X$ and $\alpha_1,\ldots, \alpha_s \in \RR^p$. For given $r$ and $s$ the multidimensional array of partial derivatives inside the sum in \cref{switch:eq:derivsf} is of course symmetric under permutation of the state indices $j_1k_1,\ldots,j_rk_r$ and the parameter indices $\ell_1,\ldots,\ell_s$. This can be exploited for efficient storage and access.
+
+\section{Examples\label{switch:sec:Examples}}
+In this section we will demonstrate the correctness of the normal form coefficients and the accuracy of the predictors in four different models. We do this twofold. Firstly, by comparing the predictors in parameter-space with the computed in \DDEBIFTOOL bifurcation curves, and, secondly, by performing simulations near the bifurcation point under consideration. The simulation is done either with the built-in routine \mintinline{MATLAB}{dde23} of \MATLAB or with the Python package \texttt{pydelay} \cite{Flunkert2009Flunkert}. The latter gives significant speed performance when considering simulation over longer time intervals. This is usually the case when one wants to demonstrate the existence of stable invariant manifolds. Since in this section only the main results are given, we provide details (including simulation results) in the supplement \cref{chapter:switching_supplement}. Furthermore, the source code of the examples has been included into the \DDEBIFTOOL software package. This will hopefully provide a good starting point when considering other models.
+
+\subsection{Generalized Hopf bifurcation in a coupled FHN neural system with delay}
+\label{switch:sec:example_FHN}
+
+In \cite{Xu2010} the following system is considered
+\begin{equation}
+\begin{cases}
+\begin{aligned}
+\dot{u}_{1}(t) & =-\dfrac{u^3_{1}(t)}{3}+(c+\alpha)u^2_{1}(t)+du_{1}(t)-u_{2}(t)+2\beta f(u_{1}(t-\tau)),\\
+\dot{u}_{2}(t) & =\varepsilon(u_{1}(t)-bu_{2}(t)).
+\end{aligned}
+\end{cases}\label{switch:eq:DDE_FHN}
+\end{equation}
+Here $(u_{1},u_{2})$ is the completely synchronous solution of the three coupled FitzHugh\textendash Nagumo (FHN) neuron system
+\begin{equation}
+\begin{cases}
+\begin{aligned}
+\dot{u}_{1}(t) & =-\dfrac{u^{3}_{1}(t)}{3}+(c+\alpha)u_{1}^{2}(t)+du_{1}(t)-u_{2}(t)+\beta\left[f(u_{3}(t-\tau))+f(u_{5}(t-\tau))\right],\\
+\dot{u}_{2}(t) & =\varepsilon(u_{1}(t)-bu_{2}(t)),\\
+\dot{u}_{3}(t) & =-\dfrac{u^{3}_{3}(t)}{3}+(c+\alpha)u_{3}^{2}(t)+du_{3}(t)-u_{4}(t)+\beta\left[f(u_{3}(t-\tau))+f(u_{5}(t-\tau))\right],\\
+\dot{u}_{4}(t) & =\varepsilon(u_{3}(t)-bu_{4}(t)),\\
+\dot{u}_{5}(t) & =-\dfrac{u^{3}_{5}(t)}{3}+(c+\alpha)u_{5}^{2}(t)+du_{5}(t)-u_{6}(t)+\beta\left[f(u_{1}(t-\tau))+f(u_{3}(t-\tau))\right],\\
+\dot{u}_{6}(t) & =\varepsilon(u_{5}(t)-bu_{6}(t)),
+\end{aligned}
+\end{cases}\label{switch:eq:thee_coupled_neurons}
+\end{equation}
+where $\alpha,\beta$ measure the synaptic strength in self-connection and neighborhood-interaction, respectively. The parameters $b$ and $\varepsilon$ are assumed to be positive such that $0<b<1$ and $0<\varepsilon\ll1$. The function $f$ is a sufficiently smooth sigmoidal amplification function and $\tau>0$ represents the time delay in signal transmission. For the derivation of \cref{switch:eq:DDE_FHN} from the system \cref{switch:eq:thee_coupled_neurons}, as well as for stability conditions of the completely synchronous solution, we refer to  \cite{Xu2010}. In that article a generalized Hopf point was analyzed using the traditional formal adjoint method and the two-step center manifold reduction, see \cite{Hale@1977}. Numerical simulations where made to confirm their results. For this $(\beta,\alpha)$ are taken as the unfolding parameters and the parameters
+\[
+b=0.9,\qquad\varepsilon=0.08,\qquad c=2.0528,\qquad d=-3.2135,\qquad\tau=1.7722
+\]
+are fixed. The sigmoidal amplification function $f(u)=\tanh(u)$ is used.
+
+\begin{figure}[htbp]
+\centering
+\includetikzscaled{FHN_bifdia}
+\caption{Bifurcation diagram near the generalized Hopf point in the system
+  \cref{switch:eq:DDE_FHN} with unfolding parameters $(\beta,\alpha)$. The bifurcation
+  curves are nearly identical to those in the bifurcation diagram of the
+  topological normal form as presented in \textup{\cite[page
+314]{Kuznetsov2004}}. Near the generalized Hopf point, there are no limit cycles
+in region {I}, one stable limit cycle in region {II} and two limit cycles (one
+stable and one unstable) in region {III}. In \cref{switch:SM:sec:GH:simulation} these
+predictions are confirmed by simulation.}
+\label{switch:fig:FHN-bifurcation-diagram}
+\end{figure}
+
+According to \cite{Xu2010}, a generalized Hopf point is present at the origin with the parameter values $(\beta,\alpha)=(1.9,-0.9710)$. We took this point and calculated its stability and the corresponding normal form coefficients. Although we do confirm that the point under consideration is a Hopf point, the first Lyapunov coefficient does not vanish and we conclude that the point cannot be a generalized Hopf point. However, the simulation in \cite{Xu2010} do suggest a generalized Hopf point for nearby parameter values. Therefore we continued the Hopf point in $(\beta,\alpha)$. Then a generalized Hopf point is located at $(\beta,\alpha)=(1.9,-1.0429)$ with \emph{negative} second Lyapunov coefficient $\ell_2(0)=-15.6733$, indicating the existence of a stable steady state inside a unstable cycle, which in turn is located inside a stable cycle. We remark that the second Lyapunov coefficient found in \cite{Xu2010} is \emph{positive}. This contradicts the simulation of the dynamics made in the same article. Indeed when the second Lyapunov coefficient is positive a time-reversal must be taking into account when considering the bifurcation diagram in the case the second Lyapunov coefficient is negative, see \cite{Kuznetsov2004}. Then the situation of a stable steady state inside a stable cycle (separated by an unstable cycle) does not occur.
+
+Using the predictors from \cref{switch:sec:genh_predictors} the Hopf and LPC bifurcation curves emanating from the generalized Hopf point were automatically approximated near that point. In \cref{switch:fig:FHN-bifurcation-diagram} the resulting bifurcation diagram is shown. 
+
+\subsection{Fold-Hopf bifurcation of the Rose\textendash Hindmarsh model with time delay}
+\label{switch:sec:ex_Rose_Hindmarsh}
+In \cite{Ma2011} a Rose-Hindmarsh model \cite{Hindmarsh1982,Hindmarsh1984} with time delay in the self-feedback process, which takes the form
+\begin{equation}
+\begin{cases}
+\begin{aligned}
+\dot{x}(t)& = y(t)-ax^{3}(t)+bx^{2}(t-\tau)-cz(t)+I_{app},\\
+\dot{y}(t)& = c-dx^{2}(t)-y(t),\\
+\dot{z}(t)& = r(S(x(t)-\chi)-z(t)),
+\end{aligned}
+\end{cases}\label{switch:eq:Rose-Hindmarsh}
+\end{equation}
+is considered. Here $x$ represents membrane potential, $y$ represents a recovery variable, $z$ denotes the adaption current, and $a,b,c,d>0,S$ and $\chi$ are real constants. The external current $I_{app}$ and $r$ are control parameters, and $\tau$ denotes the synaptic transmission delay. The constants $a,b,c,d,\chi$ and $r$ are fixed. Let $(x_{\star},y_{\star},z_{\star})$ be a steady state of \cref{switch:eq:Rose-Hindmarsh}, then
+\begin{equation} \label{switch:eq:ystar_zstar}
+y_{\star}=c-dx_{\star}^{2},\qquad z_{\star}=S(x_{\star}-\chi).
+\end{equation}
+The conditions for a fold-Hopf bifurcation have been derived in \cite{Ma2011} analytically. Indeed, let $S$ be arbitrary and set
+\begin{align}
+x_{\star} & =\frac{1}{3a}\left(b-d\pm\sqrt{\left(b-d\right)^{2}-3acS}\right), \nonumber \\
+I_{app} & =x_{\star}^{2}(ax_{\star}-b+d)+c(S(x_{\star}-\chi)-1), \label{switch:eq:I_app}  \\
+A & =x_{\star}^{2}\left((3ax_{\star}+2d)^{2}-4b^{2}\right)-2rx_{\star}(2dx_{\star}-1)(3ax_{\star}-2b+2d) \nonumber \\
+ & \qquad+r^{2}(4dx_{\star}(-2bx_{\star}+dx_{\star}-1)+1),\nonumber \\
+B & =9a^{2}x_{\star}^{4}+2rx_{\star}(3ax_{\star}-2b+2d)-4b^{2}x_{\star}^{2}-4dx_{\star}+r^{2}+1,\nonumber  \\
+\omega_{1,2} & =\sqrt{-B\pm\sqrt{B^{2}-4A}}. \nonumber
+\end{align}
+Then a fold-Hopf bifurcation occurs when
+\[
+\tau=\begin{cases}
+\frac{1}{\omega_{1,2}}\left(\arcsin Y+2k\pi\right), & Z\geq0,\\
+\frac{1}{\omega_{1,2}}\left(\pi-\arcsin Y+2k\pi\right), & Z\leq0,
+\end{cases}
+\]
+where $k=0,1,2,\dots$ and
+\begin{align*}
+Y &= \frac{\omega_{1,2}}{2b}\left(\frac{r  (2b-2d-3ax_\star)}{r^{2}+\omega_{1,2}^{2}}+\frac{2d}{\omega_{1,2}^{2}+1}-\frac{1}{x_{\star}}\right), \\
+Z &= \frac{\omega_{1,2}}{2b}\left(\frac{r^2(2b-2d-3ax_\star)}{r^2+\omega_{1,2}^2}+\frac{2 d}{\omega_{1,2}^2+1} +3ax_\star \right).
+\end{align*}
+In \cite{Ma2011} the parameters values
+\begin{equation}
+a=1.0,\qquad b=3.0,\qquad c=1.0,\qquad d=5.0,\qquad\chi=-1.6,\qquad r=0.001\label{switch:eq:rose_hindmarsh_pm1}
+\end{equation}
+are fixed. It follows that a fold-Hopf bifurcation is located at
+\[
+x_{\star}=0.1308,\qquad S=-0.57452592,\qquad\tau=5.768830916,
+\]
+and $I_{app}$, $(y_\star,z_\star)$ given by \cref{switch:eq:I_app} and \cref{switch:eq:ystar_zstar}, respectively. To unfold the singularity the `parameters' $(x_{\star},S)$ are used, see \cite{Ma2011}. Here we will take the more natural unfolding parameter $(I_{app},S)$. Calculating the stability with \DDEBIFTOOL gives the eigenvalues
+\[
+0.001\pm1.0081i,\qquad-0.000+0.000i.
+\]
+All other eigenvalues lie in the open left half of the complex plane. Calculating the normal form coefficients reveals that
+\[
+s := \mbox{sgn}(g_{200}(0)g_{011}(0)) = \mbox{sgn}(1.8487\mathrm{e}{-05}),
+\qquad  \theta(0)=\frac{\Re(g_{110}(0))}{g_{200}(0)}=-139.0315
+\]
+and
+\begin{align*}
+E(0) &= \Re\left[g_{210}(0)+g_{110}(0)\left({\displaystyle \frac{\Re g_{021}(0)}{g_{011}(0)}-\frac{3}{2}\frac{g_{300}(0)}{g_{200}(0)}+\frac{g_{111}(0)}{2g_{011}(0)}}\right) -{\displaystyle \frac{g_{021}(0) g_{200}(0) }{g_{011}}}\right] \\
+     &=15.69,
+\end{align*}
+see \cite[page 338]{Kuznetsov2004}. Since $s=1$ and $\theta(0)<0$, a global bifurcation curve or invariant tori are present for parameters sufficiently close to the bifurcation, see \cite[page 342]{Kuznetsov2004}. However, since the sign of $E(0)$ is \emph{positive} the tori are unstable. Thus according to our analysis the simulated torus in \cite{Ma2011} cannot be attributed to the fold-Hopf bifurcation.
+%
+\begin{figure}[ht]
+\centering
+\includetikzscaled{RH_bifurcation_diagram_II}
+\caption{\label{switch:fig:Rose-Hindmarsh_bifurcation_diagram}Bifurcation diagram near
+  the fold-Hopf point in \cref{switch:eq:Rose-Hindmarsh} with $(r,S)=(1.4,-8)$. The
+  fold branch is not included here since it is indistinguishable from the Hopf
+  curve at this scale. Near the fold-Hopf point, there is one stable periodic
+  orbit and one stable two-dimensional torus in region I and II, respectively. In
+\cref{switch:SM:sec:RH:simulation} these predictions are confirmed by simulation.
+}
+\end{figure}
+%
+
+For demonstration purposes, we take the parameters $r=1.4$ and $S=-8$, while keeping the other parameters as in \cref{switch:eq:rose_hindmarsh_pm1}. Then a fold-Hopf bifurcation is located at $x_{\star}=1.0972$, $\tau=0.9402$, $I_{app}$ as in \cref{switch:eq:I_app}, and $(y_\star,z_\star)$ given by \cref{switch:eq:ystar_zstar}. The leading eigenvalues become
+\[
+0.000\pm5.6042i, \qquad 0.000+0.000i,
+\]
+while the normal form coefficients are given by
+\[
+s=\mbox{sgn}(1.7700), \qquad \theta(0)=-0.1569 \qquad \mbox{and} \qquad E(0)=-0.0378.
+\]
+Thus the sign of $s$ and $\theta(0)$ remain unchanged. However, since the sign of $E(0)$ is  \emph{negative}, there is a time reversal to take into account. Therefore, we expect a stable torus to be present for nearby parameter values. Using the predictors from \cref{switch:sec:fold-Hopf_predictors}, we successfully continued the fold, Hopf, and Neimark-Sacker bifurcation curves emanating from the point, see \cref{switch:fig:Rose-Hindmarsh_bifurcation_diagram}. %We also compared the computed and predicted period of the limit cycles on the Neimark-Sacker bifurcation curve, see equation \cref{switch:eq:predictor_period_FH,switch:fig:Bifurcation-period_comparison}.
+
+\subsection{Hopf-Hopf and generalized Hopf bifurcations in active control system}
+\label{switch:sec:acs_example}
+
+Active control system is used to control the response of structures to internal or external excitation. The mathematical model with time delay can be described as follows \cite{Peng2013}
+\begin{equation}
+m\ddot{x}(t)+c\dot{x}(t)+kx(t)+ux(t-\tau)+v\dot{x}(t-\tau)=\tilde{f}(t).\label{switch:eq:acs1}
+\end{equation}
+Here $x(t)$ is the displacement of the controlled system, $m>0$ is the mass, $c$ and $k$ are the damping and the stiffness, respectively, $\tau$ is the time delay represented in the relative displacement feedback loop and in the relative velocity feedback loop, $u$ and $v$ are feedback strengths, respectively, and $\tilde{f}$ represents the external excitation. Let $t^{*}=\sqrt{k/m}t$, $\zeta=c/2m\sqrt{m/k}$, $g_{u}=u/k,g_{v}=v/m\sqrt{m/k}$ and $f(t)=\tilde{f}(t)/k$ . Then equation \cref{switch:eq:acs1} becomes
+\[
+\ddot{x}(t)+2\zeta\dot{x}(t)+x(t)+g_{u}x(t-\tau)+g_{v}\dot{x}(t-\tau)=f(t),
+\]
+where the asterisks are omitted for simplicity. Following \cite{Ding@2016} and \cite{Peng2013} we consider the case when $f$ is replaced by a nonlinear position time delay feedback given  by $\beta x^{3}(t-\tau)$, see also \cite{xu2003vanderPolDuffing}. As in \cite{Ding@2016} we fix the parameters
+\[
+g_{u}=0.1,\quad g_{v}=0.52,\quad\beta=0.1
+\]
+and take $\zeta$ and $\tau$ as control parameters.
+Let $\dot{x}(t)=y(t)$, then we obtain
+\begin{equation}
+\begin{cases}
+\begin{aligned}
+\dot{x}(t)&=\tau y(t),\\
+\dot{y}(t)&=\tau\left(-x(t)-g_{u}x(t-1)-2\zeta y(t)-g_{v}y(t-1)+\beta x^{3}(t-1) \right).
+\end{aligned}
+\end{cases}\label{switch:eq:acs3-1}
+\end{equation}
+Here the delay is scaled by using the transformation of time $t\rightarrow t/\tau$. In this way the delay can treated as an ordinary parameter.
+
+\begin{figure}[htbp]
+\includetikzscaled{acs_hoho_predictors}
+\caption{Bifurcation diagram near the Hopf-Hopf point at parameter values \cref{switch:eq:acs-HH-pm} in an active control system with time delay given by \cref{switch:eq:acs3-1}. There are two supercritical Hopf curves (blue) and two Neimark-Sacker curves (yellow).  We see that the predictors (dotted) give good approximations near the codimension two point.}
+\label{switch:fig:acs_hoho_predictors}
+\end{figure}
+
+The trivial equilibrium undergoes a Hopf-Hopf bifurcation at the parameter values
+\begin{equation}
+(\zeta_{c},\tau_{c})=(-0.016225,5.89802),
+\label{switch:eq:acs-HH-pm}
+\end{equation}
+see \cite{Ding@2016} for the derivation. Using \DDEBIFTOOL we manually construct the Hopf-Hopf point and compute its stability and normal form coefficients. We obtain the eigenvalues $0.0000\pm4.5275i$ and $-0.0000\pm7.6449i$. The quadratic critical normal form coefficients are
+\begin{align*}
+g_{2100}(0) & =-0.0915+0.1214i, & g_{1110}(0) & =0.2151+0.3876i,\\
+g_{1011}(0) & =-0.3084+0.4096i, & g_{0021}(0) & =0.1813+0.3268i.
+\end{align*}
+From
+\[
+(\text{Re }g_{2100}(0))(\text{Re }g_{0021}(0))=-0.0166<0,
+\]
+we conclude that this Hopf-Hopf bifurcation is of `difficult' type, see \cite[page 361]{Kuznetsov2004}. Furthermore, since the quantities
+\[
+\theta=\theta(0)=\frac{\text{Re }g_{1011}(0)}{\text{Re }g_{0021}(0)}=-1.7009,\qquad\delta=\delta(0)=\frac{\text{Re }g_{1101}(0)}{\text{Re }g_{2100}(0)}=-2.3517
+\]
+are such that $\theta<0,\,\delta<0,\,\theta\delta>1$ it follows that we are in case VI of the `difficult' type, cf. \cite[page 365]{Kuznetsov2004}.
+%The linear coefficients in \cref{switch:eq:HH_K}
+%are given by
+%\[
+%K_{10}=\left(\begin{array}{c}
+%-0.2446\\
+%1.1097
+%\end{array}\right),\qquad K_{01}=\left(\begin{array}{c}
+%-0.3281\\
+%-0.8519
+%\end{array}\right).
+%\]
+%Since the determinant of the matrix $[K_{10}K_{01}]$ is nonvanishing
+%the transversality conditions are met.
+We continue the Neimark-Sacker and Hopf bifurcation curves emanating from the Hopf-Hopf point using the predictors from \cref{switch:sec:HH_pedictors}. In  \cref{switch:fig:acs_hoho_predictors} a close-up is given near the Hopf-Hopf point comparing the computed curves with the predictors in parameter space.
+ 
+Using the detection capabilities of \DDEBIFTOOL one additional Hopf-Hopf point and three generalized Hopf points are located on the continued Hopf branches. The normal form coefficients of the second Hopf-Hopf point are such that
+\[
+(\text{Re }g_{2100}(0))(\text{Re }g_{0021}(0))=1.7331\mathrm{e}{-04}>0
+\]
+and
+\[
+\theta\geq\delta>0,\qquad \theta\delta>1.
+\]
+
+We conclude that we are in case I of the `simple' type, see \cite[page 360]{Kuznetsov2004}. Therefore, no stable invariant two-dimensional torus is predicted for nearby parameter values, only two stable period orbits expected. Using the predictors from \cref{switch:sec:genh_predictors,switch:sec:HH_pedictors} we can easily continue the codimension one cycle bifurcations from the located degenerate Hopf points, showing the complicated bifurcation diagram in \cref{switch:fig:acs_unfolding}.
+%
+\begin{figure}[ht]
+\noindent \begin{centering}
+\includetikzscaled{acs_hoho_genh_lpc_ns}
+\par\end{centering}
+\caption{\label{switch:fig:acs_unfolding} Bifurcation diagram obtained by continuing Hopf, Neimark-Sacker and LPC bifurcation curves from Hopf-Hopf and generalized Hopf bifurcation points in the active control system \cref{switch:eq:acs3-1} using the predictors from \cref{switch:sec:genh_predictors,switch:sec:HH_pedictors} combined with the continuation capabilities from \DDEBIFTOOL. Two Hopf-Hopf points are connected by a Neimark-Sacker bifurcation curve. Also two of the three generalized Hopf points are connected by a single LPC curve.}
+\end{figure}
+
+
+% \subsection{Transcritical-Hopf bifurcation in Van der Pol's oscillator with delayed position and velocity feedback}
+% \label{switch:sec:HT_example}
+% In \cite{Bramburger2014} a generalization of Van der Pol's oscillator with delayed feedback
+% \begin{equation}\label{switch:eq:dde_vanderPol}
+% \ddot{x}(t)+\varepsilon(x^{2}(t)-1)\dot{x}(t)+x(t)=g(\dot{x}(t-\tau),x(t-\tau)),
+% \qquad 0<\tau<\infty,
+% \end{equation}
+% is considered. Here $g\in C^{3}$ satisfies the conditions $g(0,0)=0,g_{\dot{x}}(0,0)=a$ and $g_{x}(0,0)=b$. The linearization of equation \cref{switch:eq:dde_vanderPol} around the trivial solution $x=0$ gives
+% \[
+% \ddot{x}(t)-\varepsilon\dot{x}(t)+x(t)=a\dot{x}(t-\tau)+bx(t-\tau).
+% \]
+% From which we obtain the characteristic equation
+% \[
+% \Delta(\lambda,\tau)=\lambda^{2}-\varepsilon\lambda+1-(a\lambda+b)e^{-\lambda\tau}=0.
+% \]
+% Let
+% \begin{equation}
+% b=1,\qquad\tau=\tau_{0}\neq\varepsilon+a,\qquad\varepsilon^{2}-a^{2}<2,\label{switch:eq:fold-Hopf_conditions}
+% \end{equation}
+% then the characteristic equation has a simple zero and a pair of purely imaginary roots $\lambda=\pm i\omega_{0}$. Here $\omega_{0}$ and $\tau_{0}$ are defined by
+% \[
+% \omega_{0}=\sqrt{2-\varepsilon^{2}+a^{2}},\qquad\tau_{0}=\frac{1}{\omega_{0}}\arccos\left(\dfrac{1-(1+\varepsilon a)\omega_{0}^{2}}{a^{2}\omega_{0}^{2}+1}\right),
+% \]
+% see \cite[Proposition 2.1]{Bramburger2014}. We set the function $g$ to
+% \begin{align*}
+% g(\dot{x}(t-\tau),x(t-\tau))=&(1+\mu_{1}) x(t-\tau)-0.2 \dot{x}(t-\tau)-0.2 x(t-\tau)^{2}\\
+% 						&-0.2 x(t-\tau) \dot{x}(t-\tau)-0.2 x(t-\tau)^2+0.5 x(t-\tau)^3
+% \end{align*}
+% and $\varepsilon=0.3$. Then the conditions \cref{switch:eq:fold-Hopf_conditions} are satisfied and
+% \begin{equation}
+% \omega_{0}\approx1.396424004376894,\qquad\tau_{0}\approx1.757290761249588.\label{switch:eq:vdpo_omega0_tau0}
+% \end{equation}
+% %
+% \begin{figure}[htbp]
+% \centering
+% \includetikzscaled{VDPO_bifurcation_diagram}
+% \caption{\label{switch:fig:HT_bifurcation_diagram} Bifurcation diagram near the transcritical-Hopf bifurcation in the delayed Van der Pol's oscillator given by \cref{switch:eq:vdp}. There are two supercritical Hopf curves (blue), two subcritical Hopf curves (red), two Neimark-Sacker curves (yellow) and one transcritical curve (green).  We see that the predictors (dotted) give good approximation for nearby values.}
+% \end{figure}
+% %
+% 
+% To analyze the system with \DDEBIFTOOL we set $y(t)=\dot{x}(t)$ and transform the time with $t\rightarrow t/\tau$ to obtain the two-component system
+% \begin{equation}
+% \begin{cases}
+% \begin{aligned}
+% \dot{x}(t)&=\left(\tau_0+\mu_2\right)y(t),\\[0.5em]
+% \dot{y}(t)&=\left(\tau_0+\mu_{2}\right)\left[-x(t)-\varepsilon(x^2(t)-1)y(t)+(1+\mu_1)x(t-1)-0.2y(t-1) \right. \\[0.5em]
+% &\qquad \left. -0.2x^2(t-1)-0.2x(t-1)y(t-1)-0.2y^2(t-1)+0.5x^3(t-1)\right].
+% \end{aligned}
+% \end{cases}\label{switch:eq:vdp}
+% \end{equation}
+% Here we introduced the unfolding parameters $(\mu_1,\mu_{2}):=(b-1,\tau-\tau_{0})$ to translate the singularity to the origin. One immediately sees that the trivial equilibrium $(\dot{x},x)=(0,0)$ is an equilibrium for all parameter values $(\mu_{1},\mu_{2})$. Therefore, the parameter-dependent normal form for the generic fold-Hopf cannot be used here. Instead the normal form for the transcritical-Hopf bifurcation must be used. Using \DDEBIFTOOL we compute the stability and the normal form coefficients. The leading eigenvalues are $0.000+0.000i$ and $-0.000+2.4539i$, where $2.4539\approx\omega_{0}\tau_{0}$, see \cref{switch:eq:vdpo_omega0_tau0}. Furthermore, the normal form coefficients are such that
+% \[
+% g_{011}(0)\times\text{Re\,}\left(g_{110}(0)\right)=0.4241\times \Re\left(-0.1337+0.2672i\right)<0.
+% \]
+%  Therefore, there are two Neimark-Sacker bifurcation curves predicted, see \cref{switch:sec:HT_predictors}. Using the predictors from \cref{switch:sec:HT_predictors} we continue the transcritical, Hopf and Neimark-Sacker bifurcation curves emanating from the transcritical-Hopf bifurcation point. In \cref{switch:fig:HT_bifurcation_diagram} the bifurcation diagram is shown.
+
+\section{Concluding remarks}
+We have provided explicit formulas for the normal form coefficients needed to initialize codimension one equilibrium and nonhyperbolic cycle bifurcations emanating from generalized Hopf, fold-Hopf, Hopf-Hopf and transcritical-Hopf points in classical DDEs. Applications to four different models were given, confirming the correctness of the derivation of the normal form coefficients and the asymptotic predictors. A paper providing a second-order predictor for the homoclinic orbits emanating from the generic and transcritical codimension two Bogdanov-Takens bifurcations in classical DDEs, along the lines of \cite{kouznetsov2014improved}, is in preparation.
+
+Our proof of the existence of a smooth parameter-dependent center manifold is given in the general context of perturbation theory for dual semigroups (sun-star calculus). Consequently, the applicability of this result extends beyond classical DDEs, although here we did restrict to the case of an eventually compact $\mathcal{C}_0$-semigroup on a sun-reflexive state space. It follows that the results from \cref{switch:sec:pd:duality,switch:sec:spectral_bold,switch:sec:nonlinear_bold,switch:sec:cm_bold} are valid as well for other classes of delay equations such as renewal equations (also known as Volterra functional equations) and systems of mixed type \cite{diekmann2007stability}.
+
+Furthermore, in \cite{VanGils2013} and \cite{Dijkstra2015} the technique was used to calculate the critical normal form coefficients for Hopf and Hopf-Hopf bifurcations occurring in neural field models with propagation delays. For these models sun-reflexivity is lost, which is typical for delay equations in abstract spaces or with infinite delay. However, it is often possible to overcome this functional analytic complication, so dual perturbation theory can still be employed successfully \cite{Diekmann2008,Diekmann2012blending,VanGils2013,Janssens2019}. It has also been used in the context of semilinear hyperbolic systems \cite{Lichtner2009hyperbolicsystems}.
+
+For discrete DDEs the right-hand side generally does not depend differentiably on the delays, also see \cref{switch:rem:nonsmooth}. This leads to complications when one wants to apply the normalization method as described in \cref{switch:sec:normal-forms} with two or more delays simultaneously in the role of bifurcation parameters. We expect that the method can be extended without difficulty to also cover this case by exploiting the additional smoothness of history functions that lie on a local center manifold.
+
+In a related note, in \cite{Sieber@2017} it is demonstrated - at a formal level - that the normalization method still works for DDEs with state-dependent delays. However, even for the case of \emph{critical} normal forms, a rigorous argument would likely require techniques beyond direct generalization of the material from \cref{switch:sec:sunstar,switch:sec:pd}. This becomes already apparent at the fundamental level of choosing a suitable state space. For state-dependent DDEs the state space is in general no longer a vector space but rather a $C^1$-submanifold of codimension $n$ of the Banach space $C^1([-h,0],\RR^n)$ that actually depends on the right-hand side of the DDE \cite{Walther2003}. Moreover, the question of existence of $C^k$-smooth local center manifolds for $k \ge 2$ still seems open and under active investigation \cite{KrisztinWalther2017}. A successful extension of the normalization method to this setting would presumably involve a combination of $C^k$-smoothness of local center manifolds and $C^k$-smoothness of history functions lying \emph{on} these manifolds, both for $k \ge 2$, of course assuming that such smoothness results were indeed available. 
+
+Returning to the setting of classical DDEs, the most obvious next challenge is to derive normal forms for bifurcations of periodic orbits by generalizing \cite{Kuznetsov2005,DeWitte2013,DeWitte2014}. The resulting formulas can then be implemented in \DDEBIFTOOL to facilitate numerical bifurcation analysis of periodic orbits in supported types of classical DDEs.
+
+\section*{Acknowledgments}
+The authors would like to thank Prof. Odo Diekmann (Utrecht University) for very useful discussions on parameter-dependent perturbation of linear semigroups. We also thank Prof. Peter De Maesschalck (Hasselt University) for supporting this research project.
+
+\begin{subappendices}
+\section{Transcritical-Hopf bifurcation}
+\label{switch:Appendix_TH}
+\subsection{Normal form}\label{switch:sec:HT_predictors}
+A majority of papers in which fold-Hopf bifurcations in classical DDEs are studied, deals with models where the equilibrium remains fixed under variation of parameters. In this case the unfolding is not given by \cref{switch:eq:fold-Hopf_poincare_normal_form} anymore and we have to consider the smooth local normal form
+%
+\begin{equation*}
+\begin{cases}
+\begin{aligned}
+\dot{z}_{0} & =\gamma(\alpha)z_{0}+g_{200}(\alpha)z_{0}^{2}+g_{011}(\alpha)|z_{1}|^{2}+g_{300}(\alpha)z_{0}^{3}+g_{111}(\alpha)z_{0}|z_{1}|^{2}\\
+ & \qquad+\mathcal{O}\left(\|\left(z_{0},z_{1},\overline{z}_{1}\right)\|^{4}\right),\\
+\dot{z}_{1} & =\lambda(\alpha)z_{1}+g_{110}(\alpha)z_{0}z_{1}+g_{210}(\alpha)w^{2}z_{1}+g_{021}(\alpha)z_{1}|z_{1}|^{2}+\mathcal{O}\left(\|\left(z_{0},z_{1},\overline{z}_{1}\right)\|^{4}\right),
+\end{aligned}
+\end{cases}\label{switch:eq:fold-Hopf_poincare_normal_form-2}
+\end{equation*}
+where $\gamma(0)=0$ and $\lambda(0)=i\omega_0$ with $\omega_0>0$.
+%
+The bifurcation analysis can be carried out similar to the fold-Hopf case, see \cite{Guo2008} and \cite{Wang2010Hopftranscritical}. An alternative approach is presented in \cite{Wu2012}. In contrast with the fold-Hopf bifurcation,
+there are in general two Neimark-Sacker bifurcation curves. Furthermore, the fold bifurcation curve becomes a transcritical bifurcation curve, and meets the Hopf bifurcation curve transversally.
+
+Under the assumption that the map $\alpha \mapsto (\gamma(\alpha), \Re \lambda(\alpha))$ is regular at $\alpha=0$, we introduce new parameters $\beta=(\beta_1,\beta_2)=(\gamma(\alpha),\Re \lambda(\alpha))$ to obtain the truncated normal form
+%
+\begin{equation}
+\begin{cases}
+\begin{aligned}
+\dot{z}_{0} & =\beta_{1}z_{0}+g_{200}(\beta)z_{0}^{2}+g_{011}(\beta)|z_{1}|^{2}+g_{111}(\beta)z_{0}|z_{1}|^{2}+g_{300}(\beta)z_{0}^{3},\\
+\dot{z}_{1} & =(\beta_{2}+i\omega_{0}+ib_1(\beta))z_{1}+g_{110}(\beta)z_{0}z_{1}+g_{210}(\beta)z_{0}^{2}z+g_{021}(\beta)z_{1}|z_{1}|^{2},
+\end{aligned}
+\end{cases}\label{switch:eq:Ht-nf}
+\end{equation}
+where
+\begin{equation}
+\label{switch:Eq:b_1_expansion}
+b_1(\beta)=\omega_1\beta_1+\omega_2\beta_2+ \mathcal O(\|\beta\|^2).
+\end{equation}
+Letting $z_{1}=\rho e^{i\psi}$ and separating the real and imaginary parts yields the three dimensional system
+\begin{equation}
+\begin{cases}
+\begin{aligned}
+\dot{z}_{0} & =\beta_{1}z_{0}+g_{200}(\beta)z_{0}^{2}+g_{011}(\beta)\rho^{2}+g_{111}(0)z_{0}\rho^{2}+g_{300}(\beta)z_{0}^{3},\\
+\dot{\rho} & =\rho\left(\beta_{2}+\Re(g_{110}(\beta))z_{0}+\Re(g_{210}(\beta))z_{0}^{2}+\Re(g_{021}(\beta))\rho^{2}\right),\\
+\dot{\psi} & =\omega_{0}+ib_1(\beta)+\Im(g_{110}(\beta))z_{0}+\Im(g_{210}(\beta))z_{0}^{2}+\Im(g_{021}(\beta))\rho^{2}.
+\end{aligned}
+\end{cases}\label{switch:eq:FH_nf_phi_psi-2}
+\end{equation}
+
+\subsection{Coefficients}\label{switch:sec:transcritical-Hopf}
+Compared with the fold-Hopf bifurcation in \cref{switch:sec:fold-Hopf}, the eigenvalues, eigenfunctions, the homological equation, and the functions $\mathcal{H}$, $K$ and $R$ remain unchanged. It is only the truncated normal form on the center manifold that changes from \cref{switch:eq:FH-nf} to \cref{switch:eq:Ht-nf}. Furthermore, also the critical normal form coefficients for the transcritical-Hopf bifurcation remain the same as for the fold-Hopf bifurcation. Therefore, we proceed only with the parameter-related equations.
+
+Collecting the coefficients of the $z_{0}\beta$ and $z_{1}\beta$ terms in the homological equation we obtain the systems
+\begin{align} \label{switch:eq:TH_secondorder_systems}
+\begin{split}
+\LHSZ jH_{10010} & = A_{1}(\phi_{0},K_{10})\rss - j\phi_{0},\\
+\LHSZ jH_{10001} & = A_{1}(\phi_{0},K_{01}) \rss, \\
+\LHS{i\omega_{0}} jH_{01010} & = A_{1}(\phi_{1},K_{10})-i\omega_{1}j\phi_{1} \rss, \\
+\LHS{i\omega_{0}} jH_{01001} & = A_{1}(\phi_{1},K_{01})-(1+i\omega_{2})j\phi_{1} \rss.
+\end{split}
+\end{align}
+Let
+\begin{equation} \label{switch:eq:TH_Kmu}
+K_{\mu}=\gamma_{1\mu}e_{1}+\gamma_{2\mu}e_{2}, \qquad \mu=(10),(01),
+\end{equation}
+where $e_{1}=(1,0)$, $e_{2}=(0,1)$ and $\gamma_{i\mu}(i=1,2)\in \RR$. To determine $\gamma_{i\mu}(i=1,2)$ we substitute \cref{switch:eq:TH_Kmu} into \cref{switch:eq:TH_secondorder_systems}. Then by \cref{switch:eq:FSC} we obtain the system
+\begin{align*}
+\begin{pmatrix}
+p_{0}\cdot A_{1}(\phi_{0},e_{1}) & p_{0}\cdot A_{1}(\phi_{0},e_{2})\\
+\Re \left(p_{1}\cdot A_{1}(\phi_{1},e_{1}) \right) & \Re\left(p_{1}\cdot A_{1}(\phi_{1},e_{2})\right)
+\end{pmatrix} & \begin{pmatrix}
+\gamma_{110} & \gamma_{210}\\
+\gamma_{101} & \gamma_{201}
+\end{pmatrix}=\begin{pmatrix}
+1 & 0\\
+0 & 1
+\end{pmatrix}.
+\end{align*}
+In order to make the last two systems in \cref{switch:eq:TH_secondorder_systems} consistent we must have that the coefficients in the expansion \cref{switch:Eq:b_1_expansion} are 
+\begin{equation}
+\label{switch:eq:HT_omega_1_omega_2}
+\omega_{1} = \Im\left(p_{1}\cdot A_{1}(\phi_{1},K_{10})\right),
+            \qquad \omega_{2} = \Im\left(p_{1}\cdot A_{1}(\phi_{1},K_{01})\right).
+\end{equation}
+%The solutions of \cref{switch:eq:TH_secondorder_systems} are now obtained by using  \cref{switch:lem:bordered}. Namely,
+%\begin{align*}
+%H_{10010}(\theta) & =\BINV{0}(A_{1}(\phi_{0},K_{10}),-1)(\theta),\\
+%H_{10001}(\theta) & =\BINV{0}(A_{1}(\phi_{0},K_{01}),0)(\theta),\\
+%H_{01010}(\theta) & =\BINV{i\omega_{0}}(A_{1}(\phi_{1},K_{10}),-i\omega_1)(\theta),\\
+%H_{01001}(\theta) & =\BINV{i\omega_{0}}(A_{1}(\phi_{1},K_{01}),-(1+i\omega_2))(\theta).
+%\end{align*}
+%Collecting the coefficient of the $\bar{z}_{1}^{2}$ term in the homological equation gives the system
+%\[
+%\LHS{-2i\omega_{0}} jH_{00200}=B(\bar{\phi}_{1},\bar{\phi}_{1}) \rss.
+%\]
+%From \cref{switch:lem:regular_solution} we see that the solution is given by
+%\[
+%H_{00200}(\theta)=
+%e^{-2i\omega_{0}\theta}\Delta^{-1}(-2i\omega_{0})B(\bar{\phi}_{1},\bar{\phi}_{1}).
+%\]
+
+\subsection{Hopf, transcritical and Neimark-Sacker bifurcation curves}\label{switch:Sec:HT_NS_predictors}
+The transcritical bifurcation curve in the normal form is obtained by substituting $\rho=0$ in the amplitude system of \cref{switch:eq:FH_nf_phi_psi-2}. Then $\beta_{2}$ is unrestricted and  $z_{0}=-\beta_{1}/g_{200}(0)$. The transcritical bifurcation curve is therefore given by
+\[
+\left(\beta_{1},\beta_{2}\right)=\left(0,\beta_{2}\right).
+\]
+To obtain a predictor for the Hopf bifurcation curve we truncate \cref{switch:eq:FH_nf_phi_psi-2} to the second order. We obtain a trivial equilibrium $(z_{0},\rho)=(0,0)$, a semi-trivial equilibrium $(z_{0},\rho)=(-\frac{\beta_{1}}{g_{200}(0)},0)$ and a nontrivial equilibrium
+\[
+(z_{0},\rho)=\left(-\frac{\beta_{2}}{\Re\left(g_{110}(0)\right)},\dfrac{\sqrt{\beta_{2}\left(\Re\left(g_{110}(0)\right)\beta_{1}-g_{200}(0)\beta_{2}\right)}}{\Re\left(g_{110}(0)\right)\sqrt{g_{011}(0)}}\right).
+\]
+It follows that the Hopf bifurcation curves are approximated by
+\[
+\beta_{2}=\dfrac{\Re\left(g_{110}(0)\right)}{g_{200}(0)}\beta_{1}, \qquad \beta_{2}=0.
+\]
+
+Following the same procedure as in \cite{Kuznetsov2008}, we obtain that for
+$g_{011}(0)\Re(g_{110}(0))<0$ there are two Neimark-Sacker bifurcation curves in
+\cref{switch:eq:FH_nf_phi_psi-2} approximated by $\rho=0$ and
+%
+\begin{equation}
+\label{switch:eq:HT_NS_predictor}
+(\beta_1,\beta_2,z_0)  =\left(\mp 2\sqrt{g_{011}(0)g_{200}(0)}\epsilon,\,
+\mp\Re\left(g_{110}(0)\right)\sqrt{\frac{g_{011}(0)}{g_{200}(0)}}\epsilon,\,
+\pm\sqrt{\frac{g_{011}(0)}{g_{200}(0)}}\epsilon \right),
+\end{equation}
+for $|\epsilon|$ small. The period of the corresponding cycle is approximated by
+%
+\begin{align*}
+T = 2\pi \left/\left(\omega_{0}+\omega_{1}\beta_{1}+\omega_{2}\beta_{2}+\Im(g_{110}(0))z_{0}\right)\right. .
+\end{align*}
+%
+Here $(z_{0},\beta_{1},\beta_{2})$ are as in \cref{switch:eq:HT_NS_predictor} and
+$\omega_{1,2}$ are the coefficients given in \cref{switch:eq:HT_omega_1_omega_2}.
+
+The predictors for the Hopf and transcritical bifurcation curves, as well as
+those for the Neimark-Sacker bifurcation curves (including the cycle periods),
+can be easily obtained using the asymptotics from
+above. In particular, to
+approximate the periodic orbits along the Neimark-Sacker curves, we substitute
+$z_{1}=\epsilon e^{i\psi}$ and \cref{switch:eq:HT_NS_predictor} into \cref{switch:eq:FH_H}.
+This gives the following linear approximations:
+
+\begin{align*}
+u & =\left(\mp \sqrt{\frac{ g_{011}(0)}{g_{200}(0)}}\phi_0
++2\Re\left(e^{i\psi}\phi_{1}\right)\right)\epsilon, \qquad \psi\in[0,2\pi].
+\end{align*}
+
+\subsection{Example: An oscillator with delayed feedback}\label{switch:sec:HT_example}
+In \cite{Bramburger2014} a generalization of Van der Pol's oscillator with delayed feedback
+\begin{equation}\label{switch:eq:dde_vanderPol}
+\ddot{x}(t)+\varepsilon(x^{2}(t)-1)\dot{x}(t)+x(t)=g(\dot{x}(t-\tau),x(t-\tau)),
+\qquad 0<\tau<\infty,
+\end{equation}
+is considered. Here $g\in C^{3}$ satisfies the conditions $g(0,0)=0,g_{\dot{x}}(0,0)=a$ and $g_{x}(0,0)=b$. The linearization of equation \cref{switch:eq:dde_vanderPol} around the trivial solution $x=0$ gives
+\[
+\ddot{x}(t)-\varepsilon\dot{x}(t)+x(t)=a\dot{x}(t-\tau)+bx(t-\tau).
+\]
+From which we obtain the characteristic equation
+\[
+\Delta(\lambda,\tau)=\lambda^{2}-\varepsilon\lambda+1-(a\lambda+b)e^{-\lambda\tau}=0.
+\]
+Let
+\begin{equation}
+b=1,\qquad\tau=\tau_{0}\neq\varepsilon+a,\qquad\varepsilon^{2}-a^{2}<2,\label{switch:eq:fold-Hopf_conditions}
+\end{equation}
+then the characteristic equation has a simple zero and a pair of purely imaginary roots $\lambda=\pm i\omega_{0}$. Here $\omega_{0}$ and $\tau_{0}$ are defined by
+\[
+\omega_{0}=\sqrt{2-\varepsilon^{2}+a^{2}},\qquad\tau_{0}=\frac{1}{\omega_{0}}\arccos\left(\dfrac{1-(1+\varepsilon a)\omega_{0}^{2}}{a^{2}\omega_{0}^{2}+1}\right),
+\]
+see \cite[Proposition 2.1]{Bramburger2014}. We set the function $g$ to
+\begin{align*}
+g(\dot{x}(t-\tau),x(t-\tau))=&(1+\mu_{1}) x(t-\tau)-0.2 \dot{x}(t-\tau)-0.2 x(t-\tau)^{2}\\
+						&-0.2 x(t-\tau) \dot{x}(t-\tau)-0.2 x(t-\tau)^2+0.5 x(t-\tau)^3
+\end{align*}
+and $\varepsilon=0.3$. Then the conditions \cref{switch:eq:fold-Hopf_conditions} are satisfied and
+\begin{equation}
+\omega_{0}\approx1.396424004376894,\qquad\tau_{0}\approx1.757290761249588.\label{switch:eq:vdpo_omega0_tau0}
+\end{equation}
+%
+\begin{figure}[htbp]
+\includetikzscaled{VDPO_bifurcation_diagram}
+\caption{\label{switch:fig:HT_bifurcation_diagram} Bifurcation diagram near the
+  transcritical-Hopf bifurcation in the delayed Van der Pol's oscillator given
+  by \cref{switch:eq:vdp}. There are two supercritical Hopf curves (blue), two
+  subcritical Hopf curves (red), two Neimark-Sacker curves (yellow) and one
+  transcritical curve (green).  We see that the predictors (dotted) give good
+  approximation for nearby values. Near the transcritical-Hopf point, there is
+  one stable periodic orbit in region {I} and {III} and one stable torus {II} and
+  {IV}. In \cref{switch:SM:sec:TH:simulation} the predictions in regions {II} and {III}
+  are confirmed by simulation.}
+\end{figure}
+%
+
+To analyze the system with \DDEBIFTOOL we set $y(t)=\dot{x}(t)$ and transform the time with $t\rightarrow t/\tau$ to obtain the two-component system
+\begin{equation}
+\begin{cases}
+\begin{aligned}
+\dot{x}(t)&=\left(\tau_0+\mu_2\right)y(t),\\[0.5em]
+\dot{y}(t)&=\left(\tau_0+\mu_{2}\right)\left[-x(t)-\varepsilon(x^2(t)-1)y(t)+(1+\mu_1)x(t-1)-0.2y(t-1) \right. \\[0.5em]
+&\qquad \left. -0.2x^2(t-1)-0.2x(t-1)y(t-1)-0.2y^2(t-1)+0.5x^3(t-1)\right].
+\end{aligned}
+\end{cases}\label{switch:eq:vdp}
+\end{equation}
+Here we introduced the unfolding parameters $(\mu_1,\mu_{2}):=(b-1,\tau-\tau_{0})$ to translate the singularity to the origin. One immediately sees that the trivial equilibrium $(\dot{x},x)=(0,0)$ is an equilibrium for all parameter values $(\mu_{1},\mu_{2})$. Therefore, the parameter-dependent normal form for the generic fold-Hopf cannot be used here. Instead the normal form for the transcritical-Hopf bifurcation must be used. Using \DDEBIFTOOL we compute the stability and the normal form coefficients. The leading eigenvalues are $0.000+0.000i$ and $-0.000+2.4539i$, where $2.4539\approx\omega_{0}\tau_{0}$, see \cref{switch:eq:vdpo_omega0_tau0}. Furthermore, the normal form coefficients are such that
+\[
+g_{011}(0)\times\text{Re\,}\left(g_{110}(0)\right)=0.4241\times \Re\left(-0.1337+0.2672i\right)<0.
+\]
+Therefore, there are two Neimark-Sacker bifurcation curves predicted, see \cref{switch:sec:HT_predictors}. Using the derived predictors, we continue the transcritical, Hopf and Neimark-Sacker bifurcation curves emanating from the transcritical-Hopf bifurcation point. In \cref{switch:fig:HT_bifurcation_diagram} the bifurcation diagram is shown.
+\end{subappendices}
