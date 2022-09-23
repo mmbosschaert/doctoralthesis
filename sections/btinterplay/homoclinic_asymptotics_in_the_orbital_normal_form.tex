@@ -1,14 +1,45 @@
-\section{Homoclinic asymptotics in the orbital normal form}
+\section{Homoclinic asymptotics in the orbital and smooth normal form}
 \label{sec:asymptotics}
 
-In this section, we derive third-order asymptotics to the homoclinic solution
-near the generic Bogdanov--Takens point using the orbital normal form \cref{eq:normal_form_orbital}. We revisited the standard regular
-perturbation method, but with a different phase condition. In
-\cref{sec:examples} we will show that this improves the accuracy of the
+In this section, we derive asymptotics to the homoclinic solution near the
+generic codimension two Bogdanov--Takens point for the smooth orbital normal
+form \cref{eq:normal_form_orbital} and smooth normal form
+\cref{eq:BT_smooth_nf}. 
+
+We start by revisiting the standard regular perturbation method with the smooth
+orbital normal form, but with a different phase condition. In
+\cref{sec:third_order_homoclinic_approximation_RP} we provide the explicit
+third-order asymptotics obtained using this method and phase condition. It will
+be shown in \cref{sec:examples} that this improves the accuracy of the
 homoclinic approximation in the normal form. Then, in
 \cref{sec:PolynomailLindstedtPoincare} we revisited the Lindstedt-Poincar\'e
-method. By an additional non-linear time transformation, we obtain a very simple
-algorithm to approximate the homoclinic solution.
+method. By an additional non-linear time transformation, we obtain a very
+simple algorithm to approximate the homoclinic solution. In
+\cref{sec:third_order_homoclinic_approximation_LP} we provide an explicit
+third-order homoclinic approximation in the perturbed Hamiltonian system,
+obtained from the smooth orbital normal form, using the algorithm described in
+\cref{sec:PolynomailLindstedtPoincareMethod}. Then, by expanding these
+asymptotics, we obtain the third-order approximation using the regular
+perturbation method to \cref{eq:second_order_nonlinear_oscillator} with phase
+condition $\dot u(0)=0$. In \cref{sec:phase_condition} we show that the
+solutions obtained using Lindstedt-Poincar\'e method are non-unique as well. By
+exploiting the non-uniqueness, we show how to obtain a more accurate
+third-order predictor for the normal form \cref{eq:universal_unfolding}. Next,
+using again the algorithm described in
+\cref{sec:PolynomailLindstedtPoincareMethod}, we combine the
+Lindstedt-Poincar\'e method with the smooth normal form to obtain a third-order
+homoclinic predictor. Note that, here, in contrast to \cite{Al-Hdaibat2016}, we
+also provide higher-order approximations to the reparametrization of time. The
+profiles of the homoclinic solution will only then be approximated accurately
+as, demonstrated in \cref{sec:examples}. Lastly, by expanding these
+asymptotics, we recover the third-order homoclinic predictor obtained in
+\cite{Al-Hdaibat2016} from combining the regular perturbation method with the
+smooth normal form \cref{eq:BT_smooth_nf} and phase condition $\dot u(0)=0$.
+
+Thus, in total there are six different third-order homoclinic asymptotic
+presented in this section. A detailed comparison is between these asymptotics
+is given in \cref{sec:examples}, and the \hyperref[mysupplement]{online
+Supplement}.
 
 \subsection{The Regular Perturbation Method with norm minimizing phase condition}
 \label{sec:RPM_norm_minimizing_phase condition}
@@ -99,44 +130,8 @@ We, therefore, slightly modify the proposition with an additional assumption.
     .\] 
 \end{proposition}
 \begin{proof}
-    The proof follows almost entirely~\cite[Proposition 4.2]{Beyn_1994}. Thus,
-    it can be shown that the transformation \cref{eq:blowup} induces the
-    symmetry
-    \[
-        \varphi(s, D_0 (u^0, \dot u^0)^T, -\epsilon, \tau)
-        =
-        D_0 \varphi(-s, (u^0, \dot u^0)^T, \epsilon, \tau)
-    \] 
-    on the flow $\varphi$ of \cref{eq:second_order_nonlinear_oscillator}, where 
-    \[
-        D_0 = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}.
-    \] 
-    From this relation one can then conclude that if $(u(s,\epsilon), \dot
-    u(s,\epsilon), \epsilon, \tau(\epsilon))$ is a homoclinic solution to
-    \cref{eq:second_order_nonlinear_oscillator} then so is $(\tilde
-    u(-s,\epsilon), -\dot{\tilde{u}}(-s,\epsilon), -\epsilon, \tau(\epsilon))$.
-    The proof in~\cite{Beyn_1994} then finishes with the remark that these two
-    homoclinic solutions must be equal by the uniqueness of the non-trivial
-    branch. However, by the \emph{non-uniqueness} of the non-trivial branch, we
-    obtain the relation
-    \[
-        (u(s,\epsilon), \epsilon, \tau(\epsilon))
-        =
-        (u(-s,-\epsilon), \epsilon, \tau(-\epsilon))
-        +
-        (\gamma(\epsilon) \dot u_0(s), \epsilon, 0),
-    \]
-    where
-    \begin{equation}
-        \label{eq:gamma}
-        \gamma(\epsilon) = \sum_{i\geq 1} \gamma_i \epsilon^i,
-        \qquad
-        \gamma_i \in \mathbb R.
-    \end{equation}
-    Thus, $\tau$ is indeed an even function of $\epsilon$. Using the expansion
-    for $u$ from \cref{eq:u_i_tau_i_RPM} we see that by inspecting the
-    coefficients of equal powers in $\epsilon$ we only need to impose that
-    $\gamma_i=0$ for $i$ even, then the assertion follows.
+    The proof follows almost entirely~\cite[Proposition 4.2]{Beyn_1994}. For
+    details, see \cref{sec:proof:symmetry_proposition}.
 \end{proof}
 
 It, therefore, follows from \cref{proposition:symmetry} together with equality
@@ -876,68 +871,73 @@ the normal form \cref{eq:universal_unfolding} these asymptotics are more
 accurate than the asymptotics derived in
 \cref{sec:third_order_homoclinic_approximation_LP}.
 
-\subsubsection{Comparison with the nonlinear periodic time-reparametrization}
-In~\cite{Algaba_2019} a different approach is used to approximate the homoclinic
-solution near the quadratic normal form of a generic codimension 2
-Bogdanov--Takens bifurcation. The approach there is an application of the
-so-called Perturbation-Incremental Method described in~\cite{Xu_1996}. Consider
-strongly nonlinear oscillators of the form
-\begin{equation}
-  \label{eq:nonlinear_oscillator}
-  \ddot x + g(x) = \lambda f(x,\dot x, \mu) \dot x, \qquad \
-\end{equation}
-where $g$ and $f$ are arbitrary nonlinear functions, and
-$\lambda$ and $\mu$ are parameters.
+\ifthesis
+\else
+\input{./sections/homoclinic_asymptotics_in_smooth_normal_form.tex}
+\fi
 
-The authors in~\cite{Xu_1996} perform a  nonlinear periodic time-reparametrization
-of the form
-\begin{equation}
-\label{eq:nonlinear_periodic_reparametrization}  
-\frac{d\phi}{dt} =\Phi(\phi), \qquad \Phi(\phi+2\pi)=\Phi(\phi)
-\end{equation}
-to the system \cref{eq:nonlinear_oscillator}. Then it is assumed that there is a
-homoclinic orbit present which can be approximated by the solution
-\[
-u(\phi) = p \cos(2\phi) + q,
-\]
-where $p$ and $q$ are constants to be approximated. In~\cite[Theorem
-1]{Algaba_2019} it is shown that the solutions $u(\phi)$ and $u(s)$ are related
-to each other through
-\[
-    \Phi(\phi) = \frac{\sqrt 2}{2} \omega(\xi) \sin\phi
-.\] 
+%\subsubsection{Comparison with the nonlinear periodic time-reparametrization}
+%In~\cite{Algaba_2019} a different approach is used to approximate the homoclinic
+%solution near the quadratic normal form of a generic codimension 2
+%Bogdanov--Takens bifurcation. The approach there is an application of the
+%so-called Perturbation-Incremental Method described in~\cite{Xu_1996}. Consider
+%strongly nonlinear oscillators of the form
+%\begin{equation}
+%  \label{eq:nonlinear_oscillator}
+%  \ddot x + g(x) = \lambda f(x,\dot x, \mu) \dot x, \qquad \
+%\end{equation}
+%where $g$ and $f$ are arbitrary nonlinear functions, and
+%$\lambda$ and $\mu$ are parameters.
 
-It follows that one should be able to factor out the term
-$\sin{\phi}$ in \cref{eq:nonlinear_periodic_reparametrization}. This is
-indeed precisely what we see in the transformation $\Phi$
-in~\cite[(41)]{Algaba_2019}. Thus, although the nonlinear periodic time- reparametrization
-is analytically equivalent to the polynomial generalized
-Lindstedt-Poincar\'e method, it is geometrically \emph{less intuitive} than
-using hyperbolic functions and computationally \emph{more expensive} than using
-polynomials.
+%The authors in~\cite{Xu_1996} perform a  nonlinear periodic time-reparametrization
+%of the form
+%\begin{equation}
+%\label{eq:nonlinear_periodic_reparametrization}  
+%\frac{d\phi}{dt} =\Phi(\phi), \qquad \Phi(\phi+2\pi)=\Phi(\phi)
+%\end{equation}
+%to the system \cref{eq:nonlinear_oscillator}. Then it is assumed that there is a
+%homoclinic orbit present which can be approximated by the solution
+%\[
+%u(\phi) = p \cos(2\phi) + q,
+%\]
+%where $p$ and $q$ are constants to be approximated. In~\cite[Theorem
+%1]{Algaba_2019} it is shown that the solutions $u(\phi)$ and $u(s)$ are related
+%to each other through
+%\[
+%    \Phi(\phi) = \frac{\sqrt 2}{2} \omega(\xi) \sin\phi
+%.\] 
 
-We also would like to point out that the singular rescaling
-\begin{equation*}
-    w_0 = u \epsilon^2, \quad
-    w_1 = v \epsilon^3, \quad
-    \beta_1 = -\epsilon^4, \quad 
-    \beta_2 = \tau \epsilon^2, \quad 
-    s = \epsilon \eta, \quad (\epsilon \neq 0),
-\end{equation*}
-used in~\cite{Algaba_2019} applied to the quadratic Bogdanov--Takens normal form
-with coefficient $a=1$ and $b=1$ results in the $\sqrt 2$ turning up in the
-calculations of homoclinic approximation. From a computational point of view,
-this is less ideal to work with.
+%It follows that one should be able to factor out the term
+%$\sin{\phi}$ in \cref{eq:nonlinear_periodic_reparametrization}. This is
+%indeed precisely what we see in the transformation $\Phi$
+%in~\cite[(41)]{Algaba_2019}. Thus, although the nonlinear periodic time- reparametrization
+%is analytically equivalent to the polynomial generalized
+%Lindstedt-Poincar\'e method, it is geometrically \emph{less intuitive} than
+%using hyperbolic functions and computationally \emph{more expensive} than using
+%polynomials.
 
-\begin{remark}
-    Note that the polynomial generalized Lindstedt-Poincar\'e method described
-    above only depends on the existence of the zeroth-order solution.
-    Therefore, this method can be applied in similar situations where
-    homoclinic orbits emanate from codimension two Bogdanov--Takens bifurcation
-    points. For example, the transcritical codimension two bifurcation treated
-    in~\cite{Hirschberg_1991}, see also~\cite[Appendix C.2]{Bosschaert@2016}.
-    Furthermore, under certain symmetry present in the ODE heteroclinic
-    solutions can also emanate from codimension two Bogdanov--Takens points
-    which can be approximated using the polynomial Lindstedt-Poincar\'e method
-    as described above.
-\end{remark}
+%We also would like to point out that the singular rescaling
+%\begin{equation*}
+%    w_0 = u \epsilon^2, \quad
+%    w_1 = v \epsilon^3, \quad
+%    \beta_1 = -\epsilon^4, \quad 
+%    \beta_2 = \tau \epsilon^2, \quad 
+%    s = \epsilon \eta, \quad (\epsilon \neq 0),
+%\end{equation*}
+%used in~\cite{Algaba_2019} applied to the quadratic Bogdanov--Takens normal form
+%with coefficient $a=1$ and $b=1$ results in the $\sqrt 2$ turning up in the
+%calculations of homoclinic approximation. From a computational point of view,
+%this is less ideal to work with.
+
+%\begin{remark}
+%    Note that the polynomial generalized Lindstedt-Poincar\'e method described
+%    above only depends on the existence of the zeroth-order solution.
+%    Therefore, this method can be applied in similar situations where
+%    homoclinic orbits emanate from codimension two Bogdanov--Takens bifurcation
+%    points. For example, the transcritical codimension two bifurcation treated
+%    in~\cite{Hirschberg_1991}, see also~\cite[Appendix C.2]{Bosschaert@2016}.
+%    Furthermore, under certain symmetry present in the ODE heteroclinic
+%    solutions can also emanate from codimension two Bogdanov--Takens points
+%    which can be approximated using the polynomial Lindstedt-Poincar\'e method
+%    as described above.
+%\end{remark}

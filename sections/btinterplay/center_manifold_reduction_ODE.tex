@@ -129,7 +129,7 @@ following form
 \end{equation}
 Here $\Pi_{\nu\mu}$ contains the remaining terms. The exact representation
 $\Pi_{\nu\mu}$  is not important here. What is important, however, is that it
-only depends on coefficients $g_{rs}, H_{rs}$, $K_{rs}$, and $\theta_{\nu\mu}$ such
+only depends on coefficients $g_{rs}, H_{rs}$, $K_{rs}$, and $\theta_{rs}$ such
 that $|r| \leq |\nu|$ and $|s| \leq |\mu|$, except for the
 coefficient $g_{\nu\mu}$ itself. Note that, depending on the normal form under
 consideration, the coefficient $H_{\nu\mu}$ and $K_{\nu\mu}$ may also be
@@ -152,15 +152,14 @@ Suppose that the asymptotics are affected by terms with the coefficients
 $g_{\nu\mu}$ of the ODE restricted to the center manifold of the bifurcation
 point, which may or may not be present in the normal form. 
 
-Then in order to
-lift the available asymptotics in the normal form to the full system, such that
-the approximation order of \cref{eq:general_approximation} in maintained, it is
-generically necessary and sufficient to include the coefficients $H_{rs}$ and $K_{rs}$,
-with $|r| \leq |\nu|$ and $|s| \leq |\mu|$, into the expansion of $H$ and $K$
-in \cref{eq:HK_expansion}, in such a way that the systems
-\cref{eq:general_form_system} are solvable. The systems to be solved reveal
-simultaneously which higher-order derivatives must be included in the Taylor
-expansion of $f$ in \cref{eq:f_expansion}.
+Then in order to lift the available asymptotics in the normal form to the full
+system, such that the approximation order of \cref{eq:general_approximation} in
+maintained, it is generically necessary and sufficient to include the
+coefficients $H_{rs}$ and $K_{rs}$, with $|r| \leq |\nu|$ and $|s| \leq |\mu|$,
+into the expansion of $H$ and $K$ in \cref{eq:HK_expansion}, in such a way that
+the systems \cref{eq:general_form_system} are solvable. The systems to be
+solved reveal simultaneously which higher-order derivatives must be included in
+the Taylor expansion of $f$ in \cref{eq:f_expansion}.
 \end{proposition}
 
 Although the above statement may look obvious, it has not been understood correctly
@@ -182,13 +181,13 @@ using \cref{thm:coefficients}, we are able to rigorously determine which
 coefficients to include in the parameter-dependent center manifold
 transformation $H$ and parameter transformation $K$.
 
-\begin{remark}
-The construction outlined above is applicable not only to codimension two
-bifurcations and emanating codimension one bifurcation curves. The same
-construction also holds when considering, e.g., codimension three
-bifurcation points and emanating sheets of codimension two, and the natural
-extensions of this.
-\end{remark}
+%\begin{remark}
+%The construction outlined above is applicable not only to codimension two
+%bifurcations and emanating codimension one bifurcation curves. The same
+%construction also holds when considering, e.g., codimension three
+%bifurcation points and emanating sheets of codimension two, and the natural
+%extensions of this.
+%\end{remark}
 
 \begin{remark}
 We have not discussed yet which coefficients of the time-reparametrization $\theta$ are
@@ -202,11 +201,11 @@ but does not change which terms, in, and not in, the normal form affected
 by the asymptotic approximation.
 \end{remark}
 
-\begin{remark}
-Note that the in practice when studying truncated normal forms up to a
-relatively low order, it is common not to include the factorials in the normal
-form expansion \cref{eq:G_expansion}.
-\end{remark}
+%\begin{remark}
+%Note that the in practice when studying truncated normal forms up to a
+%relatively low order, it is common not to include the factorials in the normal
+%form expansion \cref{eq:G_expansion}.
+%\end{remark}
 
 \subsection{Parameter-dependent normal form}%
 %
@@ -225,11 +224,7 @@ by~\cite{Arnold_1983,guckenheimer1983nonlinear}
 \end{cases}
 \end{aligned}
 \end{equation*}
-where 
-\begin{equation*}
-ab \neq 0,
-\end{equation*}
-$w_i$ is a shorthand notation for $w_i(\eta)$ for $i=0,1$, and the dot is
+where $ab \neq 0$, $w_i$ is a shorthand notation for $w_i(\eta)$ for $i=0,1$, and the dot is
 the derivative with respect to $\eta$.
 
 Under these non-degeneracy and certain transversality conditions, the
@@ -258,8 +253,7 @@ see~\cite{Kuznetsov2014improved,Gray-Scott2015, Al-Hdaibat2016, Algaba_2019}.
 To obtain the second-order homoclinic approximation to the homoclinic solutions
 on the center manifold in \cref{eq:ODE}, it is, in general, insufficient to
 only consider the topological normal form \cref{eq:universal_unfolding},
-see~\cite{Broer1991}.  One way to deal with this problem is to consider the
-smooth parameter-dependent normal form 
+see~\cite{Broer1991}.  One way to deal with this problem is to consider the parameter-dependent {\it smooth normal form} 
 \begin{equation}
 \label{eq:BT_smooth_nf}
 \begin{cases}
@@ -278,8 +272,7 @@ with
 as in~\cite{Gray-Scott2015,Al-Hdaibat2016}. Here $w_i=w_i(t)(i=0,1)$ now
 depends explicitly on $t$ as in the original ODE \cref{eq:ODE}.
 
-However, in this paper, we will allow for a time-reparametrization and use the
-$C^\infty$-equivalent normal form 
+However, in this paper, we will allow for a time-reparametrization and use the parameter-dependent {\it smooth orbital normal form} (sometimes called the $C^\infty$-{\it equivalent normal form}) 
 \begin{equation}
 \label{eq:normal_form_orbital}
 \begin{cases}
@@ -452,6 +445,7 @@ interdependence of the normal form coefficients, it is convenient not to solve
 order by order. 
 
 \begin{remark}
+\label{rem:correction_cmt}
 Notice that compared with~\cite{Al-Hdaibat2016} there are four additional terms
 in the expansion of $H$, i.e. with  coefficients $H_{0011},H_{1002},H_{0102}$,
 and $H_{0003}$, and two additional terms in the expansion of $K$, with
@@ -467,7 +461,6 @@ equation are solvable.
 
 \subsubsection{(Generalized) eigenvectors}
 \label{subsubsection:generalized_eigenvectors}
-
 We assume that the equilibrium $(x_0, \alpha_0)$ has a double (but not
 semisimple) zero eigenvalue, while all other eigenvalues are away from the
 imaginary axis. Thus, there exist two real linearly independent (generalized)
@@ -520,18 +513,18 @@ non-degeneracy conditions, we have that $ab \neq 0$.
 \begin{remark}
 Since we assume that $p_1 B(q_0,q_0) \neq 0$ we can use the freedom in the
 eigenvectors,
-\[
-(q_0, q_1) \to c_1 (q_0,q_1), \qquad
-(p_1, p_0) \to \frac1{c_1} (p_1, p_0),
-\]	
+%\[
+%(q_0, q_1) \to c_1 (q_0,q_1), \qquad
+%(p_1, p_0) \to \frac1{c_1} (p_1, p_0),
+%\]	
 to normalize the critical coefficient
-\[
-a= \frac12 p_1 B(q_0, q_0),
-\]
-to one. Solving for $c_1$ then gives
-\[
-c_1=\frac2{p_1 B(q_0, q_0)}.
-\]
+%\[
+%a= \frac12 p_1 B(q_0, q_0),
+%\]
+$a$ to one. %Solving for $c_1$ then gives
+%\[
+%c_1=\frac2{p_1 B(q_0, q_0)}.
+%\]
 Alternatively, the freedom could have been used to set $b=1$. To have the
 situation $a=1$ and $b=\pm1$, as in~\cite{Broer1991}, the coefficient in front
 of the constant term in the expansion of $\theta$, i.e., $\theta_{0000}$, should
@@ -957,12 +950,20 @@ H_{0003} ={}& -\AINV \left[ J_1 K_{03} + A_1(H_{0001},K_{02}) +
 \end{aligned}
 \end{equation*}
 
-\subsection{Center manifold reduction for smooth normal form} 
+\subsection{Center manifold reduction for smooth (hyper)normal form} 
 \label{sec:center-manifold-reduction-without-time-reparametrization}
 If we do not allow for a reparametrization of time, we can no longer consider the
 normal form \cref{eq:normal_form_orbital}. Instead, we need to use the smooth
-normal form as introduced in~\cite{Gray-Scott2015}, i.e., equation
-\cref{eq:BT_smooth_nf}. Applying the blowup transformation
+normal form as in~\cite{Gray-Scott2015,Al-Hdaibat2016}, i.e., equation
+\cref{eq:BT_smooth_nf}. Note however that the transformation provided in
+\cite{Gray-Scott2015,Al-Hdaibat2016} is incorrect, see \cref{rem:correction_cmt}.
+Furthermore, the derivation in those papers lead to a `big' system in which
+equations need to be solved simultaneously. The derivation presented below does
+not involve such a system, making the expressions also suitable for
+infinitely-dimensional ODEs generated by partial and delay differential
+equations, for which the (parameter-dependent) center manifold theorem holds.
+Thus, to approximate the homoclinic solutions in the smooth normal form
+\cref{eq:BT_smooth_nf} we apply the blowup transformation
 \begin{equation}
 \label{eq:blowup_smooth}				
 \beta_1 = - \frac4a \epsilon^4, \quad 
@@ -982,12 +983,12 @@ equation
 \end{equation}
 Here the dot represents the derivative with respect to $s$. 
 
-Note that, by using hypernormalization, we can still simplify the smooth normal form.
-Indeed, as already remarked in~\cite{Kuznetsov2005practical} the coefficient
-$e$ can be set to zero.  Furthermore, it can be seen from the system in
-\cref{eq:gamma_5_theta0001} that either the coefficient $a_1$ or $b_1$ can also
-be removed. The natural choice here is for the coefficient $b_1$ to
-be set to zero in the normal form. The parameter-dependent center manifold
+Note that, by using \emph{hypernormalization}, we can still simplify the smooth
+normal form. Indeed, as already remarked in~\cite{Kuznetsov2005practical} the
+coefficient $e$ can be set to zero.  Furthermore, it can be seen from the
+system in \cref{eq:gamma_5_theta0001} that either the coefficient $a_1$ or
+$b_1$ can also be removed. The natural choice here is for the coefficient $b_1$
+to be set to zero in the normal form. The parameter-dependent center manifold
 transformation in this situation is obtained by first setting the coefficients
 $\theta_{1000}$ and $\theta_{0001}$ to zero in
 \cref{subsec:center_manifold_tranformation_orbital}. Equation \cref{eq:AH3000}
@@ -1086,13 +1087,3 @@ H_{1101} ={}& -\AINV \left[ -b_1 q_1 -b H_{0101} - H_{1100} - H_{2001} + A_1(H_{
 \end{equation*}
 respectively. The remaining systems and equations are unchanged.
 
-
-
-\begin{remark}
-The derivation in~\cite{Al-Hdaibat2016,Kuznetsov2014improved} leads to a `big'
-system in which equations need to be solved simultaneously. The derivation
-presented here does not involve a `big' system, making the expressions also
-suitable for infinitely-dimensional ODEs generated by partial and
-delay differential equations, to which the (parameter-dependent) center
-manifold theorem applies.
-\end{remark}

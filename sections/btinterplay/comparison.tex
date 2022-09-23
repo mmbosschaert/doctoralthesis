@@ -1,0 +1,286 @@
+\ifthesis
+\subsection{Comparison between smooth and orbital homoclinic predictors}
+\else
+\section{Comparison between smooth and orbital homoclinic predictors}
+\fi
+\label{sec:comparison_homoclinic_predictors}
+Using the above transformations, we show that the homoclinic predictor for the
+smooth normal form \cref{eq:BT_smooth_nf}, see
+\cref{sec:asymptotics-for-homoclinic-solution-for-the-smooth-normal-form}, is
+asymptotically equivalent to the orbital predictor derived in
+\cref{sec:third_order_homoclinic_approximation_LP}. Thus, we assume that
+\cref{eq:ODE} is given by 
+\begin{equation}
+    \label{eq:compare:f_normal_form} 
+    f(x_1(t), x_2(t), \alpha_1, \alpha_2) := \left(\begin{array}{c}
+            x_1(t),\\
+            \alpha_1 + \alpha_2 x_1(t) + ax_0^2(t) + b x_0(t)x_1(t) \\
+    \end{array}\right),
+\end{equation}
+where
+\begin{equation*}
+    g(x_1(t), x_2(t), \alpha_1, \alpha_2) =  a_1\alpha_2 x_0^2(t) + 
+    b_1\alpha_2 x_0(t) x_1(t) + ex_0^{2}(t)x_1(t) + dx_0^3(t). \\
+\end{equation*}
+
+First we will focus on the predictors for the parameters. Using the procedure
+outlined in \cref{subsec:center_manifold_tranformation_orbital}, we obtain that the
+coefficients for the parameter transformation $K$ are given by
+\begin{equation*}
+\begin{gathered}
+				K_{10} = \begin{pmatrix} 1 \\ \frac{ae -bd}{a^2} \end{pmatrix},\quad
+				K_{01} = \begin{pmatrix} 0 \\ 1 \end{pmatrix},\quad
+				K_{11} = \frac{3a_1b-4ab_1+2d}{ab}\begin{pmatrix}  1
+								\\ \frac{(ae-bd)}{a^2} \end{pmatrix},\quad \\
+				K_{02} = \begin{pmatrix} 0 \\ \frac{2a_1b-2ab_1+d}{ab} \end{pmatrix},\quad
+				K_{03} = \begin{pmatrix} 0 \\ 0 \end{pmatrix}.
+\end{gathered} 
+\end{equation*}
+
+From equation \cref{eq:alpha_espilon} we obtain the following approximation
+\begin{equation}
+\label{eq:compare:alpha_orbital}
+\begin{pmatrix}
+\bar \alpha_1^o \\[5pt] \bar \alpha_2^o
+\end{pmatrix}
+=
+\begin{pmatrix}
+-\frac{4a^3}{b^4} \epsilon^4
+        + \frac{40a^3(-3a_1b+4ab_1-2d)}{7b^6} \epsilon^6
+        + \frac{1152 a^3(-3a_1b + 4ab_1 -2d)}{2401 b^6} \epsilon^8
+				+ \mathcal{O}(\epsilon^{10}) \\
+\frac{10a}{7b} \epsilon^2
+				+ \left( \frac{288b}{2401a} + \frac{50a(2a_1b-2ab_1+d)}{49b^3}
+				+ \frac{4a(bd-ae)}{b^4} \right) \epsilon^4
+				+ \mathcal{O}(\epsilon^{6})
+\end{pmatrix}.
+\end{equation}
+Since the equation \cref{eq:compare:f_normal_form} is the smooth normal form, we can 
+directly use \cref{eq:third_order_predictor_LP_tau_smooth} to obtain the
+approximation
+\begin{equation}
+\label{eq:compare:alpha_smooth}
+\begin{pmatrix}
+\bar \alpha_1^s \\[5pt] \bar \alpha_2^s
+\end{pmatrix}
+=
+\begin{pmatrix}
+-\frac{4}{a} \epsilon^4 \\[5pt]
+\frac{10b}{7a} \epsilon^2
+				+ \frac{98 b (50 a b_1+73 d)-9604 a e-2450 a_1 b^2+288 b^3}{2401 a^2 b} \epsilon^4
+				+ \mathcal{O}(\epsilon^6)
+\end{pmatrix}.
+\end{equation}
+To compare these two predictors, we eliminate the parameter $\epsilon$ from both
+equations. It would be tempting to first make a substitution for $\epsilon^2$ in
+the equations. However, since for the orbits we need odd powers in $\epsilon$,
+we will continue without this substitution. We assume $\alpha_1$ to be
+positive, which implies that the coefficient $a$ is negative. The case that
+$\alpha_1$ is negative is treated similarly and has been verified as well.
+
+To eliminate $\epsilon$ from \cref{eq:compare:alpha_orbital}, we expand $\epsilon$
+as a function of $\sqrt[4]{\alpha_1}$. Solving the resulting equation for real
+positive $\epsilon$ we obtain
+\begin{equation}
+    \label{eq:compare:epsilon0}
+    \epsilon^o(\alpha_1) = \frac{\sqrt[4]{-a} b}{\sqrt{2}a}\sqrt[4]{\alpha_1}-\frac{5 b  (-4 a
+    b_1+3 a_1 b+2 d)}{28 \sqrt{2} a^2 \sqrt[4]{-a}}\sqrt[4]{\alpha_1} ^3 + \mathcal{O}(\sqrt[4]{\alpha_1}^5).
+\end{equation}
+Obviously, for the smooth predictor we obtain
+\begin{equation*}
+    \epsilon^s(\alpha_1) = \frac{\sqrt[4]{-a}}{\sqrt2} \sqrt[4]{\alpha_1}.
+\end{equation*}
+Here we added superscripts $o$ and $s$ to distinguish the different
+$\epsilon$'s in the orbital and smooth homoclinic predictors,
+respectively.
+
+Substituting $\epsilon=\epsilon^o(\alpha_1)$ into the second equation of
+\cref{eq:compare:alpha_orbital} yields
+\begin{align*}
+    \alpha_2(\alpha_1) ={}& \frac{5b}{7\sqrt{-a}} \sqrt{\alpha_1}
+    + \frac{-49 b (50 a b_1+73 d)+4802 a e+1225 a_1 b^2-144 b^3}{4802 a^2} \alpha_1 \\ 
+                          & + \mathcal{O}(\alpha_1^{3/2}).
+\end{align*}
+It can readably be seen that by eliminating $\epsilon$ from
+\cref{eq:compare:alpha_smooth} using that $a<0$ we obtain the same expression,
+i.e., the predictors agree up to the desired order.
+
+Next, we turn our attention to the approximation of the homoclinic orbits. Due
+to the various time transformations involved in the predictors, we compare the
+asymptotic expansions of the orbital with the smooth homoclinic predictor.
+Therefore, we can directly use the asymptotic obtained from the regular
+perturbation method for both predictors. Thus, for the orbital predictor,
+we will use 
+\begin{equation}
+   \label{eq:w0_w1_eta}
+   \left\{
+   \begin{aligned}
+       w_0(\eta)  &= \frac{a}{b^2} \left( \sum_{i=0}^3 u_i(\frac{a}{b}\epsilon\eta) \epsilon^i +
+       \mathcal{O}(\epsilon^4) \right)   \epsilon^2, \\
+       w_1(\eta)  &= \frac{a^2}{b^3} \left( \sum_{i=0}^3 \dot u_i(\frac{a}{b}\epsilon\eta) \epsilon^i +
+       \mathcal{O}(\epsilon^4) \right)   \epsilon^3, \\
+   \end{aligned} 
+   \right.
+\end{equation}
+with $u_i(i=1,2,3)$ is given by \cref{eq:u_orbital}, while for the smooth
+predictor we will use \cref{eq:third_order_predictor_smooth_RPM_tau} instead.
+
+Following the procedure as outlined in
+\cref{subsec:center_manifold_tranformation_orbital}, we obtain that the coefficients
+of the transformations $H$ and $\theta$ for the smooth orbital normal form
+\cref{eq:normal_form_orbital} are given by
+\begin{equation*}
+\begin{gathered}
+   q_{0} = \begin{pmatrix} 1 \\  0 \end{pmatrix}\!, \quad
+   q_{1} = \begin{pmatrix} 0 \\  1 \end{pmatrix}\!, \quad
+H_{2000} = \begin{pmatrix} -\frac{d}{2 a} \\ 0 \end{pmatrix}\!, \quad 
+H_{1100} = \begin{pmatrix} \frac{-3 b d + 4 a e}{12 a^2} \\  0 \end{pmatrix}\!, \\
+H_{0200} = \begin{pmatrix} 0 \\  \frac{-3 b d + 4 a e}{6 a^2} \end{pmatrix}\!, \quad
+H_{3000} = \begin{pmatrix} 0 \\  \frac{-3 b d}{2 a} + 2 e \end{pmatrix}\!, \quad
+H_{2100} = \begin{pmatrix} 0 \\  \frac{b (-3 b d + 4 a e)}{6 a^2} \end{pmatrix}\!, \\
+H_{0010} = \begin{pmatrix} \frac{d}{4 a^2} \\  0 \end{pmatrix}\!, \quad
+H_{1001} = \begin{pmatrix} \frac{-2 a b_1 + a_1 b + d}{a b} \\  0 \end{pmatrix}\!, \qquad
+H_{0101} = \begin{pmatrix} 0 \\  \frac{-6 a b_1 + 4 a_1 b + 3 d}{2 a b} \end{pmatrix}\!, \\
+H_{1101} = \begin{pmatrix} 0 \\  \frac{-3 (6 a b_1 - 4 a_1 b + b^2 - 3 d) d + 4 a b e}{12 a^2 b} \end{pmatrix}\!, \quad
+H_{0102} = \begin{pmatrix} 0 \\  \frac{(6 a b_1 - 4 a_1 b - 3 d) (2 a b_1 - 2 a_1 b - d)}{2 a^2 b^2} \end{pmatrix}\!, \\
+H_{1010} = \begin{pmatrix} 0 \\  \frac{-3 b d + 4 a e}{12 a^2} \end{pmatrix}\!, \quad
+\theta_{1000} = -\frac{d}{2 a}, \quad
+\theta_{0001} = -\frac{-2 a b_1 + 2 a_1 b + d}{2 a b},
+\end{gathered}
+\end{equation*}
+while
+\begin{align*}
+H_{0001} = H_{2001} = H_{0002} = H_{1002} = H_{0003} = H_{0011} = H_{0110} = 
+\begin{pmatrix} 0 \\ 0 \end{pmatrix}\!.
+\end{align*}
+
+Thus, the third-order homoclinic predictor using the smooth orbital normal form
+in $\eta$ is given by 
+\begin{equation*}
+\begin{aligned}
+    \bar x_\epsilon^o(\eta) =& \begin{pmatrix} 1 \\  0 \end{pmatrix} w_0(\eta) +
+\begin{pmatrix} 0 \\ 1 \end{pmatrix} w_1(\eta) + 
+\begin{pmatrix} -\frac{d}{2 a} \\ 0 \end{pmatrix} w_0^2(\eta) + 
+\begin{pmatrix} \frac{-3 b d + 4 a e}{12 a^2} \\  0 \end{pmatrix} w_0(\eta) w_1(\eta) + \\
+        & \begin{pmatrix} 0 \\ \frac{-3 b d + 4 a e}{6 a^2} \end{pmatrix} w_1^2(\eta) +
+          \begin{pmatrix} 0 \\ \frac{-3 b d}{2 a} + 2 e \end{pmatrix} w_0^3(\eta) +
+          \begin{pmatrix} 0 \\ \frac{b (-3 b d + 4 a e)}{6 a^2} \end{pmatrix} w_0^2(\eta) w_1(\eta) + \\
+        & \begin{pmatrix} \frac{d}{4 a^2} \\  0 \end{pmatrix} \beta_1 +
+          \begin{pmatrix} \frac{-2 a b_1 + a_1 b + d}{a b} \\  0 \end{pmatrix} w_0(\eta) \beta_2 +
+          \begin{pmatrix} 0 \\ \frac{-6 a b_1 + 4 a_1 b + 3 d}{2 a b} \end{pmatrix} w_1(\eta) \beta_2 + \\
+        & \begin{pmatrix} 0 \\ \frac{-3 (6 a b_1 - 4 a_1 b + b^2 - 3 d) d + 4 a b e}{12 a^2 b} \end{pmatrix} w_0(\eta) w_1(\eta) \beta_2 + \\
+        & \begin{pmatrix} 0 \\ \frac{(6 a b_1 - 4 a_1 b - 3 d) (2 a b_1 - 2 a_1 b - d)}{2 a^2 b^2} \end{pmatrix} w_1(\eta) \beta_2^2 + 
+          \begin{pmatrix} 0 \\ \frac{-3 b d + 4 a e}{12 a^2} \end{pmatrix} w_0(\eta) \beta_1,
+\end{aligned}
+\end{equation*}
+where $w_{0,1}$ are given by \cref{eq:w0_w1_eta} and $\beta_{1,2}$ by
+\cref{eq:third_order_predictor_RPM_tau}.
+Since \cref{eq:compare:f_normal_form} is the smooth normal form
+\cref{eq:BT_smooth_nf} we obtain from
+\cref{eq:third_order_predictor_smooth_RPM_tau} the third-order homoclinic
+approximation in $t$
+\begin{equation*}
+\bar x_\epsilon^s(t) =  \frac1{a} \sum_{i=0}^3
+\begin{pmatrix}
+ \left(      u_i(\epsilon t) \epsilon^i + \mathcal{O}(\epsilon^4) \right) \epsilon^2 \\
+ \left( \dot u_i(\epsilon t) \epsilon^i + \mathcal{O}(\epsilon^4) \right) \epsilon^3
+\end{pmatrix}.
+\end{equation*}
+To relate the smooth orbital predictor $\bar x_\epsilon^o(\eta)$ with the smooth
+predictor $\bar x_\epsilon^s(t)$, we need to consider the time transformation
+\begin{equation*}
+\begin{aligned}
+    t_\epsilon(\eta) = \eta \left( 1 + \theta_{0001}\frac{a}{b}\epsilon^2\left(\tau_0 + \tau_2 \epsilon^2 \right) \right) + 
+        \theta_{1000} \frac{1}{b} \epsilon \int u(s) \, ds,
+\end{aligned}
+\end{equation*}
+where
+\[
+    \theta_{1000} = -\frac{d}{2 a}, 
+    \quad \theta_{0001} = -\frac{-2 a b_1 + 2 a_1 b + d}{2 a b}, 
+    \quad s = \frac{a}{b} \eta \epsilon
+\] 
+and the integral is given by \cref{eq:int_u_s_regular_perturbation}. We
+eliminate $\epsilon$ from $t_\epsilon(\eta)$ by substituting $\epsilon$ by
+$\epsilon^o(\alpha_1)$ defined in \cref{eq:compare:epsilon0}. Subsequently, we
+substitute $t_{\epsilon^o(\alpha_1)}(\eta)$ into $\bar x_{\epsilon^s(\alpha_1)}^s(t)$.
+Thus, we now have two approximations, both parametrized by $\tau$. To compare these
+approximations, we first rescale $\eta$ by $\frac{b}{a}\frac{\eta}{\epsilon}$,
+otherwise the expansions in $\alpha_1$ become polynomial. We thus arrive at the
+following equation which should be satisfied
+\begin{equation*}
+    \bar x_{\epsilon^s(\alpha_1)}^s\left(t_{\epsilon^o(\alpha_1)}\left(\frac{b}{a}\frac{\eta}{\epsilon}\right)\right) =
+    \bar x_{\epsilon^o(\alpha_1)}^o\left(\frac{b}{a}\frac{\eta}{\epsilon} \right) +
+    \begin{pmatrix}
+        \mathcal{O}(\alpha_1^{3/2}) \\
+        \mathcal{O}(\alpha_1^{7/4})
+    \end{pmatrix}.
+\end{equation*}
+
+Expanding and simplifying the first component of
+$\bar{x}_{\epsilon^o(\alpha_1)}^o(\frac{b}{a}\eta/\epsilon)$ in $\alpha_1$
+gives
+\begin{equation*}
+    \begin{aligned}
+        &\left(\bar x_{\epsilon^o(\alpha_1)}^o\left(\frac{b}{a}\frac{\eta}{\epsilon}\right)\right)_1 
+        = \frac{3 \sech^2\eta-1}{\sqrt{-a}} \sqrt{\alpha_1} +\frac{18 \sqrt{2} b \tanh \eta \sech^2\eta \log (\cosh \eta)}{7 (-a)^{5/4}} \alpha_1^{3/4} \\
+        &\qquad \frac{1}{196 a^2}\left[-6 \sech^2\eta \left(7 \left(5 a_1 b+6 b^2+7 d\right)-72 b^2 (\log (\cosh\eta)-1)\log (\cosh\eta) \right. \right. \\ 
+        &\qquad \left. -36 b^2 \eta \tanh \eta\right)+70 a_1 b + 9 \sech^4\eta \left(24 b^2 (2-3 \log (\cosh\eta )) \log (\cosh\eta) \right. \\
+        &\qquad \left. \left. +30 b^2+49 d\right)+98 d \right] \alpha_1 + \left[ \tanh \eta \left\{-18 b \log (\cosh \eta) \left(-980 a b_1+1225 a_1 b\right. \right. \right. \\ 
+        &\qquad \left. -336 b^2(\log (\cosh \eta)-3) \log (\cosh \eta) +312 b^2+1176 d\right)-21 \sech^2\eta \left(-1372 a e \right. \\
+        &\qquad +36 b \log (\cosh \eta) \left(6 b^2 \log (\cosh \eta) (4 \log (\cosh \eta)-7)-18 b^2-49 d\right)+234 b^3 \\
+        &\qquad \left. \left. +1029 b d\right)-9604 a e+4914 b^3+7203 b d\right\} -4536 b^3 \eta  \left(-2 \log (\cosh \eta) \right. \\
+        &\qquad \left. \left.+\sech^2\eta (3 \log (\cosh \eta)-1)+1\right)\right] \frac{\sech^2\eta}{4802 \sqrt{2} (-a)^{11/4}} \alpha_1^{5/4}
+            + \mathcal{O}(\alpha_1^{3/2}).
+    \end{aligned}
+\end{equation*}
+Similarly, for the second component of $\bar x_{\epsilon^o(\alpha_1)}^o(\eta/\epsilon)$ we obtain
+\begin{equation*}
+    \begin{aligned}
+        & \left(\bar x_{\epsilon^o(\alpha_1)}^o\left(\frac{b}{a}\frac{\eta}{\epsilon}\right)\right)_2 
+        = \frac{3 \sqrt{2} \tanh \eta \sech^2\eta}{\sqrt[4]{-a}} \alpha_1^{3/4} + \frac{9 b \sech^4\eta }{7 a}(\cosh (2 \eta)-2 (\cosh (2 \eta)-2) \\
+        &\qquad \log (\cosh \eta)-1) \alpha_1 + -\frac{3 b \sech^4\eta}{196 \sqrt{2} (-a) ^{7/4}} (\sinh (2 \eta) (35 a_1-144 b (\log(\cosh \eta)-2) \\
+        &\qquad \log (\cosh \eta)+48 b)+72 b (2 \eta-\eta \cosh (2 \eta)+\tanh \eta (2 \log (\cosh \eta) (6 \log (\cosh \eta)-7)\\
+        &\qquad -3))) \alpha_1^{5/4} +\left(2 \left(36 b \log (\cosh \eta)  \left(490 a b_1-490 a_1 b+84 b^2 \log (\cosh \eta) (2 \log ( \right. \right. \right. \\
+        &\qquad \left. \left. \cosh \eta)-9)+222 b^2-245 d\right)+90 b \left(-98 a b_1+98 a_1 b+111 b^2\right)-9604 a e \right. \\
+        &\qquad \left. +11613 b d\right) + 3 \sech^2\eta \left(36 b \log (\cosh \eta) \left(245 (d-2 a b_1)+490 a_1 b+168 b^2 (14 \right. \right. \\
+        &\qquad \left. -5 \log (\cosh \eta)) \log (\cosh \eta)-138 b^2\right)-3 b \left(-1960 a b_1+1960 a_1 b +6462 b^2 \right. \\
+        &\qquad \left. +12985 d\right)+7 \sech^2\eta \left(-6860 a e+216 b^3 \log (\cosh \eta) (\log (\cosh\eta) (20 \log(\cosh \eta) \right. \\
+        &\qquad \left. \left. -47)-1)+1818 b^3+5145 b d\right) + 48020 a e\right)-4536 b^3 \eta \tanh \eta \left(-4 \log (\cosh \eta) \right. \\
+        &\qquad \left. \left. + \sech^2\eta (12 \log(\cosh \eta)-7)+4\right)\right) \frac{\sech^2\eta}{9604 (-a)^{5/2}}  \alpha_1^{3/2}
+            + \mathcal{O}(\alpha_1^{7/4}).
+    \end{aligned}
+\end{equation*}
+By expanding $\bar
+x_{\epsilon^s(\alpha_1)}^s\left(t_{\epsilon^o(\alpha_1)}\left(\frac{b}{a}\frac{\eta}{\epsilon}\right)\right)$
+and simplifying we obtain 
+\begin{align*}
+    \bar x_{\epsilon^s(\alpha_1)}^s\left(t_{\epsilon^o(\alpha_1)}\left(\frac{b}{a}\frac{\eta}{\epsilon}\right)\right) 
+    &= \bar x_{\epsilon^o(\alpha_1)}^o\left(\frac{b}{a}\frac{\eta}{\epsilon} \right) +
+        \begin{pmatrix}
+            \frac{(3 b d - 4 a e) \sech^2(\eta) \tanh( \eta )}{\sqrt2 (-a)^{ 11/4 }} \alpha_1^{5/4} \\
+            \frac{(3 b d - 4 a e)(\cosh (2 \eta )-2) \sech^4(\eta) }{2 (-a)^{5/2}} \alpha_1^{3/2}
+        \end{pmatrix} \\
+    &= \bar x_{\epsilon^o(\alpha_1)}^o\left(\frac{b}{a}\frac{\eta}{\epsilon} \right) +
+        \begin{pmatrix}
+            \frac{(3 b d - 4 a e) u_0'(\eta)}{24\sqrt2 (-a)^{ 11/4 }} \alpha_1^{5/4} \\
+            \frac{(3 b d - 4 a e) u_0''(\eta)}{24 (-a)^{5/2}} \alpha_1^{3/2}
+        \end{pmatrix},
+\end{align*}
+i.e., the predictors differ by a phase shift. In fact, by using the freedom in
+the constants of integration in \cref{eq:u_int_s}, we can let 
+\[
+    t(\eta) \rightarrow t(\eta) + \theta_{1000} \frac{1}{b} \frac{2}{3}
+    \left(\frac{4 a e}{b d}-3\right) \epsilon^2.
+\] 
+In this case, we will have equivalence between the predictors up to the desired
+order. 
+
+\begin{remark}
+It is important to note here the phase condition used in the orbital
+predictor isn't preserved under the transformation $H$. Therefore,
+any improvements obtained in the approximation to the homoclinic solutions in a
+normal form due to a different phase condition is, in general, not preserved
+when lifting the approximations to the center manifold.
+\end{remark}
+

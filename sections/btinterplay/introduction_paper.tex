@@ -1,0 +1,220 @@
+\section{Introduction} 
+Let $f\colon\mathbb R^n \times \mathbb R^2 \to \mathbb R^n$ with $n\geq 2$, be
+smooth and suppose that the autonomous ordinary differential equation (ODE)
+\begin{equation}
+    \label{eq:ODE}
+    \dot x(t) = f(x(t),\alpha)
+\end{equation}
+has equilibrium  $x_0= 0$ that undergoes a codimension two local bifurcation at
+the critical parameter value $\alpha_{0}=0$. Here, the dot means the derivative
+with respect to the independent variable $t\in\mathbb R$. To understand the
+dynamics near the bifurcation point $(x_0,\alpha_0)$ for nearby parameter
+values, one typically first restricts the ODE to the center manifold. By
+projecting the solutions on the center manifold onto the center subspace, one
+then obtains a $n_c$-dimensional ODE that locally governs the restricted
+dynamics.  Using the normal form theory, one further tries to transform the
+restricted ODE into a simpler form, called the \emph{critical normal form}.
+
+If the canonical unfolding of the critical normal form is known and only
+qua\-li\-tative behavior near the equilibrium is of interest, one can stop
+here. However, if one is interested in relating solutions of the unfolding to
+those of the original system \cref{eq:ODE} near the bifurcation point, one
+needs a relation between the \emph{parameter-dependent normal form} and the
+restricted ODE, and also a relation between this restricted ODE on the
+parameter-dependent center manifold and the original system \cref{eq:ODE}.
+These two relations can be found simultaneously utilizing the \emph{homological
+equation} approach, see~\cite{Beyn2002149}. 
+
+The solutions of interest here are the codimension one bifurcation curves
+emanating from the codimension two point and the corresponding orbits in phase
+space. In general, the bifurcation curves in the 
+parameter-dependent normal form are not known exactly, but only by an
+approximation up to a certain order.  Si\-mi\-lar\-ly, the transformation
+from the normal form to the (parameter-dependent) center manifold is
+generally also only known up to a certain order. Then, by combining these two
+transformations, an approximation to the codimension one bifurcation curve and
+the corresponding phase orbits is obtained for the original system
+\cref{eq:ODE}.
+
+These approximations are particularly useful in numerical continuation software
+to start the continuation of the codimension one bifurcation curves emanating
+from the codimension two bifurcation points, where the defining systems for the
+orbits of interest become degenerate. A codimension two bifurcation that has
+attracted much attention is the \emph{Bogdanov--Takens bifurcation} at which the
+cri\-ti\-cal equilibrium has a double zero eigenvalue. It is well-known that
+under certain non-degeneracy and transversality conditions, three codimension
+one bifurcation curves emanate from the Bogdanov--Takens point: a saddle-node,
+an (Andronov-)Hopf, and a saddle-homoclinic bifurcation curve. Since the
+standard defining systems for the equilibrium bifurcations are non-degenerate
+at the Bogdanov--Takens point, one does not need an approximation to start
+continuation there.  On the contrary, the standard defining system for the
+homoclinic solution does become degenerate, which is easily seen since the
+homoclinic orbit shrinks to the equilibrium point when we approach the Bogdanov--Takens
+bifurcation.
+
+Starting continuation of the homoclinic orbits from a Bogdanov--Takens point in
+ODEs attracted much attention. In planar systems, Melnikov's method was first
+applied to solve this problem in~\cite{Rodriguez-Luis1990}. A first attempt to
+provide asymptotic approximations to the homoclinic bifurcation curve near a
+generic codimension two Bogdanov--Takens bifurcation point in general
+$n$-dimensional systems was made in~\cite{Beyn_1994}. By applying a singular
+rescaling to the (one of the equivalent) parameter-dependent normal form on the
+center manifold, a perturbed planar Hamiltonian system is obtained. The
+unperturbed Hamiltonian system contains an explicit homoclinic solution. A
+first-order correction in parameter-space can subsequently be obtained by
+reformulating the problem as a branching problem in a suitable Banach space,
+see~\cite{Beyn_1994}.  Then, by using the regular perturbation method,
+higher-order approximations to the homoclinic bifurcation curve can be
+obtained. Unfortunately, in~\cite{Beyn_1994}, even the first-order correction in
+the phase-space was not derived.  Nonetheless, it was proven that the obtained
+homoclinic predictor converges to the true solution under the Newton iterations
+in the perturbed Hamiltonian systems.
+
+In~\cite{Kuznetsov2014improved} the work continued by obtaining a second-order
+correction in parameter \emph{and} phase-space to the homoclinic bifurcation
+curve for the perturbed Hamiltonian system. However, a new problem was
+overlooked.  The normal form used in~\cite{Kuznetsov2014improved} is a normal
+form for $C^\infty$-equivalence (also called \emph{smooth orbital
+equivalence}), i.e., besides a $C^\infty$-coordinate change, also a time-reparametrization
+must be taken into account, which was not the case
+in~\cite{Kuznetsov2014improved}. In the subsequent paper~\cite{Gray-Scott2015},
+this problem was resolved by considering a smooth normal form for the
+Bogdanov--Takens bifurcation point, which is a normal form for
+$C^\infty$-conjugacy (\emph{smooth equivalence}). 
+
+In the follow-up paper~\cite{Al-Hdaibat2016}, progress was made in obtaining a
+uniform approximation in time of the homoclinic solution, using a
+generalization of the Lindstedt-Poincar\'e method. This removes the so-called
+parasitic turns near the saddle point, as observed
+in~\cite{Kuznetsov2014improved}. Although, as pointed out
+by~\cite{Algaba_2019}, there were mistakes in the third-order approximation
+with the Lindstedt-Poincar\'e method, the asymptotics for the homoclinic predictor from
+\cite{Kuznetsov2014improved} for the smooth normal form improved significantly
+in the phase space.
+
+Nonetheless, the task of correctly lifting the asymptotics in the normal
+form to the parameter-dependent center manifold was not accomplished. 
+Effectively, only the zeroth-order approximation to the homoclinic
+solutions in the phase space, i.e., a transformed homoclinic solution of the
+\emph{un}perturbed Hamiltonian system, was available for a general $n$-dimensional
+system.
+
+In this paper, we will provide for the first time the third-order homoclinic
+predictor for the homoclinic solutions emanating from a generic Bogdanov--Takens
+point for a general $n$-dimensional system. For this, we first consider the general
+setting of lifting asymptotics of a codimension one bifurcation curves in parameter and phase-space
+derived in the normal form of a codimension two bifurcation point to the 
+parameter-dependent center manifold of the bifurcation point under consideration.
+In \cref{sec:Center_manifold_reduction_ODE} we will show how to systematically
+determine which coefficients to include in the parameter-dependent center manifold
+transformation and parameter transformation in order to maintain the approximation
+order of the available asymptotics, see in particular \cref{thm:coefficients}.
+
+Then we conclude that for the specific case of lifting the asymptotics of the
+homoclinic bifurcation curve obtained in the normal form of the Bogdanov--Takens
+bifurcation, we need to consider several additional systems to be solved in the
+homological equation method that were previously not taken into account.
+During the derivation of the coefficients of the normal form and the
+transformations, we will show that there is no need to solve certain systems
+simultaneously (see the so-called `big' system in
+~\cite{Kuznetsov2014improved,Gray-Scott2015,Al-Hdaibat2016}), making the expressions also
+suitable for infinitely-dimensional ODEs generated by partial and
+delay differential equations to which the (parameter-dependent) center
+manifold theorem applies. 
+
+Furthermore, by allowing a transformation of time between the normal form and
+the original system, we can use the parameter-dependent \emph{smooth orbital}
+normal form of the codimension two Bogdanov--Takens bifurcation point when
+approximating the homoclinic solution up to order three. This normal form is
+considerably simpler than previously employed smooth normal forms. The
+derivation of the coefficients will be the subject of the remainder of
+\cref{sec:Center_manifold_reduction_ODE}.
+
+Having derived the parameter-dependent center manifold transformation suitable for
+lifting the third-order homoclinic asymptotics present in different generic
+Bogdanov--Takens normal forms, we turn our attention to obtain the asymptotics
+in \cref{sec:asymptotics}. We will revisit both the regular perturbation method and
+the generalized Lindstedt-Poincar\'e method considered previously.
+
+The non-uniqueness of the homoclinic solution due to a time shift results in
+non-uniqueness for the systems to be solved in the regular perturbation method.
+To obtain uniqueness, a so-called \emph{phase condition} needs to be satisfied.
+The phase condition used in~\cite{Kuznetsov2014improved} originates from a
+theoretical setting in~\cite{Beyn_1994}. In \cref{sec:RPM_norm_minimizing_phase
+condition} we use another geometrically motivated phase condition which slightly
+improves the regular perturbation solution. Furthermore, by modifying
+Proposition 4.3 from~\cite{Beyn_1994}, we use symmetry arguments to simplify
+the calculations.
+
+In \cref{sec:PolynomailLindstedtPoincare} the generalized Lindstedt-Poincar\'e
+method for the approximation of homoclinic orbits is improved by introducing an
+additional transformation of time after applying the usual nonlinear time
+transformation. The resulting algorithm solitary relies on polynomial division
+and does not involve any hyperbolic or trigonometric functions as
+in~\cite{Algaba_2019,Al-Hdaibat2016}. We show that for the quadratic Bogdanov--Takens
+normal form, we can represent the homoclinic solution in phase-space with
+only one single parameter.
+
+In \cref{sec:third_order_homoclinic_approximation_LP} we provide an explicit
+third-order homoclinic approximation in the perturbed Hamiltonian system using
+the algorithm described in \cref{sec:PolynomailLindstedtPoincareMethod}. Here, we also
+provide a third-order approximation to the reparametrization of time. The
+profiles of the homoclinic solution will only then be approximated accurately,
+resulting in a robust initial predictor for starting continuation of the branch
+of homoclinic orbits.  In~\cite{Al-Hdaibat2016} the importance of the
+time-reparametrization was not recognized, and the zeroth-order approximation
+was used. We will demonstrate in detail that it is essential to use the higher
+time-reparametrization by comparing the Lindstedt-Poincar\'e method with and
+without the higher-order time-reparametrization.  Effectively, using the
+Lindstedt-Poincar\'e method without the higher-order time-reparametrization is
+equivalent to the zeroth-order regular perturbation method as illustrated in
+\cref{fig:RP_vs_LP2016_vs_LP_profiles}.
+
+By combining the homoclinic asymptotics derived in \cref{sec:asymptotics} with
+the parameter-de\-pendent center manifold transformation obtained in
+\cref{sec:Center_manifold_reduction_ODE}, we get a correct homoclinic
+predictor for a general $n$-dimensional system.  It will be shown in
+\cref{sec:homoclinic_asymptotics_n_dimension} how to incorporate the time
+translation into the homoclinic predictor.
+ 
+All the above methods are implemented in the open-source bifurcation and
+continuation software \MATCONT ~\cite{matcont2}. The effectiveness of the new
+predictors is demonstrated on the topological normal form and a
+four-dimensional model from Quantum Field Theory in \cref{sec:examples}. A
+comparison between the new homoclinic predictor near a generic codimension 2
+Bogdanov--Takens bifurcation and the predictor from~\cite{Al-Hdaibat2016} is
+given. It will be shown that the order of the higher-order approximations to
+the homoclinic solutions in the normal form is preserved under the
+parameter-dependent center manifold transformation.
+
+Complementary to \cref{sec:examples} an 
+\href{https://mmbosschaert.github.io/MatCont7p2NewInitBTHom-/}{online Jupyter Notebook}
+is provided in which 10 different models are considered using the new
+homoclinic predictor and comparing different approximation methods in detail.
+
+To improve the readability of the main text, an \hyperref[mysupplement]{online
+Supplement} in which a more in-depth analysis of certain topics
+is provided. In particular, we will describe in \cref{sec:implementation} the
+new implementation of the homoclinic predictor in the latest version of
+\MATCONT. We show how to use the obtained predictors to construct an initial
+prediction for the defining system of the homoclinic solutions. Besides an
+initial prediction, also an initial tangent vector is necessary to start
+continuation. Our implementation prevents the issue of possible continuation in
+the wrong direction, i.e., towards the Bogdanov--Takens point.
+
+In \cref{sec:case_study_BT2} the algorithm proposed in
+\cref{sec:PolynomailLindstedtPoincareMethod} is implemented in the programming
+language Julia~\cite{bezanson2017julia} for the quadratic normal form for the
+Bogdanov--Takens codimension two bifurcation. Here, we gain some insight about
+the finite convergence radius of the homoclinic asymptotics and the speed of
+the algorithm.
+
+A complete overview of what is covered in the \hyperref[mysupplement]{online
+Supplement} can be found at \cref{sm:sec:overview}.
+
+% Then we compare the homoclinic predictor for the smooth
+% normal form and the smooth orbital normal form. In
+% \cref{sec:comparison_homoclinic_predictors}, it will be shown that these two
+% predictors are asymptotically equivalent, up to a phase shift. Then, by
+% choosing the constants of integration in the time translation in a specific
+% manner, we show equivalence between the predictors.

@@ -26,8 +26,8 @@ However, recently, in \cite{Switching2019}, this obstruction has been removed
 and the existence of finite-dimensional smooth parameter-dependent local center
 manifolds have been rigorously established in the functional analytic
 perturbation framework for dual semigroups (sun-star calculus) developed
-in\cite{Clement1987, Clement1988, Clement1989, Clement1989b}. Once the
-existence of these invariant manifolds are available, the normalization
+in \cite{Clement1987, Clement1988, Clement1989, Clement1989b}. Once the
+existence of these invariant manifolds is proved, the normalization
 technique for local bifurcations of ODEs developed in \cite{Kuznetsov1999} can
 be lifted rather easily to the infinite dimensional setting of DDEs. The
 advantages of this normalization technique are that the center manifold
@@ -41,7 +41,7 @@ Indeed, utilizing the normalization method, the authors in \cite{Switching2019}
 obtained asymptotics to initialize the continuation of codimension one
 bifurcation curves of nonhyperbolic equilibria and cycles emanating from the
 codimension two \emph{generalized Hopf, fold-Hopf, Hopf-Hopf} and
-\emph{transcritical-Hopf} bifurcations points in DDEs of the form \cref{btdde:eq:discreteDDEs}.
+\emph{transcritical-Hopf} bifurcation points in DDEs of the form \cref{btdde:eq:discreteDDEs}.
 These asymptotics have been implemented into the fully \OCTAVE compatible
 \MATLAB package \DDEBIFTOOL \cite{DDEBIFTOOL,2014arXiv1406.7144S}. 
 
@@ -59,7 +59,7 @@ nonhyperbolic equilibria and homoclinic solutions emanating from the
 codimension two points.
 
 This paper is organized as follows. We begin in \cref{btdde:sec:sunstar} with a short
-summery from \cite{Switching2019} on parameter-dependent center manifolds for
+summary from \cite{Switching2019} on parameter-dependent center manifolds for
 classical DDEs and we state various results needed for the normalization
 technique.
 
@@ -69,26 +69,34 @@ parameter-dependent center manifold in the infinite dimensional setting of
 DDEs.
 
 In \cref{btdde:sec:parameter-dependent-center-manifold-reduction} the method is then
-applied to the generalized and transcritical codimension two Bogdanov--Takens
+applied to the generic and transcritical codimension two Bogdanov--Takens
 bifurcations. We provide explicit transformations necessary for the predictors
 of codimension one bifurcation curves. We do this in a form suitable for
 classical DDEs, covering cases that are more general than
-\cref{btdde:eq:discreteDDEs}. It here were we see the true benefit for allowing for
-orbital normal forms on the center manifold. Indeed, we do not need to derive
-homoclinic asymptotics for the transcritical codimension two Bogdanov--Takens
-bifurcation. Instead, we only need to derive the center manifold transformation
-for the transcritical codimension two Bogdanov--Takens bifurcation. Then using
-the blow-up transformations \cref{btdde:eq:blowup} we obtain the same perturbed
-Hamiltonian systems (up to order three) as in the generic Bogdanov--Takens
-bifurcation.
+\cref{btdde:eq:discreteDDEs}. It is here where we see the true benefit for
+allowing for orbital normal forms on the center manifold. Indeed, we do not
+need to derive homoclinic asymptotics for the transcritical codimension two
+Bogdanov--Takens bifurcation separately. Instead, we only need to derive the center
+manifold transformation for the transcritical codimension two Bogdanov--Takens
+bifurcation. Then, using the blow-up transformations \cref{btdde:eq:blowup}, we
+obtain the same perturbed Hamiltonian system (up to order three) as in the
+generic Bogdanov--Takens bifurcation.
 
 We employ our implementation in \DDEBIFTOOL to illustrate the accuracy of the
 codimension one bifurcation curve predictors through various example models,
 displaying the generic and transcritical codimension two Bogdanov--Takens
-bifurcations in \cref{btdde:sec:Examples}.  An in-depth treatment of the examples,
-including the \MATLAB and Julia source code to reproduce the obtained results,
-are provided in the \ifthesis{\cref{chapter:BT_DDE_supplement}
-}\else{\hyperref[mysupplement]{online Supplement} }\fi. \vskip 1ex
+bifurcations in \cref{btdde:sec:Examples}.  An in-depth treatment of the
+examples, including the \MATLAB and Julia source code to reproduce the obtained
+results, as well as a more in-depth analysis of the examples, are provided in the
+\ifthesis%
+    \cref{chapter:BT_DDE_supplement}%
+\fi%
+\ifsiam%
+    \hyperref[mysupplement]{online Supplement}%
+\fi%
+\ifarxiv%
+    \hyperlink{mysupplement}{Supplement}%
+\fi. \vskip 1ex
 
 \section{Parameter-dependent center manifolds for DDEs}
 \label{btdde:sec:sunstar}
@@ -116,7 +124,7 @@ It is convenient to split the right hand-side into its linear and nonlinear
 parts as follows
 \begin{equation}
   \label{btdde:eq:classicalDDE12}
-      F(\phi,\alpha)= \PAIR{\zeta}{\phi} + D_2F(0,0)\mu(t) + G(x_t, \mu(t)).
+      F(\phi,\alpha)= \PAIR{\zeta}{\phi} + D_2F(0,0)\alpha(t) + G(x_t, \alpha(t)).
 \end{equation}
 Here $\zeta : [0,h] \to \RR^{n \times n}$ is a matrix-valued function of
 bounded variation, normalized by the requirement that $\zeta(0) = 0$ and
@@ -171,7 +179,7 @@ construction once more. On the dual space
   \[
     \SUNSTAR{X} = \RR^n \times L^\infty([-h,0], \RR^n),
   \]
-we obtain the adjoint semigroup $\SUNSTAR{T}$ with $\WSTAR$ generator  
+we obtain the adjoint semigroup $\SUNSTAR{T}$ with the $\WSTAR$ generator  
 \begin{equation}
     \label{btdde:eq:A_sunstar}
     \DOM{(\SUNSTAR A)}  = \{ (\alpha,\phi) \in \SUNSTAR{X} \mid \phi \in \LIP(\alpha) \}, 
@@ -187,7 +195,7 @@ $\SUN{\phi} = (c,g) \in \SUN{X}$ is
 \end{equation}
 
 By restriction to the maximal subspace of strong continuity $\SUNSUN{X} =
-\overline{\DOM(\SUNSTAR{A})}$ we end up with the $\mathcal{C}$-semigroup
+\overline{\DOM(\SUNSTAR{A})}$, we end up with the $\mathcal{C}$-semigroup
 $\SUNSUN{T}$. Its generator $\SUNSUN{A}$ is the part of $\SUNSTAR{A}$ in
 $\SUNSUN{X}$.
 The canonical injection $j : X \to \SUNSTAR{X}$ is given by
@@ -207,7 +215,7 @@ is differentiable and satisfies
   j\dot{u}(t) = \SUNSTAR{A}ju(t) + (D_2F(0,0)\alpha)\rss 
                     + G(u(t),\alpha)\rss, \qquad \forall\,t \in I.
 \]
-Here, for $i = 1,\ldots,n$, we denote $\rss_i \DEF (e_i, 0)$ where $e_i$ is the
+Here, for $i = 1,\ldots,n$, we denote $\rss_i \DEF (e_i, 0)$, where $e_i$ is the
 $i$th standard basis vector of $\RR^n$ and
 \[
   w \rss \DEF \sum_{i=1}^n{w_i\rss_i}, \qquad 
@@ -235,10 +243,10 @@ eigenvalues of $A$ are the roots of the \emph{characteristic equation}
 and the algebraic multiplicity of an eigenvalue equals its order as a root of
 \cref{btdde:eq:main:det_delta}.
 
-For the normalization technique in \cref{btdde:sec:parameter-dependent-center-manifold-reduction}
+For the normalization technique in \cref{btdde:sec:parameter-dependent-center-manifold-reduction},
 we will need normalized representations for the (generalized) eigenfunctions and adjoint
 (generalized) eigenfunctions of the generator $A$ and $A^\star$, respectively.
-In this section we will consider the case where $\lambda$ is an eigenvalue of
+In this section, we will consider the more general case where $\lambda$ is an eigenvalue of
 algebraic multiplicity $k \in \mathbb N$ and geometric multiplicity 1.  
 Although in \cref{btdde:sec:parameter-dependent-center-manifold-reduction} we will
 only need the special case where $\lambda=0$ is a double eigenvalue of $A$, the
@@ -268,7 +276,7 @@ A^{\star}\psi_{k-1} = \lambda\psi_{k-1}, \qquad
 Let the ordered set $(q_0,\dots,q_{k-1})$ of vectors be a Jordan chain for $\Delta(\lambda)$, i.e.
 $q_0 \neq 0$ and 
 \[
-    \Delta(z)[q_0 + (z-\lambda) q_1 + \cdots + (z-\lambda)^k q_{k-1}] = \mathcal O((z-\lambda))^k,
+    \Delta(z)[q_0 + (z-\lambda) q_1 + \cdots + (z-\lambda)^k q_{k-1}] = \mathcal O((z-\lambda)^k),
 \]
 see \cite[Chapter IV.4]{diekmann1995delay}.
 Similarly, let $(p_{k-1},\dots,p_0)$ be a Jordan chain for $\Delta^T(\lambda)$.
@@ -304,7 +312,7 @@ which can be normalized to satisfy
 \begin{proof}
 The (generalized) eigenspace at an eigenvalue $\lambda$ of $A$ of algebraic multiplicity $k$ and geometric multiplicity 1 is given by 
 \[
-\mathcal{N}((A-\lambda)^k)
+\mathcal{N}((A-\lambda)^k),
 \]
 which leads to the expressions in \cref{btdde:eq:eigenspaces_eigenfunctions}
 and similarly for \cref{btdde:eq:eigenspaces_ad_eigenfunctions}. The representations
@@ -350,7 +358,7 @@ Using the first identity in \cref{btdde:eq:eigenfunction_identities} and that fo
 \end{align*}
 the third identity in \cref{btdde:eq:eigenfunction_identities} follows.
 
-For the last identity in \cref{btdde:eq:eigenfunction_identities} we have that
+For the last identity in \cref{btdde:eq:eigenfunction_identities}, we have that
 \begin{align*}
     \left< \psi_0, \phi_j \right> 
     &= \int_0^h d\psi_0(\theta) \phi_j(-\theta) 
@@ -365,10 +373,10 @@ For the last identity in \cref{btdde:eq:eigenfunction_identities} we have that
         \int_0^s e^{-s\lambda}\frac{(\theta-s)^l}{l!}   
         (-1)^m\frac{\theta^m}{m!} d\theta d\zeta(s) q_{j-m} \\
     &= p_0 q_j + \sum_{l=0}^{k-1} \sum_{m=0}^j p_l \int_0^h  
-     e^{-s\lambda} \frac{(-1)^{l + m} s^{l + m+1}}{(l + m+1)!} d\zeta(s) q_{j-m} \ifthesis \\ & \fi
+    e^{-s\lambda} \frac{(-1)^{l + m} s^{l + m+1}}{(l + m+1)!} d\zeta(s) q_{j-m} {\ifthesis \\ & \fi}
      = \sum_{l=0}^{k-1} \sum_{m=0}^j p_l \frac{\Delta^{(l + m+1)}(\lambda)}{(l + m+1)!} q_{j-m}.
 \end{align*}
-Here we just again Fubini's theorem to reverse the order of integration and the beta function of Euler to integrate the term
+Here we again used Fubini's theorem to reverse the order of integration and the beta function of Euler to integrate the term
 \[
 \int_0^s (\theta-s)^l\theta^m d\theta.
 \]
@@ -384,23 +392,23 @@ see Theorem IV.2.5 in \cite{diekmann1995delay}. Since $\phi_0\in\mathcal{N}((\la
 and $\mathcal{N}((\lambda-A^{\star})^k)$ is spanned by $\{\psi_0, \cdots \psi_k\}$
 it follows that $\langle\psi_0,\phi_0\rangle\neq0$.
 
-In order to achieve the normalization in \cref{btdde:eq:normalization_identity} we
-observe that the eigenfunctions $\phi_j, (j\in\{0,\dots k-1\})$ are invariant
+In order to achieve the normalization in \cref{btdde:eq:normalization_identity}, we
+observe that the eigenfunctions $\phi_j\, (j\in\{0,\dots k-1\})$, are invariant
 under the transformations
 \begin{align}
     \phi_0 &\rightarrow \alpha \phi_0, \\
     \phi_j &\rightarrow \alpha (\phi_j + \delta_j \phi_0), \quad j\in\{1,\dots,n\},
 \end{align}
 where $\alpha, \delta_j \in \mathbb R$ for $j\in\{0,\dots,k-1\}$ and $\alpha \neq 0$.
-Using the first identity in \cref{btdde:eq:eigenfunction_identities} we see that it is sufficient
+Using the first identity in \cref{btdde:eq:eigenfunction_identities}, we see that it is sufficient
 to normalize $\left< \psi_0, \phi_0 \right>$ to 1 and $\left<\psi_0, \phi_j \right>$ to 0.
-Thus using the invariance of the eigenfunctions we obtain the solutions
+Thus, using the invariance of the eigenfunctions, we obtain the solutions
 \begin{align*}
     \alpha = \frac{1}{\left< \psi_0, \phi_0 \right>}, \quad
     \delta_j = -\left< \psi_0, \phi_j \right>, \quad j\in\{1,\dots,n\}.
 \end{align*}
 We finish with the remark that the invariance of the eigenfunctions is equivalent to the invariance
-for Jordan chain $(q_0,q_1, \dots, q_{k-1}) \rightarrow \alpha (q_0,q_1 + \delta_1 q_0, \dots, q_{k-1} + \delta_{k-1} q_0)$.
+for the Jordan chains $(q_0,q_1, \dots, q_{k-1}) \rightarrow \alpha (q_0,q_1 + \delta_1 q_0, \dots, q_{k-1} + \delta_{k-1} q_0)$.
 \end{proof}
 
 \begin{remark}
@@ -442,7 +450,7 @@ see \cite[Chapter IV Exercise 5.11]{diekmann1995delay}.
 \label{btdde:sec:solvability}
 
 When computing the normal form coefficients for the Bogdanov--Takens
-bifurcation in \cref{btdde:sec:parameter-dependent-center-manifold-reduction} using
+bifurcation in \cref{btdde:sec:parameter-dependent-center-manifold-reduction}, using
 the normalization technique described in \cref{btdde:sec:Center_manifold_reduction},
 we will encounter linear operator equations of the following form
 \begin{equation}
@@ -456,12 +464,12 @@ the unknown. Note that in general $w_0 \neq w(0)$. Although we will in
 case where $\lambda = 0$, the results below hold for non-zero (complex)
 eigenvalues as well.
 
-Firstly, since $\lambda = 0$ is an eigenvalue, we need that assure that
+Firstly, since $\lambda = 0$ is an eigenvalue, we need to assure that
 \cref{btdde:eq:general_system_sunstar} is solvable. Therefore, let $\psi_1$, as given
 in \cref{btdde:proposition:eigenvalues_multiplicity_k} with $k=2$ and $\lambda=0$, be
 the adjoint eigenfunction of $A^\star$. Then
 \cref{btdde:eq:general_system_sunstar} has a solution
-$(\phi_{0},\phi)\in\mathcal{D}(A^{\odot\star})$ if and only of $(w_0,w)$
+$(\phi_{0},\phi)\in\mathcal{D}(A^{\odot\star})$ if and only if $(w_0,w)$
 annihilates the null space $\mathcal N(\lambda I-\STAR A)$, i.e., if and only
 if 
 \begin{equation}\tag{FSC}
@@ -475,8 +483,8 @@ often referred to as the \emph{Fredholm solvability condition}.
 \label{btdde:prop:solution_double_eig}
 Suppose $\lambda$ is a double eigenvalue of A and assume that
 \cref{btdde:eq:general_system_sunstar} is consistent for a given $(w_0,w)\in
-X^{\odot\star}$. Let $(q_0,q_1)$ and $(p_1,p_0)$ are the Jordan chain for
-$\Delta(0)$ and $\Delta^T(0)$, respectively. Let $\phi_0$ an eigenfunction of
+X^{\odot\star}$. Let $(q_0,q_1)$ and $(p_1,p_0)$ be the Jordan chains for
+$\Delta(0)$ and $\Delta^T(0)$, respectively. Let $\phi_0$ be an eigenfunction of
 $A$ as in \cref{btdde:proposition:eigenvalues_multiplicity_k}. Then the solution to
 \cref{btdde:eq:general_system_sunstar} is given by
 \[
@@ -562,7 +570,7 @@ extensively in \cite{Keller1987Numerical} and \cite[Chapter
 3]{govaerts2000numerical}.
 \end{remark}
 
-In \cref{btdde:sec:parameter-dependent-center-manifold-reduction} we will encounter
+In \cref{btdde:sec:parameter-dependent-center-manifold-reduction}, we will encounter
 solely systems in which $\lambda=0$ and $w$ is of polynomial type. For this
 situation we have the following results.
 
@@ -637,7 +645,7 @@ respectively.
 
 In this section we combine the normalization technique from
 \cite{Bosschaert@Interplay,Switching2019}. That is, we lift the normalization technique
-for local bifurcation of ODEs to the infinite dimensional settings of DDEs
+for local bifurcations of ODEs to the infinite dimensional settings of DDEs
 \cite{Switching2019}, while simultaneously incorporating a time-reparametrization 
 to allow for a further simplification of the normal form \cite{Bosschaert@Interplay}.
 Thus, suppose that $0 \in X$ is a stationary state of \cref{btdde:eq:classicalDDE} at the
@@ -659,8 +667,8 @@ satisfies
   j\dot{u}(t) = \SUNSTAR{A}ju(t) + (D_2F(0,0)K(\beta))\rss 
     + R(u(t),K(\beta)), \qquad \forall\,t \in I,
 \end{equation}
-where $R$ encodes the nonlinear part of $F$ as given by $G(u(t),K(\beta))\rss$
-. Choose a basis $\Phi$ of $X_0$ and let $\mathcal{H} : \RR^{n_0} \times \RR^p
+where $R$ encodes the nonlinear part of $F$ as given by $G(u(t),K(\beta))\rss$.
+Choose a basis $\Phi$ of $X_0$ and let $\mathcal{H} : \RR^{n_0} \times \RR^p
 \to X$ be a locally defined $C^k$-smooth parametrization of $\CM(\alpha)$ with
 respect to $\Phi$ and in terms of the new parameter $\beta$. For every $t \in
 I$ we define $v(t) \in \RR^{n_0}$ as the coordinate vector of $P_0 u(t)$ with
@@ -728,19 +736,23 @@ and taking bordered inverses, as explained in \cref{btdde:sec:solvability}.
 \begin{remark}
 To determine the coefficients $g_{\nu\mu}$, $h_{\nu\mu}$, $K_{\mu}$ and
 $\theta_{\nu\mu}$ that are needed to include in order to translate asymptotics
-in the normal form \cref{btdde:eq:ODEexpansion} in such a way that the approximation
-order to the asymptotics in the normal form are also obtained in the original
-system under consideration is a non-trivial task. Indeed, one needs to
-understand precisely which coefficients $g_{\nu\mu}$ in \cref{btdde:eq:ODEexpansion}
-affect the obtained asymptotic up to a certain order. Then, using
-\cite[Proposition 1]{Bosschaert@Interplay}, we can derive which coefficients
-$h_{\nu\mu}$, $K_{\mu}$ and $\theta_{\nu\mu}$ are sufficient to include into
-the transformations.
+to solutions in the normal form \cref{btdde:eq:ODEexpansion} in such a way that
+the approximation order to the asymptotics are also obtained in the original
+system under consideration, is a non-trivial task. Indeed, one needs to
+understand precisely which coefficients $g_{\nu\mu}$ in
+\cref{btdde:eq:ODEexpansion} affect the obtained asymptotic up to a certain
+order. Then, using \cite[Proposition 1]{Bosschaert@Interplay}, we can derive
+which coefficients $h_{\nu\mu}$, $K_{\mu}$ and $\theta_{\nu\mu}$ are sufficient
+to include into the transformations.
 \end{remark}
 
 % \input{./detection_and_location_of_BT_points.tex}
 
+\ifarxiv
+\section{Parameter-dependent center manifold reduction near Bog\-danov--Takens points}
+\else
 \section{Parameter-dependent center manifold reduction near Bogdanov--Takens points}
+\fi
 \label{btdde:sec:parameter-dependent-center-manifold-reduction} 
 Using the method as outlined in \cref{btdde:sec:Center_manifold_reduction}, we derive
 here the coefficients needed to translate the homoclinic third-order asymptotics
@@ -783,9 +795,10 @@ the new time $\eta$ of $w_i(\eta)(i = 0,1)$.  Furthermore, it is shown in
 \cite{Bosschaert@Interplay} that we can assume $h(0,0) = 0$. 
 By \cite[Proposition 1]{Bosschaert@Interplay}, it is both necessary and sufficient
 in order to translate the third-order homoclinic precitor to the system
-\cref{btdde:eq:classicalDDE} to expand the functions $\mathcal{H} \colon \mathbb R^2 \times \mathbb R^2 \rightarrow X$, 
-$K \colon \mathbb R^2 \rightarrow \mathbb R^2$ and 
-$R \colon X \times \mathbb R^2 \rightarrow \SUNSTAR{X}$ defined in \cref{btdde:sec:Center_manifold_reduction}
+\cref{btdde:eq:classicalDDE} to expand the functions $R \colon X \times \mathbb R^2 \rightarrow \SUNSTAR{X}$, 
+$\mathcal{H} \colon \mathbb R^2 \times \mathbb R^2 \rightarrow X$,
+$K \colon \mathbb R^2 \rightarrow \mathbb R^2$, and $\vartheta \colon \mathbb R^2 \rightarrow \mathbb R$ 
+ defined in \cref{btdde:sec:Center_manifold_reduction}
 as follows
 %
 \begin{align}
@@ -868,7 +881,7 @@ for some constant $\tilde c$. In~\cite{Kuznetsov2005practical}, the condition
 q_0^T q_0 = 1,\qquad q_1^T q_0 = 0,
 \end{equation}
 is imposed to uniquely define the vectors $\{q_0,q_1,p_1,p_0\}$ up to a plus or
-minus sign. However, since the freedom in the eigenfunction do not alter the
+minus sign. However, since the non-uniqueness in the eigenfunctions does not alter the
 order of accuracy of the homoclinic predictors, we will not explicitly impose \cref{btdde:eq:q0q0}.
 \end{remark}
 
@@ -1148,13 +1161,13 @@ Using the identity
 \begin{equation*}
    p_1J_1K_{10}=1 
 \end{equation*}
-from the second system in \cref{btdde:eq:Assh0010} combined with the solvability
-condition yields
+from the second system in \cref{btdde:eq:Assh0010}, combined with the solvability
+condition, yields
 \begin{equation}
 \begin{aligned}
     K_{11}={}& \left[\left< \psi_1, \hat h_{0101} \right> + \gamma_5 - 2\vartheta_{0001} 
                  - p_1\left(A_1(h_{0001},K_{10}) + A_1(h_{0010},K_{01}) \right. \right. \nonumber\\
-             &\left.\left. + B(h_{0010},h_{0001}) + J_2(K_{10},K_{01}) \right)\vphantom{\left< \psi_1, \hat h_{0101} \right>} \right]K_{10},
+             &\left.\left. + B(h_{0010},h_{0001}) + J_2(K_{10},K_{01}) \right)\vphantom{\left< \psi_1, \hat h_{0101} \right>} \right]K_{10}.
 \end{aligned}
 \end{equation}
 It follows that 
@@ -1306,7 +1319,7 @@ where
 To translate the asymptotics to a generic codimstion two Bogdanov--Takens point
 in \cref{btdde:eq:classicalDDE}, one should substiutute the expressions in
 \cref{btdde:eq:third_order_predictor_LP_tau} into \cref{btdde:eq:h_expansion-BT,btdde:eq:K_expansion-BT}.
-Furthermore, to accurately approximate the profiles of the homoclinic orbit one needs to numerically solve
+Furthermore, to accurately approximate the profiles of the homoclinic orbit, one needs to numerically solve
 the equation 
 \begin{equation*}
     t(\eta) - t = 0,
@@ -1377,10 +1390,10 @@ codimension two Bogdanov--Takens point in \cref{btdde:eq:discreteDDEs} that affe
 \end{center}
 \end{table}
 %
-In this section we consider the situation in which the origin remains an equilibrium
+In this section, we consider the situation in which the origin remains an equilibrium
 under variation of the parameters.
 
-Following~\cite{Broer1991} it is not difficult to show that the $C^\infty$-equivalent normal form on the parameter-dependent
+Following~\cite{Broer1991}, it is not difficult to show that the $C^\infty$-equivalent normal form on the parameter-dependent
 center manifold takes the form
 \begin{equation}
 \label{btdde:eq:normal_form_orbital_tbt}
@@ -1391,20 +1404,21 @@ center manifold takes the form
 \end{aligned}
 \end{cases}
 \end{equation}
-where $h$ is $C^\infty$ and $Q$ is $N$-flat for an a priori given $N$ see. Here
+where $h$ is $C^\infty$ and $Q$ is $N$-flat for an a priori given $N$. Here
 the dot represents the derivative with respect to the new time $\eta$ of
 $w_i(\eta)(i = 0,1)$. 
 
-In \cref{btdde:table:terms_affecting_predicor} we have listed the terms in the
+In \cref{btdde:table:terms_affecting_predicor}, we have listed the terms in the
 parameter-dependent orbital normal form
 \cref{btdde:eq:normal_form_orbital_tbt} affecting the third-order homoclinic
 asymptotics in \cref{btdde:eq:second_order_nonlinear_oscillator}. Therefore, by
 \cite[Theorem 1]{Bosschaert@Interplay}, it is both necessary and sufficient in
 order to translate the third-order homoclinic precitor to the system
-\cref{btdde:eq:classicalDDE} to expand the functions $\mathcal{H} \colon \mathbb R^2
-\times \mathbb R^2 \rightarrow X$, $K \colon \mathbb R^2 \rightarrow \mathbb
-R^2$ and $R \colon X \times \mathbb R^2 \rightarrow \SUNSTAR{X}$ defined in
-\cref{btdde:sec:Center_manifold_reduction} as follows
+\cref{btdde:eq:classicalDDE} to expand the functions $R \colon X \times \mathbb R^2 \rightarrow \SUNSTAR{X}$, 
+$\mathcal{H} \colon \mathbb R^2 \times \mathbb R^2 \rightarrow X$, $K \colon
+\mathbb R^2 \rightarrow \mathbb R^2$, and $\vartheta \colon \mathbb R^2
+\rightarrow \mathbb R$ defined in \cref{btdde:sec:Center_manifold_reduction} as
+follows
 %
 \begin{align}
 R(u,\alpha) =& \label{btdde:eq:R_expansion_TBT}
@@ -1427,8 +1441,8 @@ K(\beta) =& K_{10}\beta_1 + K_{01}\beta_2 +
 \end{align}
 The coefficients of the time-reparametrization $\vartheta$ have been determined
 such that the linear systems resulting from the homological equations are
-solveable, see \cite[Remark 2.3]{Bosschaert@Interplay}. Note that, since the
-steady-state $\varphi_0$ remains fixed under variations of parameters, we leave
+solvable, see \cite[Remark 2.2]{Bosschaert@Interplay}. Note that, since the
+steady-state remains fixed under variations of parameters, we leave
 out all coefficients in the expansion of $\mathcal{H}$ which solely depend on
 the parameters.
 
@@ -1482,9 +1496,9 @@ K_{01} & = \delta_3e_1 + \delta_4e_2,
 \end{align*}
 where $e_1$ and $e_2$ are the standard basis vectors in $\mathbb R^2$ and
 $\delta_i(i = 1\dots4)$ are constants to be determined. Substituting the above
-expressions for $K_{10}$ and $K_{01}$ into equations system
+expressions for $K_{10}$ and $K_{01}$ into equations
 \cref{btdde:eq:tbt_k_system}, and the first two equations of
-\cref{btdde:eq:second_order_solvability_condition_tbt} we obtain, by using the
+\cref{btdde:eq:second_order_solvability_condition_tbt}, we obtain, by using the
 linearity of the multi-linear forms, that
 \begin{equation}
 \begin{cases}
@@ -1532,11 +1546,11 @@ Then it follows that solutions to \cref{btdde:eq:second_order_systems_tbt} are g
 \end{equation}
 where $\gamma_3$ and $\gamma_4$ are constants to be determined. Note that we
 still have freedom in the coefficients $h_{0110}$ and $h_{0101}$ by an addition of
-a multiple of the eigenfunction $\phi_0$. However, for our purposes we will do
+a multiple of the eigenfunction $\phi_0$. However, for our purposes we will 
 not need to include it here.
 
 \subsubsection{Cubic terms}
-By collecting the cubic terms in the homological equation we obtain the following systems
+By collecting the cubic terms in the homological equation, we obtain the following systems
 \begin{equation}
 \label{btdde:eq:third_order_systems_tbt}
 \begin{aligned}
@@ -1563,7 +1577,7 @@ By collecting the cubic terms in the homological equation we obtain the followin
                          & -j\left(h_{1020} - 2 \vartheta_{0010} (h_{1010} - \vartheta_{0010} \phi_0)\right). \\
 \end{aligned}
 \end{equation}
-To solve the above systems we write the second order parameter coefficients in $K$ with respect to a basis in $K_{10}$ and $K_{01}$ as follows
+To solve the above systems, we write the second order parameter coefficients in $K$ with respect to a basis in $K_{10}$ and $K_{01}$ as follows
 \begin{equation}
 \label{btdde:eq:second_order_parameter_coefficients_tbt}
 \begin{aligned}
@@ -1573,7 +1587,7 @@ To solve the above systems we write the second order parameter coefficients in $
 \end{aligned}
 \end{equation}
 By applying the Fredholm alternative to the systems in
-\cref{btdde:eq:third_order_systems_tbt} we obtain ten equations to be solved for (also the
+\cref{btdde:eq:third_order_systems_tbt}, we obtain ten equations to be solved for (also the
 ten) variables $\vartheta_{0010}$, $\vartheta_{0001}$, $\gamma_3$, $\gamma_4$,
 $\gamma_5$, $\gamma_6$, $\gamma_7$, $\gamma_8$, $\gamma_9$, $\gamma_{10}$.
 
@@ -1654,7 +1668,7 @@ $\psi_1$ and using \cref{btdde:eq:seconder_order_coefficients_phase_space_tbt} l
 \begin{equation}
 \label{btdde:eq:pairing_second_two_equations}
 \begin{aligned}
-    0 ={}& p_1\left[A_1(h_{2000},K_{01}) + 2 B(\hat h_{1001},\phi_0) + B_1(\phi_0,\phi_0,K_{01})\right] \ifthesis \\ & \fi - 2a\left< \psi_1, \hat h_{0101} \right> + 2a \gamma_4 + 4 a \vartheta_{0001}, \\
+    0 ={}& p_1\left[A_1(h_{2000},K_{01}) + 2 B(\hat h_{1001},\phi_0) + B_1(\phi_0,\phi_0,K_{01})\right] {\ifthesis \\ & \fi} - 2a\left< \psi_1, \hat h_{0101} \right> + 2a \gamma_4 + 4 a \vartheta_{0001}, \\
 0 ={}& p_1\left[A_1(h_{1100},K_{01}) + B(h_{0101},\phi_0) + B(h_{1001},\phi_1) + B_1(\phi_0,\phi_1,K_{01})\right] \\
                         & -\left< \psi_1, b h_{0101} + h_{1100} + h_{2001} - \vartheta_{1000} (h_{1001} + \phi_1 - \vartheta_{0001} \phi_0) \right. \\
                         & \left. - \vartheta_{0001} (b \phi_1 - \vartheta_{1000} \phi_0 + h_{2000}) \right>. \\
@@ -1697,9 +1711,9 @@ where the right-hand side is given by
 
 Now that $\vartheta_{0010}$, $\vartheta_{0001}$, $\gamma_3$, and $\gamma_4$ are
 known, we can apply the Fredholm alternative to the remaining six systems in
-\cref{btdde:eq:third_order_systems_tbt} yields equations which can be solved
+\cref{btdde:eq:third_order_systems_tbt}. This yields equations which can be solved
 separately, i.e. without a matrix as in
-\cref{btdde:eq:zeta1_zeta2_tbt,btdde:eq:zeta3_zeta4_tbt}. To keep the derivation readably,
+\cref{btdde:eq:zeta1_zeta2_tbt,btdde:eq:zeta3_zeta4_tbt}. To keep the derivation readable,
 we divide six equations into three groups. We start by pairing the fifth and
 sixth equations in \cref{btdde:eq:third_order_systems_tbt} with $\psi_1$. We obtain that 
 \begin{align*}
@@ -1723,7 +1737,7 @@ and the (by now) equalities given \cref{btdde:eq:second_order_solvability_condit
 \end{equation}
 %
 By applying the Fredholm alternative to the last four systems in
-\cref{btdde:eq:third_order_systems_tbt} we obtain equations which can be solved 
+\cref{btdde:eq:third_order_systems_tbt}, we obtain equations which can be solved 
 similarly as the last two equations. We obtain that
 \begin{equation}
 \begin{aligned}
@@ -1768,7 +1782,7 @@ h_{0120} ={}& \BINV 0 \left(2 A_1(h_{0110},K_{10}) + A_1(\phi_1,K_{20}) + A_2(\p
 
 \subsubsection{Homolinic asymptotics}
 \label{btdde:sec:transcritical_bt_homoclinic_asymptotics}
-To approximate the homoclinic solutions emanating from the transcritical Bogdanov--Takens point
+To approximate the homoclinic solutions emanating from the transcritical Bogdanov--Takens point,
 we apply the singular rescaling
 \begin{equation}
 \label{btdde:eq:blowup}				
@@ -1806,7 +1820,7 @@ this we integrate \cref{btdde:eq:theta_expansion_TBT} to obtain
 \[
 t(\eta) = \left(1  + \vartheta_{0010} \beta_1 + \vartheta_{0001} \beta_2 \right)\eta  + \vartheta_{1000} \frac a{b^2} \int \left[ \tilde {u}\left(\tanh\left(\xi\left(\frac{a}{b}\epsilon\eta\right)\right)\right) \mp 2 \right] \epsilon^2 \, d\eta.
 \]
-Here $\beta_1$ and $\beta_2$ are given by \cref{btdde:eq:third_order_predictor_LP_tau_tbt} and from \cite{Bosschaert@Interplay} we obtain that
+Here, $\beta_1$ and $\beta_2$ are given by \cref{btdde:eq:third_order_predictor_LP_tau_tbt} and from \cite{Bosschaert@Interplay} we obtain that
 \begin{equation}
 \label{btdde:eq:int_u_s_regular_perturbation}
 \begin{aligned}
@@ -1868,13 +1882,13 @@ for $\epsilon > 0$ small.
 \section{Examples}
 \label{btdde:sec:Examples}
 
-In this section we will demonstrate the correctness of the center manifold
+In this section, we will demonstrate the correctness of the center manifold
 reduction and the homoclinic asymptotics from
 \cref{btdde:sec:parameter-dependent-center-manifold-reduction} on four different
 models from
 \cite{Jiao2021,giannakopoulos2001bifurcations,jiang2007bogdanov,dong2013bogdanov}
 in which Bogdanov--Takens bifurcation points are derived. Using our
-implementation in \DDEBIFTOOL we will compute the local unfolding of the
+implementation in \DDEBIFTOOL, we will compute the local unfolding of the
 Bogdanov--Takens singular's and compare the emanating codimension one curves
 with the derived asymptotics.  We will show a clear improvement to the
 homoclinic solutions by using the third-order over the first order asymptotics. 
@@ -1890,18 +1904,26 @@ provide additional verification of the given results. Secondly, it seems to be
 an integral part in papers studying Bogdanov--Takens bifurcation points in
 DDEs. We will show how to integrate the DDE directly, and not the reduced
 system on the center manifold, which is often the case in literature. The
-simulation is preformed using the Julia package {\tt DifferentialEquations.jl}
+simulation is performed using the Julia package {\tt DifferentialEquations.jl}
 \cite{rackauckas2017differentialequations}. However, since in this section only
 the main results are given, we provide full details (including simulation
-results) in the \ifthesis{\cref{chapter:BT_DDE_supplement}
-}\else{\hyperref[mysupplement]{online Supplement} }\fi. Furthermore, the source
+results) in the %
+\ifthesis%
+    \cref{chapter:BT_DDE_supplement}%
+\fi%
+\ifsiam%
+    \hyperref[mysupplement]{online Supplement}%
+\fi%
+\ifarxiv%
+    \hyperlink{mysupplement}{Supplement}%
+\fi. Furthermore, the source
 code of the examples has been included into the \DDEBIFTOOL software package.
 This will hopefully provide a good starting point when considering other
 models.
 
-\subsection{Bogdanov--Takens bifurcation in a Predator-prey system with double Allee effect}
+\subsection{Bogdanov--Takens bifurcation in a predator-prey system with double Allee effect}
 \label{btdde:sec:example:predator_prey}
-\begin{figure}[ht]
+\begin{figure}[ht!]
     \centering
     \includegraphics{\imagedir/DoubleAlleeEffectCompareParameters.pdf}
     \caption{Bifurcation diagram near the derived generic Bogdanov-Takens point in
@@ -1909,7 +1931,7 @@ models.
         using \DDEBIFTOOL with the asymptotics obtained in this paper and in \cite{Jiao2021}.}
     \label{btdde:fig:DoubleAlleeEffectCompareParameters}
 \end{figure}
-\begin{figure}[ht]
+\begin{figure}[ht!]
     \centering
     \includegraphics{\imagedir/DoubleAlleeEffectCompareProfiles.pdf}
     \caption{Comparison between the profiles of the first and third-order asymptotics from
@@ -1953,7 +1975,7 @@ have the following meaning:
 \item $c_1$ is the conversion rate of prey into predators biomass.
 \item $d$ is the per capita predator mortality rate.
 \end{itemize}
-Following \cite{Jiao2021} let $(x,y,t) = \left(K\bar x, \frac K \varrho \bar y, \frac{\bar t}r\right)$, and immediately 
+Following \cite{Jiao2021}, let $(x,y,t) = \left(K\bar x, \frac K \varrho \bar y, \frac{\bar t}r\right)$, and immediately 
 dropping the bars again for readability, then \cref{btdde:eq:double_alle_effect} becomes
 \begin{equation}
 \label{btdde:eq:double_alle_effect_rescaled}
@@ -1968,7 +1990,7 @@ enlarged to include a parameter. The resulting extended system is used to
 derive conditions for a Bogdanov--Takens bifurcation to occur and obtain the
 normal form on the center manifold. In our opinion, one should only use the
 extended system to prove the existence of a parameter-dependent center manifold,
-from which it then follows that we can preform the normalization method as
+from which it then follows that we can perform the normalization method as
 described in \cref{btdde:sec:Center_manifold_reduction}. Thus, solving \cref{btdde:eq:double_alle_effect_rescaled}
 for a double equilibrium with respect to $(x,y)$ and $\vartheta$ yields
 \begin{equation}
@@ -2007,10 +2029,10 @@ Thus, the codimension two Bogdanov--Takens bifurcation is non-degenerate.
 Furthermore, since the equilibrium $(x_0,y_0)$ depends on the unfolding
 parameters, we are in the generic case. Using our implementation of the
 homoclinic predictor \cref{btdde:sec:generic_bt_homoclinic_asymptotics} in
-\DDEBIFTOOL we start the continuation of the homoclinic branch emanating from
+\DDEBIFTOOL, we start the continuation of the homoclinic branch emanating from
 the Bogdanov--Takens point.
 
-In \cref{btdde:fig:DoubleAlleeEffectCompareParameters} we compare the parameters of
+In \cref{btdde:fig:DoubleAlleeEffectCompareParameters}, we compare the parameters of
 the computed homoclinic branch with our third-order parameter asymptotics and
 the parameters for the homoclinic branch given in \cite{Jiao2021}. We observe
 that although the derivation of the asymptotics for the parameters is
@@ -2023,14 +2045,14 @@ homoclinic solutions in phase-space itself, which is not available in
 \cite{Jiao2021}. In  \cref{btdde:fig:DoubleAlleeEffectCompareProfiles} we compare the
 first and third-order asymptotics for the profiles of the homoclinic solution.
 Here we set the perturbation parameter to $\epsilon=0.3$ such that both
-approximations converge, but we can visually observe a difference.
+approximations converge and we observe a visual difference.
 
 However, a numerical better way to compare the first and third-order
 asymptotics for the homoclinic solution is through the use of a convergence
 plots, similarly as in \cite{Bosschaert@Interplay}. In
 \cref{btdde:fig:convergencePlotsGeneric} we clearly see an improvement of using the
 third-order asymptotics over the first order asymptotics. We furthermore
-observe the standard V-shaped graphs due to roundoff error.
+observe the standard V-shaped graphs due to round-off error.
 \begin{figure}[ht]
     \includegraphics{\imagedir/convergencePlotsTranscritical.pdf}
     \caption{On the abscissa is the approximation to the amplitude $A_0$ and on
@@ -2040,17 +2062,17 @@ observe the standard V-shaped graphs due to roundoff error.
     \label{btdde:fig:convergencePlotsTranscritical}
 \end{figure}
 
-\subsection{\ifthesis \phantom{ } \fi Generic Generic Bogdanov--Takens bifurcation in a neural network model}
+\subsection{\ifthesis \phantom{ } \fi Generic Bogdanov--Takens bifurcation in a neural network model}
 In this example, we will consider the model 
 \begin{equation}
 \label{btdde:eq:neural_network}
 \begin{cases}
-\mu\dot{u}_1(t) = -u_1(t) + q_{11}\alpha(u_1(t\text{-}T))-q_{12}u_2(t\text{-}T) + e_1,\\
-\mu\dot{u}_2(t) = -u_2(t) + q_{21}\alpha(u_1(t\text{-}T))-q_{22}u_2(t\text{-}T) + e_2,
+\mu\dot{u}_1(t) = -u_1(t) + q_{11}\alpha(u_1(t - T))-q_{12}u_2(t - T) + e_1,\\
+\mu\dot{u}_2(t) = -u_2(t) + q_{21}\alpha(u_1(t - T))-q_{22}u_2(t - T) + e_2,
 \end{cases}
 \end{equation}
 which describes the dynamics of a neural network consisting of an
-excitatory and inhibitory neurons \cite{giannakopoulos2001bifurcations}.
+excitatory and inhibitory neuron \cite{giannakopoulos2001bifurcations}.
 The variables and parameters occurring in \cref{btdde:eq:neural_network}
 have the following neurophysiological meaning:
 \begin{itemize}
@@ -2098,13 +2120,13 @@ $(u_1,u_2,E)\rightarrow(-u_1,-u_2,-E)$. It is easy to explicitly derive that the
     \end{aligned}\right.
 \end{equation}
 
-The dependence of $P_0$ on the parameters $(Q,E)$ yields a generic
+The dependence of the equilibria on the parameters $(Q,E)$ yields a generic
 Bogdanov--Takens bifurcation, see \cite{giannakopoulos2001bifurcations}. Notice
 that the normal form reduction in \cite{giannakopoulos2001bifurcations} is
 incorrect, which leads to the normal form for a transcritical Bogdanov--Takens
 bifurcation.
 
-\begin{figure}[ht]
+\begin{figure}[ht!]
     \centering
     \includetikzscaled{NeuralNetworkCompareParameters}
     \caption{Bifurcation diagram near the derived generic Bogdanov-Takens point in
@@ -2120,14 +2142,15 @@ codimension one curves emanating from a generic Bogdanov--Takens point in
 third-order homoclinic parameter asymptotics obtained in
 \cref{btdde:sec:generic_bt_homoclinic_asymptotics}. We see that the predicted and
 computed curves are almost indistinguishable. Furthermore, in
-\cref{btdde:fig:convergencePlotsGeneric} we see that using the third-order homoclinic
+\cref{btdde:fig:convergencePlotsGeneric}, we see that using the third-order homoclinic
 asymptotics over the first order is clearly superior.
 
 \subsection{Transcritical Bogdanov--Takens bifurcation in the Van der Pol oscillator with delay feedback}
 We consider the Van der Pol oscillator with delay feedback \cite{jiang2007bogdanov}
 given by 
 \begin{equation}
-\ddot{x}(t) + \epsilon(x^2(t)-1)\dot{x}(t) + x(t) = \epsilon g(x(t-\tau))\label{btdde:eq:dde_vanderPol}
+\label{btdde:eq:dde_vanderPol}
+\ddot{x}(t) + \epsilon(x^2(t)-1)\dot{x}(t) + x(t) = \epsilon g(x(t-\tau)),
 \end{equation}
 where $\epsilon>0$ is a parameter, $\tau>0$ is a delay and $g:\mathbb{R}\rightarrow\mathbb{R}$
 is a smooth function with $g(0) = 0$ and $g'(0)\neq0$. We rewrite
@@ -2148,7 +2171,7 @@ delay yields
 \dot{x}_2 = \tau\left(\epsilon g(x_1(t-1))-\epsilon(x_1^2-1)x_2-x_1\right).
 \end{cases}
 \end{equation}
-In this allows is to treat $\tau$ as a bifurcation parameter.
+This allows us to treat $\tau$ as a bifurcation parameter.
 
 Following \cite{jiang2007bogdanov}, we consider \cref{btdde:eq:dde_vanderPol} with
 \[
@@ -2156,7 +2179,7 @@ g(x) = \frac{e^x-1}{c_1e^x + c_2},
 \]
 where $c_1 = \dfrac{1}{4}$ and $c_2 = \dfrac{1}{2}$. Then the trivial
 equilibrium undergoes a transcritical Bogdanov--Takens bifurcation at parameter
-values $(\epsilon,\tau) = (0.75,0.75)$, \cite{jiang2007bogdanov} and the
+values $(\epsilon,\tau) = (0.75,0.75)$, see \cite{jiang2007bogdanov} and the
 supplement. 
 %
 \begin{figure}[ht]
@@ -2178,11 +2201,11 @@ and computed curves are almost indistinguishable. Furthermore, in
 \cref{btdde:fig:convergencePlotsTranscritical} we see that using the third-order
 homoclinic asymptotics over the first order is clearly superior.
 
-\subsection{Transcritical Bogdanov--Takens bifurcation in a Tri-neuron BAM neural network model}
+\subsection{Transcritical Bogdanov--Takens bifurcation in a tri-neuron BAM neural network model}
 \label{btdde:sec:Tri-neuron-BAM-neural}
 
-We consider a three-component system of a Tri-neuron BAM (bidirectional
-associative memory) neural network model with multiple delays \cite{dong2013bogdanov}.
+We consider a three-component system of a tri-neuron bidirectional
+associative memory (BAM) neural network model with multiple delays \cite{dong2013bogdanov}.
 The architecture of this BAM model is illustrated in \cref{btdde:fig:BAM_architecture_graph}. 
 
 \begin{figure}
@@ -2208,7 +2231,7 @@ $f_{1}$ on the $I$-layer and there are two neurons with respective
 activation functions $f_{2}$ and $f_{3}$ on the $J$-layer. It is assumed 
 that the time delay from the $I$-layer to the $J$-layer is $\tau_{1}$,
 while the time delay from the $J$-layer to the $I$-layer is $\tau_{2}$.
-Then the network can be described by the following delay differential equation:
+Then the network can be described by the following delay differential equation
 \begin{equation}
 \label{btdde:eq:tri_neuron_BAM}
 \begin{cases}
@@ -2227,7 +2250,7 @@ in two layers: the $I$-layer and the $J$-layer.
 \end{itemize}
 Letting $u_{1}(t)=x_{1}(t-\tau_{1}),u_{2}(t)=x_{2}(t),u_{3}(t)=x_{3}(t)$
 and $\tau=\tau_{1}+\tau_{2}$, then system \cref{btdde:eq:tri_neuron_BAM}
-is equivalent to the following system:
+is equivalent to the following system
 
 \begin{equation}
 \label{btdde:eq:tri_neuron_BAM-u}
@@ -2238,13 +2261,20 @@ is equivalent to the following system:
 \end{cases}
 \end{equation}
 
-In \cite{dong2013bogdanov} conditions form \cref{btdde:eq:tri_neuron_BAM-u} are derived
+In \cite{dong2013bogdanov} conditions for \cref{btdde:eq:tri_neuron_BAM-u} are derived
 for the origin to have a double zero eigenvalue, while all other eigenvalues
-have negative real parts. Since the provided expression didn't give the correct results,
-we corrected the given expression form \cite{dong2013bogdanov}.
-We postpone the proof of the next two lemma's to the
-\ifthesis{\cref{chapter:BT_DDE_supplement}
-}\else{\hyperref[mysupplement]{online Supplement} }\fi. 
+have negative real parts. Since the provided expression did not give the correct results,
+we corrected the given expression from \cite{dong2013bogdanov}.
+We postpone the proof of the next two lemma's to the 
+\ifthesis%
+    \cref{chapter:BT_DDE_supplement}%
+\fi%
+\ifsiam%
+    \hyperref[mysupplement]{online Supplement}%
+\fi%
+\ifarxiv%
+    \hyperlink{mysupplement}{Supplement}%
+\fi.
 
 \begin{lemma}
 \label{btdde:lem:BAM_double_eigenvalue}
@@ -2259,7 +2289,7 @@ c_{31} & =c_{31}^{0}=\frac{\mu_{3}^{2}\left(\mu_{1}\left(\mu_{2}\tau+1\right)+\m
 
 \begin{lemma}
 \label{btdde:lemma:triNeuralBAMNetworkModelEigenvalues}
-\textup{Correction to \cite[Lemma 3]{dong2013bogdanov}}
+\textup{Correction to \cite[Lemma 3]{dong2013bogdanov}.}
 Let $(c_{21},c_{31})=(c_{21}^{0},c_{31}^{0})$,
 \begin{equation}
     \label{btdde:sm:eq:omega_0} 
@@ -2288,11 +2318,11 @@ the activation functions
 \[
 f_{1}(x)=\tanh(x)+0.1x^{2},\quad f_{2}(x)=f_{3}(x)=\tanh(x),
 \]
-and parameters values
+and parameter values
 \[
 \mu_{1}=0.1,\mu_{2}=0.3,\mu_{3}=0.2,c_{12}=c_{13}=1,\tau=5.
 \]
-Then from \cref{btdde:lem:BAM_double_eigenvalue} we obtain two critical
+Then, from \cref{btdde:lem:BAM_double_eigenvalue}, we obtain two critical
 values 
 \[
 (c_{21}^{0},c_{31}^{0})=(0.36,-0.22),
@@ -2300,8 +2330,16 @@ values
 at which there is a transcritical Bogdanov--Takens point. Furthermore, since
 $\tau < \tau_0 \approx 5.4320$ the center manifold is attractive. In fact, we
 will show in the
-\ifthesis{\cref{chapter:BT_DDE_supplement} }\else{\hyperref[mysupplement]{online
-Supplement} }\fi that the center manifold is attractive for
+\ifthesis%
+    \cref{chapter:BT_DDE_supplement} %
+\fi%
+\ifsiam%
+    \hyperref[mysupplement]{online Supplement} %
+\fi%
+\ifarxiv%
+    \hyperlink{mysupplement}{Supplement} %
+\fi
+that the center manifold is attractive for
 $0<\tau<13.2309348879375$. We write the system \cref{btdde:eq:tri_neuron_BAM-u}
 as
 \begin{equation}
@@ -2319,7 +2357,7 @@ bifurcation. The critical normal form coefficients
 (a,b)\approx(0.0012,-0.0135),
 \]
 indicate stable cycles. In
-\cref{btdde:fig:triNeuronBAMNeuralNetworkModelCompareParameters} we have plotted the
+\cref{btdde:fig:triNeuronBAMNeuralNetworkModelCompareParameters}, we have plotted the
 local unfolding of the transcritical Bogdanov-Takens bifurcation using our
 implementation in DDE-BifTool to start the continuation of the transcritical,
 Hopf, and homoclinic codimension one bifurcation curves. Furthermore, using the
@@ -2329,12 +2367,19 @@ conditions, we see the secondary Bogdanov--Takens point is of the generic case.
 Thus, we can start continuation of the homoclinic orbits emanating from this
 point as well. We see that the numerically continued homoclinic curves in the
 upper half plane only exists in a very small parameter region. Without our
-predictor this homoclinic curve would be extremely difficult to locate. Lastly,
-in \cref{btdde:fig:convergencePlotsTranscritical} compared the first and third-order
-homoclinic asymptotics. Here we again see expected improvement of using the
+predictor, this homoclinic curve would be extremely difficult to locate. Lastly,
+in \cref{btdde:fig:convergencePlotsTranscritical} the first and third-order
+homoclinic asymptotics are compared. Here we again see expected improvements of using the
 third-order homoclinic asymptotics. We refer to the
-\ifthesis{\cref{chapter:BT_DDE_supplement}
-}\else{\hyperref[mysupplement]{online Supplement} }\fi to see the beautiful
+\ifthesis%
+    \cref{chapter:BT_DDE_supplement} %
+\fi%
+\ifsiam%
+    \hyperref[mysupplement]{online Supplement} %
+\fi%
+\ifarxiv%
+    \hyperlink{mysupplement}{Supplement} %
+\fi to see the beautiful
 homoclinic orbits along the homoclinic curve in the lower half plane, and for
 an overall more detailed treatment of this example. In fact, we will show that
 the transcritical Bogdanov--Takens and generic Bogdanov--Takens points are
@@ -2343,25 +2388,25 @@ connected, not only by a Hopf curve, but also through a homoclinic curve.
 \section{Concluding remarks}
 We have provided explicit formulas needed to initialize the codimension one
 equilibrium and homoclinic bifurcations emanating from the transcritical and
-generalized codimension two Bogdanov--Takens bifurcation point is classical
+generalized codimension two Bogdanov--Takens bifurcation point in classical
 DDEs. Applications to four different models are given, confirming the
-correctness of the derivation for the time-reparametrization
+correctness of the derivation of the time-reparametrization
 parameter-dependent
-center manifold transformation and the asymptotics.
+center manifold transformation and the codimension one asymptotics.
 
 By extending the normalization technique to include a time-reparametrization we
 are allowed to use orbital normal forms, instead of only smooth normal forms.
 One benefit of this approach is the reusability of the codimension one curves
 emanating from the universal unfolding of the Bogdanov--Takens codimension two
-bifurcation. Indeed, by a simple transformation \cref{btdde:eq:blowup} we obtain the
+bifurcation. Indeed, by a simple transformation \cref{btdde:eq:blowup}, we obtain the
 homoclinic asymptotics for the transcritical Bogdanov--Takens bifurcation.
 
-It this paper we have restricted to the class of classical DDEs, and for the
+In this paper, we have restricted to the class of classical DDEs, and for the
 applications to the class of discrete DDEs. However, the proof in
 \cite{Switching2019} of the existence of a smooth parameter-dependent center
 manifold is given in the general context of perturbation theory for dual
 semigroups (sun-star calculus). Therefore, the applicability of this result
-extends beyond classical DDEs, For example, in \cite{VanGils2013} and
+extends beyond classical DDEs. For example, in \cite{VanGils2013} and
 \cite{Dijkstra2015} the technique was used to calculate the critical normal
 form coefficients for Hopf and Hopf-Hopf bifurcations occurring in neural field
 models with propagation delays. For these models, sun-reflexivity is lost, which
@@ -2374,13 +2419,13 @@ that the derived coefficients in
 settings as well.
 
 Similarly, in \cite{Sieber@2017} it is demonstrated that formally the
-normalization method still works for DDEs with state-dependent delays.
-However, for our formulas to work in this situation, one first needs
-to implement the continuation of homoclinic orbits for state-dependent
-DDEs. Of course, the asymptotics are still useful to see where     the 
-homoclinic orbit should be located. Furthermore, the asymptotics
-can be used to numerically approximate the homoclinic solutions by periodic
-orbits with a large return time.
+normalization method still works for state-dependent delay differential
+equations. However, for our formulas to work in this situation, one first needs
+to implement the continuation of homoclinic orbits for state-dependent DDEs. Of
+course, the asymptotics are still useful to see where     the homoclinic orbit
+should be located. Furthermore, the asymptotics can be used to numerically
+approximate the homoclinic solutions by periodic orbits with a large return
+time.
 
 Returning to the setting of classical DDEs, the most obvious next challenge is
 to derive normal forms for bifurcations of periodic orbits by generalizing

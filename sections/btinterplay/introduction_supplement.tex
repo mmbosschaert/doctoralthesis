@@ -1,0 +1,44 @@
+\section{Overview}
+\label{sm:sec:overview}
+This supplement is intended to complement the \hyperref[maintext]{main
+text}. As a result, rather than reading it in its entirety, it is advisable to
+read the sections as referred to by the main text.
+
+In \cref{app:incorrect_predictor} an explicit example is given in which it is
+demonstrated that the parameter-dependent center manifold transformation
+provided in~\cite{Al-Hdaibat2016} is incorrect. Additionally, we show how it is
+resolved.
+
+A short proof of \Cref{proposition:symmetry} is provided in
+\cref{sec:proof:symmetry_proposition}. For completeness, we also repeat the
+statement of the proposition here.
+
+Then, the identity in \cref{eq:I_n}, which we were unable to solve with symbolic
+software, is worked out in detail in \cref{sec:I_n}.
+
+Next, using the transformations from
+\cref{sec:homoclinic_asymptotics_n_dimension}, we analytically show in
+\cref{sec:comparison_homoclinic_predictors} that the homoclinic predictor for
+the smooth normal form is, up to a phase shift, asymptotically equivalent to
+the orbital predictor. Then, by choosing the constants of integration in the
+time translation in a specific manner, we show equivalence between the
+predictors.
+
+Implementation details of the new homoclinic initializers in \MATCONT are given
+in \cref{sec:implementation}. We describe how to extract the initial data from
+the derived homoclinic predictors needed for the defining system used in \MATCONT to
+continue homoclinic solutions in ordinary differential equations in two
+parameters. Additionally, we show how to obtain the correct normalized tangent
+vector in order to start continuation of the homoclinic orbits away from the
+Bogdanov--Takens point.
+
+In \cref{sec:Hodgking-Huxley} an additional four dimensional system is
+analyzed using our predictors. As in the example treated in \cref{sec:examples},
+we will show that the approximation order of the homoclinic asymptotic lifts
+correctly to the parameter-dependent center manifold, see
+\cref{fig:HodgkinHuxleyConvergencePlot}.
+
+Lastly, in \cref{sec:case_study_BT2}, we will use Julia to numerically study
+the algorithm outlined in \cref{sec:PolynomailLindstedtPoincare} for the
+quadratic codimension 2 Bogdanov--Takens normal form. We will show that
+the homoclinic asymptotic has a positive finite convergence radius.

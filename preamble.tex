@@ -134,13 +134,12 @@
 \usepgfplotslibrary{fillbetween}
 \usetikzlibrary{shapes,arrows,calc}
 \usetikzlibrary{external} 
-\tikzsetexternalprefix{../BTInterplay/images/thesis/} 
-\tikzsetexternalprefix{images/} 
+\tikzsetexternalprefix{./images/btinterplay/} 
 \tikzset{external/system call={lualatex -shell-escape -halt-on-error -interaction=batchmode -jobname "\image" "\texsource"}}
 \tikzexternalize
 
-\newcommand\tikzdir{../BTInterplay/tikz}
-\newcommand\imagedir{images}
+\newcommand\tikzdir{./tikz/btinterplay}
+\newcommand\imagedir{./images/btinterplay}
 \newcommand{\includetikz}[1]{%
     \ifcompileimages%
         \tikzsetnextfilename{#1}%
@@ -160,7 +159,7 @@
     \fi
 }
 
-\input{../BTInterplay/mycolors.tex}
+\input{mycolors.tex}
 
 \AtBeginDocument{% ...if you're using hyperref
     \let\oldlabel\label% Copy original version of \label

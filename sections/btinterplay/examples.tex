@@ -16,6 +16,7 @@ using convergence plots, see \cref{fig:RP_vs_LP2016_vs_LP}, and by inspecting
 the predicted homoclinic profiles with the Newton corrected homoclinic
 profiles, see \cref{fig:RP_vs_LP2016_vs_LP_profiles}.
 
+\ifthesis
 Next, we will consider two four-dimensional models in which generic codimension
 two Bogdanov--Takens bifurcations are present. Here we will show that the
 approximation order of the homoclinic asymptotic lifts correctly to the
@@ -27,11 +28,23 @@ system. It is shown that with an amplitude of 0.1 the approximation is still
 very accurate. This should be compared with~\cite[section 6.2]{Al-Hdaibat2016}
 in which the amplitude needed to be set to $4\times 10^{-5}$ to obtain
 convergence.
+\else
+Next, we will consider a four-dimensional Quantum Field Theory model in which a
+generic codimension two Bogdanov--Takens bifurcation is present. Here we will
+show that the approximation order of the homoclinic asymptotic lifts correctly
+to the parameter-dependent center manifold, see
+\cref{fig:HomoclinicRGFlowsConvergencePlot}. We also compare the predicted with
+the Newton corrected homoclinic orbits in a projection onto a three-dimensional
+slice of the full system. It is shown that with an amplitude of 0.1 the
+approximation is still very accurate. This should be compared
+with~\cite[section 6.2]{Al-Hdaibat2016} in which the amplitude needed to be set
+to $4\times 10^{-5}$ to obtain convergence.
+\fi
 
 Here we will not demonstrate how to actually start the continuation of the
 homoclinic orbits with \MATCONT. For this we refer to the 
 \href{https://mmbosschaert.github.io/MatCont7p2NewInitBTHom-/}{online Jupyter Notebook}.
-In the Jupyter Book, a total of nine different models are considered
+In the Jupyter Book, a total of ten different models are considered
 demonstrating in detail how to start continuation from either an explicitly
 derived, or encountered during continuation, codimension two Bogdanov--Takens
 bifurcation point. Each model is treated in a separate Jupyter Notebook, which
@@ -144,6 +157,7 @@ different normal forms. Indeed, when considering the universal unfolding
 predictors.
 
 
+\ifthesis
 \subsection{Hodgking-Huxley equations}
 
 The Hodgkin-Huxley equations~\cite{HodgkinHuxley1952} relate the difference in electric
@@ -264,21 +278,23 @@ We see that both the Lindstedt-Poincar\'e method and the regular perturbation
 method using the smooth orbital normal form are in perfect agreement with the
 Lindstedt-Poincar\'e method using the smooth normal form. Only the homoclinic
 predictor using the hyper-normal form is slightly less accurate.
+\fi
 
 \subsection{Homoclinic RG flows}
-In~\cite{Jepsen2021HomoclinicRG}  an $\mathcal N = 1$ supersymmetric model of interacting
+In~\cite{Jepsen2021HomoclinicRG} an $\mathcal N = 1$ supersymmetric model of interacting
 scalar superfields $\Phi_{ab}^i$ that is invariant under the action of an $O(N)
 \times O(M)$ group in $d = 3 - \epsilon$ dimensions is considered.
 The coupling constants $g_i(i=1,\dots,4)$ satisfy the following differential
 equations
 \begin{equation}
-    \label{eq:HomoclinicRGflows} 
+    \label{eq:HomoclinicRGflows}
     \dot g = -\epsilon g + \beta^{(2)}(g,M,N) + \mathcal O(g^5),  \qquad g\in\mathbb R^4,
 \end{equation} 
 where the two-loop contributions $\beta_i^{(2)}(i=1,\dots,4)$ are cubic in the
 coupling and the parameter $\epsilon$ is scaled to $1$.  The exact expression for
 $\beta_i^{(2)}$ are quite long can be found in~\cite[Appendix B]{Jepsen2021HomoclinicRG}
-or in the Supplementary Materials. 
+or in the \href{https://mmbosschaert.github.io/MatCont7p2NewInitBTHom-/}{online Jupyter
+Notebook}.
 \begin{figure}[b!]
     \includegraphics{\imagesdir/HomoclinicRGFlowsConvergencePlotFull.pdf}
     \caption{Convergence plot for the homoclinic predictors near one of the
@@ -292,11 +308,12 @@ or in the Supplementary Materials.
     \caption{Comparison between the predicted (solid, red) with the corrected
         (dotted, blue) homoclinic orbits using the Lindstedt-Poincar\'e method
         with the smooth orbital normal form for amplitudes $A_0 = 10^{-3}$ to
-        $A_0=5\times10^{-2}$. The $g_i(i=1,\dots,4)$ coordinates have been rotated and stretched
+        $A_0=10^{-1}$. The $g_i(i=1,\dots,4)$ coordinates have been rotated and stretched
         to make the homoclinic orbits better visible.}
     \label{fig:HomoclinicRGFlows}
 \end{figure}
 %
+\ifthesis
 \begin{figure}[t!]
 \includetikzscaled{HomoclinicRGflowsCompareParameters}
 \caption{Comparison between the computed homoclinic bifurcation curve
@@ -308,6 +325,7 @@ or in the Supplementary Materials.
     predictor (dotted, red) obtained in this paper.}
 \label{fig:HomoclinicRGFlowsParameters}
 \end{figure}
+\fi
 
 In~\cite{Jepsen2021HomoclinicRG} a Bogdanov--Takens point near the parameter values
 $M=0.2945$ and $N = 4.036$ is located. Using these parameter values we locate an
@@ -337,18 +355,56 @@ with parameter values
     (M, N) = (0.294477255737036, 4.035536108506390).
 \]
 
+\ifthesis 
 In \cref{fig:HomoclinicRGFlowsConvergencePlot} we have created similar log-log
-convergence plots as in the previous example. The plots look very alike, only
-the homoclinic predictor using the hyper-normal form is in this model slightly
-more accurate than the other homoclinic approximations.
-
-Lastly, in \cref{fig:HomoclinicRGFlows}  we compare the predicted (dotted,
-blue) with the corrected (solid, red) homoclinic orbits using the
+convergence plots as in the previous example. The plots look very alike.
+%
+Lastly, in \cref{fig:HomoclinicRGFlows}  we compare the predicted (solid, red)
+with the corrected (dotted, blue) homoclinic orbits using the
 Lindstedt-Poincar\'e method with the smooth orbital normal form for amplitudes
 $A_0 = 10^{-3}$ to $A_0=5\times 10^{-2}$. We see that they are in excellent
-agreement. In \cref{fig:HomoclinicRGFlowsParameters} we compared the computed
-homoclinic bifurcation curve (solid, blue) with the predicted values in
-parameter-space $(M, N)$. Most important to notice here is that the predictor
-given in \cite{Al-Hdaibat2016} (the yellow crosses) is less accurate than the
-second-order predictor (blue plus signs) obtained in this paper.
+agreement. In \cref{fig:HomoclinicRGFlowsParameters} we compared the
+    computed homoclinic bifurcation curve (solid, blue) with the predicted
+    values in parameter-space $(M, N)$. Most important to notice here is that
+    the predictor given in \cite{Al-Hdaibat2016} (the yellow crosses) is less
+accurate than the second-order predictor (blue plus signs) obtained in this
+paper. 
+\else
+In \cref{fig:HomoclinicRGFlowsConvergencePlot} there are two log-log
+convergence plots shown. Note that in this and the example in
+\cref{sec:Hodgking-Huxley}, we show the relative error $\delta(X)$ between the
+predicted and corrected Newton solution to the defining system
+\cref{eq:definingSystem}.  We clearly see that the order of convergence
+correctly lifts from the normal form to the two-dimensional center manifold in
+$\mathbb R^4$. In the left plot we compare the regular perturbation method
+with the Lindstedt-Poincar\'e method. We see that these are almost
+indistinguishable. In the plot right we compare four different third
+approximations to the homoclinic orbit
+\begin{itemize}
+    \item the Lindstedt-Poincar\'e method using the smooth orbital normal form
+        (the blue diamond),
+    \item the Lindstedt-Poincar\'e method using the smooth normal form
+        (the dashed light gray line),
+    \item the regular perturbation method using the smooth normal form
+        (the pink square), 
+    \item the Lindstedt-Poincar\'e method using the hyper-normal form
+        (the green plus).
+\end{itemize}
 
+We see that both the Lindstedt-Poincar\'e method and the regular perturbation
+method using the smooth orbital normal form are slightly more accurate then the
+Lindstedt-Poincar\'e method using the smooth normal form. The homoclinic
+predictor using the hyper-normal form is less accurate compared to be
+other methods.
+
+Lastly, in \cref{fig:HomoclinicRGFlows}  we compare the predicted (solid, red)
+with the corrected (dotted, blue) homoclinic orbits using the
+Lindstedt-Poincar\'e method with the smooth orbital normal form for amplitudes
+$A_0 = 10^{-3}$ to $A_0=5\times 10^{-2}$. We see that they are in excellent
+agreement. In \cref{fig:HomoclinicRGFlowsParameters} we compared the
+    computed homoclinic bifurcation curve (solid, blue) with the predicted
+    values in parameter-space $(M, N)$. Most important to notice here is that
+    the predictor given in \cite{Al-Hdaibat2016} (the yellow crosses) is less
+accurate than the second-order predictor (blue plus signs) obtained in this
+paper. 
+\fi

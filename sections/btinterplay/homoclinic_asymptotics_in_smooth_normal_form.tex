@@ -1,6 +1,9 @@
+\ifthesis
 \section{Asymptotics for homoclinic solution in the smooth normal form}
+\else
+\subsubsection{Asymptotics for homoclinic solution in the smooth normal form}
+\fi
 \label{sec:asymptotics-for-homoclinic-solution-for-the-smooth-normal-form}
-
 Following the procedure outlined in \cref{sec:PolynomailLindstedtPoincare} to
 the second-order nonlinear differential equation
 \cref{eq:second_order_nonlinear_oscillator_smooth_normalform} obtained from the
@@ -82,6 +85,7 @@ constraint $v(0)=0$. Substituting the above expression for $\xi$ into
 \cref{eq:blowup_smooth} we obtain the third-order predictor
 \begin{equation}
 \label{eq:third_order_predictor_LP_tau_smooth}
+\ifthesis
 \begin{cases}
 \begin{aligned}
 w_0(t)  &= \frac{1}{a} \tilde{u}\left(\tanh\left(\xi(\epsilon t)\right)\right) \epsilon^2, \\
@@ -90,6 +94,14 @@ w_1(t)  &= \frac{1}{a} \tilde{v}\left(\tanh\left(\xi(\epsilon t)\right)\right) \
 \beta_2    &= \frac{b}{a}\tau\epsilon^2,
 \end{aligned}
 \end{cases}
+\else
+\left( w_0(t), w_1(t), \beta_1, \beta_2 \right) = 
+\left( 
+\frac{1}{a} \tilde{u}\left(\tanh\left(\xi(\epsilon t)\right)\right) \epsilon^2, \\
+\frac{1}{a} \tilde{v}\left(\tanh\left(\xi(\epsilon t)\right)\right) \epsilon^3, \\
+-\frac{4}{a}\epsilon^4, \\
+\frac{b}{a}\tau\epsilon^2 \right),
+\fi
 \end{equation}
 where $\tau,\tilde{u}$ and $\tilde{v}$ are given by
 \cref{eq:tau_smooth,eq:third_order_uhat_smooth,eq:third_order_vhat_smooth},
@@ -127,16 +139,22 @@ smooth normal form with phase condition $\dot u(0)=0$. This gives us the third-o
 homoclinic predictor
 \begin{equation}
 \label{eq:third_order_predictor_smooth_RPM_tau}
+\ifthesis
 \begin{cases}
 \begin{aligned}
-w_0(t)  &= \frac1{a} \left( \sum_{i=0}^3 u_i(\epsilon t) \epsilon^i +
-\mathcal{O}(\epsilon^4) \right)   \epsilon^2, \\
-w_1(t)  &= \frac1{a} \left( \sum_{i=0}^3 \dot u_i(\epsilon t) \epsilon^i +
-\mathcal{O}(\epsilon^4) \right)   \epsilon^3, \\
-\beta_1    &= - \frac{4}{a} \epsilon^4, \\
+w_0(t)  &= \frac1{a} \left( \sum_{i=0}^3 u_i(\epsilon t) \epsilon^i\right) \epsilon^2, \\
+w_1(t)  &= \frac1{a} \left( \sum_{i=0}^3 \dot u_i(\epsilon t) \epsilon^i\right) \epsilon^3, \\
+\beta_1    &= -\frac{4}{a} \epsilon^4, \\
 \beta_2    &= \frac{b}{a}\epsilon^2 \tau,
 \end{aligned}
 \end{cases}
+\else
+\left( w_0(t), w_1(t), \beta_1, \beta_2 \right) = 
+\left( \frac1{a} \left( \sum_{i=0}^3 u_i(\epsilon t) \epsilon^i \right) \epsilon^2,
+        \frac1{a} \left( \sum_{i=0}^3 \dot u_i(\epsilon t) \epsilon^i \right)   \epsilon^3,
+-\frac{4}{a} \epsilon^4,
+\frac{b}{a}\epsilon^2 \tau \right)
+\fi
 \end{equation}
 where $\tau$ is given by \cref{eq:tau_smooth} and $u_i(i=0,\dots,3)$ are given
 by \cref{eq:u_i_RP_smooth}.

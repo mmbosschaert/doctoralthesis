@@ -19,6 +19,8 @@
 \usepgfplotslibrary{groupplots}
 \usepackage{environ}
 
+\usepackage{xr}
+
 \NewEnviron{groupwidth}[1]{% #1 = number of groupplots per row
     \tikzset{/pgfplots/width={\dimexpr \textwidth/#1}}%
     \sbox0{\BODY}%
@@ -38,7 +40,7 @@
 
 \usepackage{xspace}
 \newcommand{\DDEBIFTOOL}{\texttt{DDE-BifTool}\xspace}
-\externaldocument[]{../bt_supplement}
+\externaldocument[]{../bt_paper}
 
 \begin{document}
 
@@ -83,4 +85,6 @@
     \end{axis}
 \end{tikzpicture}
 \end{groupwidth}
+
+\bibliographystyle{siamplain}
 \end{document}

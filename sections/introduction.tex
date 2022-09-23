@@ -5,9 +5,9 @@
 % \convertto{cm}{\the\textheight} \\
 % \convertto{cm}{\the\topmargin} \\
 % \the\textwidth \\
-A dynamical system is a system whose state evolves with time over a state space
-$X$ according to an evolution operator $\phi$. The state space $X$ may be finite,
-for example the Euclidian space $\mathbb R^n$, or infinite, such as the space of
+A dynamical system is a system whose position in a state space
+$X$ evolves with time according to an evolution operator $\phi$. The state space $X$ may be finite,
+for example the Euclidean space $\mathbb R^n$, or infinite, such as the space of
 continuous functions on a finite interval. The time can be either discrete, whose
 set of values is the set of integer numbers $\mathbb Z$, or continuous, whose set
 of values is the set of real numbers $\mathbb R$. Although, any set $T$ with the
@@ -23,7 +23,7 @@ initially at a state $x \in X$, it will find itself after time $t$ at a new
 state, which is uniquely determined by $x$ and $t$, and thus can be denoted by
 $\phi^t x$. By fixing $t\in T$, we obtain a transformation 
 \[
-    \phi^t \colon X \rightarrow X \colon x \mapsto \phi^t x.
+    \phi^t \colon X \rightarrow X,\  x \mapsto \phi^t x.
 \]
 There are two natural properties associated with the evolution operator
 \begin{itemize}
@@ -63,11 +63,11 @@ Consider for example the following ordinary differential equation
     \end{cases}
 \]
 Here the dependence of the variables $x_{1,2}$ on the time $t\in \mathbb R$ has
-been suppressed for readability. The state space is $X$ is the Euclidian space
+been suppressed for readability. The state space is $X$ is the Euclidean space
 $\mathbb R^2$, $\sigma$ is a constant with value $\pm 1$, and $\alpha$ is a
 parameter in the parameter space $\mathbb R$. The evaluation operator is defined
 implicitly through the differential equation, although in this specific situation
-the operator can be obtained explicitly. Transforming the system in polar
+the operator can be computed explicitly. Transforming the system in polar
 coordinates $(\rho, \theta)$ yields
 \[
     \begin{cases}
@@ -107,7 +107,7 @@ imaginary axis.
 The case in which $\sigma=-1$ is called supercritical, while the case in which
 $\sigma=1$ is called subcritical. Thus, in order to know which type of Hopf
 bifurcation occurs in a particular system, it is necessary to calculate the
-sign of $\sigma$, also known as the first Lyapunov coefficient. One way to
+sign of $\sigma$, also known as the (normalized) first Lyapunov coefficient. One way to
 obtain this coefficient is by first calculating the reduced system on the
 center manifold and then preforming a normal form procedure. However, in
 \cite{Coullet1983competinginstabilities} a \emph{normalization technique} is
@@ -122,7 +122,7 @@ Since, for the Hopf bifurcation, there is only one (genericity) condition to be
 satisfied, this bifurcation belongs to the class of codimension one equilibria
 bifurcations. If there is an additional parameter to be tweaked, an extra
 condition can be met, leading to codimension two bifurcations. There are in
-total five generic codimension two bifurcations
+total five generic codimension two bifurcations of equilibria
 \begin{itemize}
     \item cusp,
     \item generalized Hopf (Bautin),
@@ -130,7 +130,7 @@ total five generic codimension two bifurcations
     \item Hopf-Hopf (double-Hopf),
     \item Bogdanov--Takens.
 \end{itemize} 
-As with the codimension one Hopf bifurcation, different kinds of dynamics is
+As with the codimension one Hopf bifurcation, different kinds of dynamics are
 present near these codimension two bifurcation points depending on certain
 normal form coefficients of the corresponding normal forms. In
 \cite{Kuznetsov1999} the normalization technique was applied to obtain
@@ -146,7 +146,6 @@ However, approximations to the codimension one curves in the
 transformation to the parameter-dependent center manifold near the
 codimension two bifurcation point, one can use these asymptotics to start
 the continuation of the codimension one curves with numerical software.
-the 
 Indeed, in \cite{Kuznetsov2008} the normalization technique was applied to
 parameter-dependent normal forms to start the continuation of non-hyperbolic
 cycles emanating from generalized Hopf, fold-Hopf, and Hopf-Hopf bifurcation
@@ -161,14 +160,14 @@ the dynamical system, was solved earlier in \cite{Govaerts2007maps}.
 Similarly, in \cite{Kuznetsov2014improved} the normalization technique was used
 to the smooth parameter-dependent normal form of the codimension two
 Bogdanov--Takens bifurcation in order to start the continuation of the
-codimsion-one homoclinic bifurcation curve emanating from the singularity.
+codimension one homoclinic bifurcation curve emanating from the singularity.
 However, in \cite{Kuznetsov2014improved} the objective wasn't merely to obtain
 a homoclinic predictor, but a higher-order homoclinic predictor, specifically,
 of order two. 
 
 We now turn our attention to infinite dimensional systems generated by delay
 differential equations (DDEs). In these systems the assumption that all
-occurrences of time occurs simultaneously is lifted. The type of delay equations
+occurrences of time are present simultaneously is lifted. The type of delay equations
 we will be considering in this thesis are called classical DDEs. They are of the
 following form
 \begin{equation}
@@ -192,7 +191,7 @@ The main achievements of this thesis can be split into two parts:
 
 For the first part we will generalize the parameter-dependent center manifold
 theorem provided in \cite{diekmann1995delay}. The second part turns out to be
-much more difficult. A first attempt to provide asymptotic approximations to the
+much more difficult. The first attempt to provide asymptotic approximations to the
 homoclinic bifurcation curve near a generic codimension two Bogdanov--Takens
 bifurcation point in general $n$-dimensional systems was made
 in~\cite{Beyn_1994}. By applying a singular rescaling to the (one of the
@@ -241,18 +240,18 @@ to the infinite dimensional setting.
 
 We should remark here that while deriving the coefficients of the
 parameter-dependent normal form and parameter-dependent center manifold
-transformation of the codimension two bifurcation points, we also obtain the
+transformation of the codimension two bifurcation points in DDEs, we also obtain the
 critical normal form coefficients, which were first derived in
 \cite{Janssens:Thesis}.
 
 Another codimension two bifurcation where a branch of homoclinic orbits may
 emerge from, is the fold-Hopf bifurcation. However, the existence or non-existence
-of the homoclinic branch cannot be fully determined by inspecting a finte number
+of the homoclinic branch cannot be fully determined by inspecting a finite number
 of normal form coefficients. It is, therefore, also not surprising that no reliable
 homoclinic predictors exist to start the continuation of the branch of homoclinic
 orbits, although attempts have been made \cite{Budac:Thesis}. Provided that
 homoclinic branches do emerge from the fold-Hopf bifurcation point, then there
-are automatically two homoclinic branches. Furthermore, again under the
+are automatically two such branches. Furthermore, again under the
 assumption the homoclinic branches exist, there are simple conditions, depending
 on the normal form coefficients, to determine if the orbits are in fact Shilnikov
 homoclinic solutions \cite{baldoma2020hopf} and imply the existence of chaos. We
@@ -266,7 +265,7 @@ We start this thesis in the finite dimensional settings of ODEs. In
 predictors for $n$-dimensional ODEs near generic codimension two Bogdanov--Takens
 bifurcation points. We extend the normalization method to allow the inclusion of
 a time-reparametrization. This allows us to use the orbital normal form for the
-Bogdanov--Takens bifurcation. As a result the homoclinic asymptotic up to order
+Bogdanov--Takens bifurcation. As a result, the homoclinic asymptotic up to order
 three is independent of any normal form coefficients. Additionally, a detailed
 comparison is made between applying different normal forms (smooth and orbital),
 different phase conditions, and different perturbation methods (regular and
@@ -283,12 +282,12 @@ Then, shifting our attention to infinity dimensional systems,  we proof in
 \cref{chapter:switching} the existence of a local parameter-dependent center
 manifold in the abstract setting of dual perturbation theory. The proof
 presented here lifts the restriction for the equilibrium to exists for all
-nearby parameter values as is done in \cite{diekmann1995delay}. Subsequently,
+nearby parameter values, as is done in \cite{diekmann1995delay}. Subsequently,
 we show how the general results apply in the special case of DDEs. This allows
-us to lift the normalization technique used in \cite{Kuznetsov2008} applied to
+us to lift the normalization technique used in \cite{Kuznetsov2008} (applied to
 parameter-dependent normal forms to start the continuation of nonhyperbolic
 cycles emanating from generalized Hopf, fold-Hopf, and Hopf-Hopf bifurcation
-points of ODEs to the infinite dimensional setting of DDEs. The obtained
+points of ODEs) to the infinite dimensional setting of DDEs. The obtained
 expressions give explicit formulas which have been implemented in the freely
 available numerical software package \DDEBIFTOOL. While our theoretical results
 are proven to apply more generally, the software implementation and examples
@@ -308,9 +307,9 @@ In \cref{chapter:BT_DDE} we combine the results from \cref{chapter:interplay} an
 codimension two Bogdanov--Takens bifurcation in classical DDEs. Whereas the use
 of the orbital normal form for the generic Bogdanov--Takens bifurcation was more
 of a theoretical exercise in \cref{chapter:interplay}, it turns out to be rather
-usefull while treading the transcritical Bogdanov--Takens bifurcations. Indeed, by
+useful while treading the transcritical Bogdanov--Takens bifurcations. Indeed, by
 a simple transformation \cref{eq:blowup} we directly obtain the third order
-homoclinic asymptotics for the transcritical codimsion two Bogdanov--Takens
+homoclinic asymptotics for the transcritical codimension two Bogdanov--Takens
 bifurcation.
 
 In the same style of \cref{chapter:switching,chapter:switching_supplement} there
@@ -330,7 +329,7 @@ assume real values and treat them as bifurcation parameters. Using
 analytical and numerical techniques we proof the existence of
 Shilnikov homoclinic orbits near a zero-Hopf bifurcation point. As mentioned
 above, no general predictors for the codimension one homoclinic bifurcation
-curve is known to exists. Given the high dimensionality of the system, we
+curve is known to exists  in this case. Given the high dimensionality of the system, we
 used Julia as our programming environment, providing us with great speed
 and flexibility.
 
@@ -339,7 +338,7 @@ and flexibility.
 The work presented here would not have been possible without the help and
 participation of many others, to whom I am grateful. First of all, I am grateful
 to my supervisor Prof. dr. Peter de Maesschalck and co-supervisors Prof. dr.
-Renato Huzak and Prof. Dr. Yuri A. Kuznetsov. It was Peter who helped me
+Renato Huzak and Prof. dr. Yuri A. Kuznetsov. It was Peter who helped me
 transition into the dynamical systems group at Hasselt University and gave me the
 opportunity to revisit open problems encountered during my master thesis. Indeed,
 the first two years of my assistant/Ph.D. position were at the computational
@@ -376,8 +375,8 @@ rather than just reading mathematical results. I wish him all the best in
 finishing his Ph.D. and hope to be working with him in the near feature once
 more.
 
-In addition to be working with Sebasitaan Janssens, I also had the pleasure of
-supervising Bram Lentjes during his bachelor and master thesis. The master thesis
+In addition to be working with Sebastiaan Janssens, I also had the pleasure of
+co-supervising Bram Lentjes during his bachelor and master thesis. The master thesis
 titled ``Center Manifolds and Periodic Normal Forms for Bifurcations of Limit
 Cycles in DDEs'' under supervision of Yuri A. Kuznetsov has been a very
 successful project. In fact, a first preprint is already available
@@ -387,7 +386,7 @@ Furthermore, I'm very grateful to my girlfriend Veerle van Harten, who encourage
 me to apply for the assisted/Ph.D. position at Hasselt University in the first
 place and was willing to move with me. I couldn't have done this without her.
 Lastly, I would like to thank my mother Marjon van Uden, sister Mariska
-Bosschaert, and great mother Cornelius van Uden for their unconditionally support
+Bosschaert, and grandmother Cornelius van Uden for their unconditionally support
 throughout the years. Without the bi-weekly baby sitting of my mother on our
 child Josephine Bosschaert during the COVID-19 pandemic, this thesis would not
 have been.
