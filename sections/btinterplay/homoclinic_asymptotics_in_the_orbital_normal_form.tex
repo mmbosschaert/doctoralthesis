@@ -130,8 +130,49 @@ We, therefore, slightly modify the proposition with an additional assumption.
     .\] 
 \end{proposition}
 \begin{proof}
+    \ifthesis
+    The proof follows almost entirely~\cite[Proposition 4.2]{Beyn_1994}. Thus,
+    it can be shown that the transformation \cref{eq:blowup} induces the
+    symmetry
+    \[
+        \varphi(s, D_0 (u^0, \dot u^0)^T, -\epsilon, \tau)
+        =
+        D_0 \varphi(-s, (u^0, \dot u^0)^T, \epsilon, \tau)
+    \] 
+    on the flow $\varphi$ of \cref{eq:second_order_nonlinear_oscillator}, where 
+    \[
+        D_0 = \begin{pmatrix} 1 & ~0 \\  0 & -1 \end{pmatrix}.
+    \] 
+    From this relation one can then conclude that if $(u(s,\epsilon), \dot
+    u(s,\epsilon), \epsilon, \tau(\epsilon))$ is a homoclinic solution to
+    \cref{eq:second_order_nonlinear_oscillator} then so is $(\tilde
+    u(-s,\epsilon), -\dot{\tilde{u}}(-s,\epsilon), -\epsilon, \tau(\epsilon))$.
+    The proof in~\cite{Beyn_1994} then finishes with the remark that these two
+    homoclinic solutions must be equal by the uniqueness of the non-trivial
+    branch. However, by the \emph{non-uniqueness} of the non-trivial branch, we
+    obtain the relation
+    \[
+        (u(s,\epsilon), \epsilon, \tau(\epsilon))
+        =
+        (u(-s,-\epsilon), \epsilon, \tau(-\epsilon))
+        +
+        (\gamma(\epsilon) \dot u_0(s), \epsilon, 0),
+    \]
+    where
+    \begin{equation}
+        \label{eq:gamma}
+        \gamma(\epsilon) = \sum_{i\geq 1} \gamma_i \epsilon^i,
+        \qquad
+        \gamma_i \in \mathbb R.
+    \end{equation}
+    Thus, $\tau$ is indeed an even function of $\epsilon$. Using the expansion
+    for $u$ from \cref{eq:u_i_tau_i_RPM} we see that by inspecting the
+    coefficients of equal powers in $\epsilon$ we only need to impose that
+    $\gamma_i=0$ for $i$ even, then the assertion follows.
+    \else
     The proof follows almost entirely~\cite[Proposition 4.2]{Beyn_1994}. For
     details, see \cref{sec:proof:symmetry_proposition}.
+    \fi
 \end{proof}
 
 It, therefore, follows from \cref{proposition:symmetry} together with equality
