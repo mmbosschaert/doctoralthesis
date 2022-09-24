@@ -373,7 +373,7 @@ is given by
 \end{equation}
 here $(\hat x, \hat y)$ is the zeroth-order solution $(u_0, \dot u_0)$. The
 coefficients $a_1,a_2,b_1,b_2$ are different normal form coefficients than used
-in this paper, but $\tau_0$ is identical to the $\tau_0$ used in this paper.
+in this \paper{}, but $\tau_0$ is identical to the $\tau_0$ used in this \paper.
 Using the same technique as above it is easy to derive that
 \begin{align*}
 x(s) ={}& \left(a -\frac{1}{16} a_3 s  \tau _0^2-\frac{1}{96} a_3 \tau _0^2
@@ -876,68 +876,70 @@ accurate than the asymptotics derived in
 \input{./sections/homoclinic_asymptotics_in_smooth_normal_form.tex}
 \fi
 
-%\subsubsection{Comparison with the nonlinear periodic time-reparametrization}
-%In~\cite{Algaba_2019} a different approach is used to approximate the homoclinic
-%solution near the quadratic normal form of a generic codimension 2
-%Bogdanov--Takens bifurcation. The approach there is an application of the
-%so-called Perturbation-Incremental Method described in~\cite{Xu_1996}. Consider
-%strongly nonlinear oscillators of the form
-%\begin{equation}
-%  \label{eq:nonlinear_oscillator}
-%  \ddot x + g(x) = \lambda f(x,\dot x, \mu) \dot x, \qquad \
-%\end{equation}
-%where $g$ and $f$ are arbitrary nonlinear functions, and
-%$\lambda$ and $\mu$ are parameters.
+\ifthesis
+\subsubsection{Comparison with the nonlinear periodic time-reparametrization}
+In~\cite{Algaba_2019} a different approach is used to approximate the homoclinic
+solution near the quadratic normal form of a generic codimension 2
+Bogdanov--Takens bifurcation. The approach there is an application of the
+so-called Perturbation-Incremental Method described in~\cite{Xu_1996}. Consider
+strongly nonlinear oscillators of the form
+\begin{equation}
+  \label{eq:nonlinear_oscillator}
+  \ddot x + g(x) = \lambda f(x,\dot x, \mu) \dot x, \qquad \
+\end{equation}
+where $g$ and $f$ are arbitrary nonlinear functions, and
+$\lambda$ and $\mu$ are parameters.
 
-%The authors in~\cite{Xu_1996} perform a  nonlinear periodic time-reparametrization
-%of the form
-%\begin{equation}
-%\label{eq:nonlinear_periodic_reparametrization}  
-%\frac{d\phi}{dt} =\Phi(\phi), \qquad \Phi(\phi+2\pi)=\Phi(\phi)
-%\end{equation}
-%to the system \cref{eq:nonlinear_oscillator}. Then it is assumed that there is a
-%homoclinic orbit present which can be approximated by the solution
-%\[
-%u(\phi) = p \cos(2\phi) + q,
-%\]
-%where $p$ and $q$ are constants to be approximated. In~\cite[Theorem
-%1]{Algaba_2019} it is shown that the solutions $u(\phi)$ and $u(s)$ are related
-%to each other through
-%\[
-%    \Phi(\phi) = \frac{\sqrt 2}{2} \omega(\xi) \sin\phi
-%.\] 
+The authors in~\cite{Xu_1996} perform a  nonlinear periodic time-reparametrization
+of the form
+\begin{equation}
+\label{eq:nonlinear_periodic_reparametrization}  
+\frac{d\phi}{dt} =\Phi(\phi), \qquad \Phi(\phi+2\pi)=\Phi(\phi)
+\end{equation}
+to the system \cref{eq:nonlinear_oscillator}. Then it is assumed that there is a
+homoclinic orbit present which can be approximated by the solution
+\[
+u(\phi) = p \cos(2\phi) + q,
+\]
+where $p$ and $q$ are constants to be approximated. In~\cite[Theorem
+1]{Algaba_2019} it is shown that the solutions $u(\phi)$ and $u(s)$ are related
+to each other through
+\[
+    \Phi(\phi) = \frac{\sqrt 2}{2} \omega(\xi) \sin\phi
+.\] 
 
-%It follows that one should be able to factor out the term
-%$\sin{\phi}$ in \cref{eq:nonlinear_periodic_reparametrization}. This is
-%indeed precisely what we see in the transformation $\Phi$
-%in~\cite[(41)]{Algaba_2019}. Thus, although the nonlinear periodic time- reparametrization
-%is analytically equivalent to the polynomial generalized
-%Lindstedt-Poincar\'e method, it is geometrically \emph{less intuitive} than
-%using hyperbolic functions and computationally \emph{more expensive} than using
-%polynomials.
+It follows that one should be able to factor out the term
+$\sin{\phi}$ in \cref{eq:nonlinear_periodic_reparametrization}. This is
+indeed precisely what we see in the transformation $\Phi$
+in~\cite[(41)]{Algaba_2019}. Thus, although the nonlinear periodic time- reparametrization
+is analytically equivalent to the polynomial generalized
+Lindstedt-Poincar\'e method, it is geometrically \emph{less intuitive} than
+using hyperbolic functions and computationally \emph{more expensive} than using
+polynomials.
 
-%We also would like to point out that the singular rescaling
-%\begin{equation*}
-%    w_0 = u \epsilon^2, \quad
-%    w_1 = v \epsilon^3, \quad
-%    \beta_1 = -\epsilon^4, \quad 
-%    \beta_2 = \tau \epsilon^2, \quad 
-%    s = \epsilon \eta, \quad (\epsilon \neq 0),
-%\end{equation*}
-%used in~\cite{Algaba_2019} applied to the quadratic Bogdanov--Takens normal form
-%with coefficient $a=1$ and $b=1$ results in the $\sqrt 2$ turning up in the
-%calculations of homoclinic approximation. From a computational point of view,
-%this is less ideal to work with.
+We also would like to point out that the singular rescaling
+\begin{equation*}
+    w_0 = u \epsilon^2, \quad
+    w_1 = v \epsilon^3, \quad
+    \beta_1 = -\epsilon^4, \quad 
+    \beta_2 = \tau \epsilon^2, \quad 
+    s = \epsilon \eta, \quad (\epsilon \neq 0),
+\end{equation*}
+used in~\cite{Algaba_2019} applied to the quadratic Bogdanov--Takens normal form
+with coefficient $a=1$ and $b=1$ results in the $\sqrt 2$ turning up in the
+calculations of homoclinic approximation. From a computational point of view,
+this is less ideal to work with.
 
-%\begin{remark}
-%    Note that the polynomial generalized Lindstedt-Poincar\'e method described
-%    above only depends on the existence of the zeroth-order solution.
-%    Therefore, this method can be applied in similar situations where
-%    homoclinic orbits emanate from codimension two Bogdanov--Takens bifurcation
-%    points. For example, the transcritical codimension two bifurcation treated
-%    in~\cite{Hirschberg_1991}, see also~\cite[Appendix C.2]{Bosschaert@2016}.
-%    Furthermore, under certain symmetry present in the ODE heteroclinic
-%    solutions can also emanate from codimension two Bogdanov--Takens points
-%    which can be approximated using the polynomial Lindstedt-Poincar\'e method
-%    as described above.
-%\end{remark}
+\begin{remark}
+    Note that the polynomial generalized Lindstedt-Poincar\'e method described
+    above only depends on the existence of the zeroth-order solution.
+    Therefore, this method can be applied in similar situations where
+    homoclinic orbits emanate from codimension two Bogdanov--Takens bifurcation
+    points. For example, the transcritical codimension two bifurcation treated
+    in~\cite{Hirschberg_1991}, see also~\cite[Appendix C.2]{Bosschaert@2016}.
+    Furthermore, under certain symmetry present in the ODE heteroclinic
+    solutions can also emanate from codimension two Bogdanov--Takens points
+    which can be approximated using the polynomial Lindstedt-Poincar\'e method
+    as described above.
+\end{remark}
+\fi
