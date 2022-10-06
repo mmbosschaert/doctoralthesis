@@ -23,6 +23,16 @@
 \newif\ifthesis
 \thesistrue
 
+\def\ignore#1{}
+\def\use#1{#1}
+
+\ifthesis
+    \let\process=\use
+\else
+    \let\process=\ignore
+\fi
+
+
 {\hypersetup{linkcolor=siamblue} \tableofcontents }
 
 %% Introduction
@@ -70,6 +80,7 @@
 \input{./sections/switching/switching_supplement}
 
 %% DDE BT Chapter
+\siamfalse
 \tikzsetexternalprefix{./images/btpaper/} 
 \renewcommand\tikzdir{./tikz/btpaper}
 \renewcommand\imagedir{./images/btpaper/}

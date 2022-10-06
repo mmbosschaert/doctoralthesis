@@ -38,10 +38,10 @@ codimension one bifurcation curve in the normal form \cref{eq:G} is known and gi
     \epsilon \mapsto (w_\epsilon(\eta), \beta_\epsilon).
 \end{equation}
 We assume here that $w_\epsilon(\eta)$ and $\beta_\epsilon$ have been derived
-up to a certain (not necessarily similar) order in $\epsilon$. Let $\Phi$
+up to a certain (not necessarily the same) order in $\epsilon$. Let $\Phi$
 be a basis for the center subspace of $A$ and $\Psi$ a basis for the center
 subspace of the adjoint $A^T$, normalized such that $\Psi^T \Phi$ is the
-identity matrix on $\mathbb R^n$. Then 
+identity matrix on $\mathbb R^{n_c}$. Then 
 %by the reduction principle of Shoshitaishvili 
 the solutions on the parameter-dependent center manifold can be
 parametrized by 
@@ -73,7 +73,7 @@ equation}
 The mappings $H$, $K$, and $\theta$ can be expanded as
 \begin{equation}
     \label{eq:HK_expansion}
-    H(w, \beta) = \sum_{\substack{|\nu|+|\mu| \geq 1, \\ |\nu|\neq 1 \wedge |\mu|=0}} \frac{1}{\nu!\mu!} H_{\nu\mu} w^\nu \beta^\mu,
+    H(w, \beta) = \sum_{\substack{|\nu|+|\mu| \geq 1, \\ \neg(|\nu|\neq 1 \wedge |\mu|=0)}} \frac{1}{\nu!\mu!} H_{\nu\mu} w^\nu \beta^\mu,
     \qquad
     K(\beta) = \sum_{|\mu|\geq 1} \frac1{\mu!} K_\mu \beta^\mu,
 \end{equation}
@@ -111,7 +111,7 @@ by reconstructing the normal form from \cref{eq:H,eq:K}, or equivalently from
 rearranging terms we obtain
 \begin{align*}
 \frac{d}{d\eta} w(\eta) &=  \sum_{|\nu|+|\mu| \geq 1} \frac{1}{\nu!\mu!} g_{\nu\mu} v^\nu \beta^\mu \\ 
-                        &= \Psi (f(\Phi w + H(w,\beta), K(\beta)) \theta(w, \beta) - D_wH(w, \beta)G(w,\beta)).
+                        &= \Psi^T (f(\Phi w + H(w,\beta), K(\beta)) \theta(w, \beta) - D_wH(w, \beta)G(w,\beta)).
 \end{align*}
 
 % The terms of the
@@ -169,7 +169,7 @@ $n$-dimensional systems, see \cite{Al-Hdaibat2016,Kuznetsov2014improved,Gray-Sco
 
 The word \emph{generically} in \cref{thm:coefficients} refers to the exclusion
 of special cases in which the system \cref{eq:ODE} contains certain symmetry or
-other restrictions, see, for example, \cite[2.3.3 Symetries and
+other restrictions, see, for example, \cite[2.3.3 Symmetries and
 Reversibility]{Iooss@2011}. In such situations, certain coefficients and
 higher-order derivatives are known to vanish beforehand.
 
@@ -434,7 +434,7 @@ for readability.
 				{$K_{11}, H_{0011}$} 
 				[.{$\gamma_6, \delta_3, K_{02}, H_{0002}, H_{1002}, H_{0102}$} 
 					{$K_{03},H_{0003}$} ] ] ] ] ]
-\caption{\label{fig:coefficients} Schematic overview is which order the coefficients in the expansion of
+\caption{\label{fig:coefficients} Schematic overview in which order the coefficients in the expansion of
 $H$, $K$ and $\theta$ are derived.}
 \end{figure}
 %
@@ -456,11 +456,14 @@ and $H_{0003}$, and two additional terms in the expansion of $K$, with
 coefficients $K_{11}$ and $K_{03}$. Also, there are two additional higher-order
 derivatives, namely $A_2$ and $J_3$, included in the Taylor expansion of $f$
 previously not taking into account. By \cref{thm:coefficients}, we know that
-the coefficients \cref{eq:H_expansion,eq:K_expansion,eq:theta_expansion_bt} and
-the higher-order derivatives in \cref{eq:f_expansion_bt}, are both necessary
-and sufficient. The coefficients in the time-reparametrization \cref{eq:theta_expansion_bt}
-are determined by the requirement that the systems obtained from the homological
-equation are solvable.
+the coefficients in \cref{eq:H_expansion,eq:K_expansion,eq:theta_expansion_bt}
+and the higher-order derivatives used in \cref{eq:f_expansion_bt}, are both
+necessary and sufficient to relate the third-order homoclinic approximation in
+the smooth orbital normal form \cref{eq:normal_form_orbital} to the homoclinic
+solutions of \cref{eq:ODE} near $(x_0,\alpha_0)$. The coefficients in the
+time-reparametrization \cref{eq:theta_expansion_bt} are determined by the
+requirement that the systems obtained from the homological equation are
+solvable.
 \end{remark}
 
 \subsubsection{(Generalized) eigenvectors}

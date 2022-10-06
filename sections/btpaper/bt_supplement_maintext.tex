@@ -15,13 +15,13 @@ mediated by some time lag required for gestation.
 The variables and parameters occurring in \cref{sm:eq:double_alle_effect}
 have the following meaning:
 \begin{itemize}
-\item $x,y\colon \mathbb R \rightarrow \mathbb R$ denotes the prey and predator population density, respectively.
+\item $x,y\colon \mathbb R \rightarrow \mathbb R$ denote the prey and predator population densities, respectively.
 \item $r$ denotes the maximum prey population growth in absence of the Allee effect.
 \item $K$ is the carrying capacity of the environment.
 \item $m_0$ is the Allee threshold.
 \item $n_0$ is the auxiliary parameter in order to quantify the strength of the Allee effect.
 \item $c$ denotes the capturing rate of the predator.
-\item $\varrho$ is the half capturing saturation constant.
+\item $\varrho$ is the half-capturing saturation constant.
 \item $c_1$ is the conversion rate of prey into predators biomass.
 \item $d$ is the per capita predator mortality rate.
 \end{itemize}
@@ -55,12 +55,12 @@ Before we start to analyze the system with \DDEBIFTOOL, we first create a
 \emph{system file}. This file contains the definition of the system
 \cref{sm:eq:double_alle_effect_rescaled}, the standard derivatives needed for
 calculation of the eigenvalues and eigenvectors, the continuation of
-bifurcation points cycles, and also the multilinear forms, see \cite[Section
+bifurcation points, cycles, and also the multilinear forms, see \cite[Section
 6]{Switching2019}, used for the calculation of the coefficients of the critical
 and parameter-dependent normal forms and center manifold transformation.
 Alternatively, one can only supply the system itself, see
 \cref{sm:lst:wo_system_file}. Then finite difference is used to approximate the
-derivatives. However, this is less efficient and accurate, and therefore not
+derivatives. However, this is less efficient and less accurate, and therefore not
 recommended. A separate script \mintinline{MATLAB}{gen_sym_predator_prey.m} is used to
 create a system file. The most important parts of this script are listed and
 discussed below.
@@ -89,10 +89,10 @@ transformations, multilinear forms are more efficient to compute.
 Now that a system file is created, we continue with \DDEBIFTOOL to analyze
 \cref{sm:eq:double_alle_effect_rescaled} numerically. The code in the following
 sections highlight the important parts of the file \mintinline{MATLAB}{predator_prey.m}.
-The pacakge \DDEBIFTOOL consists of a set of \MATLAB routines. Thus, in order to start
+The package \DDEBIFTOOL consists of a set of \MATLAB routines. Thus, in order to start
 using \DDEBIFTOOL, we only need to add \DDEBIFTOOL (sub)directories to the search
 path.
-\begin{listing}[h!]
+\begin{listing}[!ht]
 \inputminted[firstline=17, lastline=25]{MATLAB}{\pathToDDEBifToolDemos/predator_prey/predator_prey.m}
 \caption{Code to add \DDEBIFTOOL scripts to the search path.}
 \label{sm:lst:searchpath}
@@ -123,7 +123,7 @@ parameters are delays, and various other settings.
 Alternatively, when no system files have been generated, one could initialize
 the system \cref{sm:eq:double_alle_effect_rescaled} as in \cref{sm:lst:wo_system_file}.
 
-\begin{listing}[h!]
+\begin{listing}[!ht]
 \begin{minted}{MATLAB}
 %% Define funcs structure without symbolic derivatives
 m = 1.502983803;
@@ -181,7 +181,7 @@ approach. However, it can be useful for debugging purposes.
 Since we are only interested here in the local unfolding, we restrict the
 allowed parameter range for the unfolding parameters. In practice, one may have
 physical restrictions which must be satisfied. Additionally, we also limit the
-maximum allowed step size during continuation. By doing, so, we obtain more refined
+maximum allowed step size during continuation. By doing so, we obtain more refined
 data to compare against our predictors.
 \inputminted[firstline=37, lastline=40]{MATLAB}{\pathToDDEBifToolDemos/predator_prey/predator_prey.m}
 
@@ -263,7 +263,7 @@ Bogdanov--Takens point.
 \subsection{Comparing profiles of computed and predicted homoclinic orbits}
 To test the homoclinic asymptotics from
 \cref{btdde:sec:generic_bt_homoclinic_asymptotics} we compare the first and third
-order asymptotics to the Newton corrected soluti n. For this, we use the 
+order asymptotics to the Newton corrected solution. For this, we use the 
 function \mintinline[breaklines,breakafter=_]{MATLAB}{C1branch_from_C2point}. This function returns a branch, which
 by default returns two initial corrected approximations in order to start continuation of the
 codimension one curve under consideration. By setting the argument
@@ -286,9 +286,9 @@ solution.
     \label{sm:fig:DoubleAlleeEffectCompareProfiles}
 \end{figure}
 
-\subsection{Continuation of the codimension one curves emanating}
+\subsection{Continuation of the emanating codimension one curves}
 To continue the three codimension one curves emanating from the generic
-Bogdanov--Takens poin, we can simply use the function
+Bogdanov--Takens point, we can simply use the function
 \mintinline[breaklines,breakafter=_]{MATLAB}{C1branch_from_C2point}, as shown in the code below. To monitor the
 continuation process, the argument \mintinline{MATLAB}{plot} must be set to \mintinline{MATLAB}{1}.
 The most important setting is the perturbation parameter (or multiple),
@@ -321,7 +321,7 @@ The code below produces a similar figure as \cref{sm:fig:DoubleAlleeEffectCompar
 \end{figure}
 
 \subsection{Compare homoclinic solutions in phase-space}
-To obtain an impression of the third-order homoclinic asymptotics in
+To get an impression of the third-order homoclinic asymptotics in
 phase-space, we compare the corrected and uncorrected homoclinic solutions
 with the perturbation parameter ranging from $0.1$ to $0.3$.
 The code below results in \cref{sm:fig:DoubleAlleeEffectCompareOrbitsPhaseSpace}.
@@ -403,7 +403,7 @@ with the ordinary differential equations of the reduced system on the center
 manifold. We are able to do this since the parameter-dependent center manifold
 is locally attractive. In order to integrate the system in the reverse direction, i.e.,
 to obtain the orbits in the stable manifold of the equilibria, we multiplied 
-the right-hand size of the system in \cref{sm:eq:double_alle_effect_rescaled} by $-1$.
+the right-hand side of the system in \cref{sm:eq:double_alle_effect_rescaled} by $-1$.
 Note that, in general, this will not provide an accurate approximation at all.
 However, since the delay is relatively small, this approximation is accurate
 enough for our application. Also, note that the Bogdanov--Takens point still
@@ -421,8 +421,8 @@ GitHub repository.
 We start by loading the necessary packages. These are
 \begin{itemize}
     \item {\tt DifferentialEquations.jl} A suite for numerically solving differential equations written in Julia.
-    \item {\tt GLMakie.jl} For high level plotting on the GPU.
-    \item {\tt NonlinearEigenproblems.jl} A nonlinear eigenvalue problem determine a scalar $\lambda$ and a vector $v$ such that $M(\lambda)v=0$. In our case the matrix $M(\lambda)$ will be the characteristic matrix.
+    \item {\tt GLMakie.jl} For high-level plotting on the GPU.
+    \item {\tt NonlinearEigenproblems.jl} A nonlinear eigenvalue problem determine a scalar $\lambda$ and a vector $v$ such that $M(\lambda)v=0$. In our case, the matrix $M(\lambda)$ will be the characteristic matrix.
     \item {\tt DDEBifTool.jl} We created this very minimalistic package to have some functionality for normal form calculations of DDEs in Julia. Here we use it to calculate the derivatives of the system necessary for {\tt NonlinearEigenproblems.jl}.
     \item {\tt DelimitedFiles.jl} Reading and writing of CSV files.
     \item {\tt PGFPlotsX.jl} A Julia package for creating publication quality figures using the LaTeX library PGFPlots as the backend.
@@ -512,10 +512,10 @@ The variables and parameters occurring in \cref{sm:eq:neural_network}
 have the following neurophysiological meaning:
 \begin{itemize}
 \item $u_1,u_2:\mathbb{R}\rightarrow\mathbb{R}$ denote the total post-synaptic
-potential of the excitatory and inhibitory neuron, respectively.
+potential of the excitatory and inhibitory neurons, respectively.
 \item $\mu>0$ is a time constant characterizing the dynamical properties
 of the cell membrane.
-\item $q_{ik}\geq0$ represents the strength of the connection line from
+\item $q_{ik}\geq0$ represent the strength of the connection line from
 the $k$th neuron to the $i$th neuron.
 \item $\alpha:\mathbb{R}\rightarrow\mathbb{R}$ is the transfer function
 which describes the activity generation of the excitatory neuron as
@@ -694,7 +694,7 @@ for the codimension one curves. For this, we again use the function
 \mintinline[breaklines,breakafter=_]{MATLAB}{C1branch_from_C2point}. We set the argument \mintinline{MATLAB}{predictor} to \mintinline{MATLAB}{1}
 and provide a range of perturbation parameters.
 \inputminted[firstline=121, lastline=133]{MATLAB}{\pathToDDEBifToolDemos/neural_network_model/neural_network_model.m}
-In the last part of the code above we added the asymptotics obtained from \cite{Jiao2021}.
+In the last part of the code above, we added the asymptotics obtained from \cite{Jiao2021}.
 
 \subsection{Bifurcation diagram}
 The code below produces (a figure similar to) \cref{sm:fig:NeuralNetworkCompareParameters}.
@@ -731,7 +731,7 @@ We see that the corrected and predicted homoclinic orbits are nearly identical.
 
 \subsection{Convergence plot}
 Using the function from \cref{sm:lst:convergence_plot}, we create a log-log
-convergence plot comparing the convergence order of the first and thrid order
+convergence plot comparing the convergence order of the first and third order
 homoclinic asymptotics from \cref{btdde:sec:generic_bt_homoclinic_asymptotics}.
 The code below yields \cref{sm:fig:NeuralNetworkConvergencePlot}.
 \inputminted[firstline=176, lastline=187]{MATLAB}{\pathToDDEBifToolDemos/neural_network_model/neural_network_model.m}
@@ -808,7 +808,7 @@ be in the region where there should be unstable periodic orbits, see \cref{sm:fi
 We start by loading the necessary packages.
 
 %
-\begin{listing}[h!!]
+\begin{listing}[!ht]
 \inputminted[firstline=1, lastline=6]{julia}{\pathToJuliaFiles/neural_network_model_simulation_article.jl}
 \caption{Loading Julia packages for simulation in \cref{sm:eq:neural_network}.}
 \label{sm:lst:neuralNetworkLoadingPacakges}
@@ -841,9 +841,9 @@ This should give a similar bifurcation diagram as in \cref{sm:fig:NeuralNetworkC
 \inputminted[firstline=76, lastline=102]{julia}{\pathToJuliaFiles/neural_network_model_simulation_article.jl}
 
 \subsubsection{Simulation at the double homoclinic orbit}
-In the code below we integrate at parameter values $(Q,E)=(1.459868437376222,0)$, i.e.,
+In the code below, we integrate at parameter values $(Q,E)=(1.459868437376222,0)$, i.e.,
 where we located the double homoclinic orbit. We start by locating the three equilibria
-points. Note that by the symmetry we actually only need to solve for one of them.
+points. Note that by the symmetry, we actually only need to solve for one of them.
 We calculate the stability of the equilibria and filter out the leading stable and unstable
 eigenvectors from the characteristic matrix of the saddle-node point. 
 The rest of the code should be pretty straight forward,
@@ -857,7 +857,7 @@ To show by integration the existence of an unstable periodic orbit, we first
 located a periodic orbit in \DDEBIFTOOL. This can be done by continuing a
 branch of periodic orbits emanating from a point on the continued Hopf curve.
 Then we load the profiles of the periodic orbits into Julia and start
-integration near the perioidic orbits.  After running the code below, we should
+integration near the periodic orbits.  After running the code below, we should
 obtain a similar plot as in
 \cref{sm:fig:NeuralNetworkPeriodicSimulation}.
 \inputminted[firstline=169, lastline=208]{julia}{\pathToJuliaFiles/neural_network_model_simulation_article.jl}
@@ -1082,7 +1082,7 @@ We see that the corrected and predicted homoclinic orbits are nearly identical.
 \subsection{Convergence plot}
 \label{sm:sec:vdpo:convergence_plot}
 Using the function from \cref{sm:lst:convergence_plot}, we create a log-log
-convergence plot comparing the convergence order of the first and thrid order
+convergence plot comparing the convergence order of the first and third order
 homoclinic asymptotics from \cref{btdde:sec:transcritical_bt_homoclinic_asymptotics}.
 The code below yields \cref{sm:fig:VDPOConvergencePlot}.
 \inputminted[firstline=232, lastline=243]{MATLAB}{\pathToDDEBifToolDemos/vdpo_bt_transcritical/vanderPolOscillator.m}
@@ -1127,7 +1127,7 @@ the regions where there should be stable periodic orbits, see
 
 \subsubsection{Loading necessary Julia packages}
 Since we do not have  analytical expressions for the equilibria, we load the
-same Julia packges as in the previous demonstration, see
+same Julia packages as in the previous demonstration, see
 \cref{sm:lst:neuralNetworkLoadingPacakges}.
 
 \subsubsection{Define system}
@@ -1181,7 +1181,7 @@ discrete callback to ensure the orbits do not become too large.
 Now we define the problem to be integrated and choose the algorithm to be used.
 Then we integrate the system for a range of initial history functions using the
 function \mintinline{julia}{streamlines}. Next, we integrate the system near
-the inner equillibrium, i.e., the equilbrium inside the homoclinic orbit. This
+the inner equilibrium, i.e., the equilibrium inside the homoclinic orbit. This
 equilibria should be an unstable spiral. By using the unstable eigenvector of the
 characteristic matrix, we obtain a solution going through the homoclinic solution
 obtained with \DDEBIFTOOL.
@@ -1400,7 +1400,7 @@ By squaring and adding the above equations, it follows that
 Solving the equation for positive $\omega>0$ yields \cref{sm:eq:triNeuralBAMNetworkModel:omega_0}.
 
 Next, from \cref{sm:eq:BAM_real_imag_parts_char_eq}, we obtain \cref{sm:eq:triNeuralBAMNetworkModel:tan}.
-First notice that $\tau \mapsto \omega_0 \tau$ is a strictly increasing
+First, notice that $\tau \mapsto \omega_0 \tau$ is a strictly increasing
 function since it is the product of two strictly increasing positive functions.
 It follows that $\tau \mapsto \tan \omega_0 \tau$ is periodic in $\tau$ with
 range $\mathbb R$. The next observation is that the denominator in the right-hand
@@ -1626,7 +1626,7 @@ The code below produces (a figure similar to) \cref{sm:fig:triNeuronBAMNeuralNet
 
 \subsection{Detect bifurcations on the second Hopf branch}
 We can use the \DDEBIFTOOL function \mintinline{MATLAB}{LocateSpecialPoints} to
-locate bifurcation points on the second Hopf banch.
+locate bifurcation points on the second Hopf branch.
 \inputminted[firstline=177, lastline=178]{MATLAB}{\pathToDDEBifToolDemos/BAM_neural_network_model/BAMnn.m}
 
 Inspecting the \MATLAB output gives.
@@ -1668,8 +1668,8 @@ of the generic case.
 \inputminted[firstline=179, lastline=181]{MATLAB}{\pathToDDEBifToolDemos/BAM_neural_network_model/BAMnn.m}
 
 \subsection{Plot Bogdanov-Takens test function along the Hopf curve}
-Before we continu the homoclinic branch emanating from the generic
-Bogdanov--Takens point, we first plot the testfunction for the Bogdanov--Takens
+Before we continue the homoclinic branch emanating from the generic
+Bogdanov--Takens point, we first plot the test function for the Bogdanov--Takens
 point, i.e. we plot the imaginary part for the critical eigenvalues along the
 second Hopf curve. The code below produces (a figure similar to)
 \cref{sm:fig:triNeuronBAMNeuralNetworkModelTestfunction}.
@@ -1678,7 +1678,7 @@ second Hopf curve. The code below produces (a figure similar to)
 \begin{figure}[ht]
     \centering
     \includetikzscaled{triNeuronBAMNeuralNetworkModelTestfunction}
-    \caption{Plot of the Bogdanov--Takens testfunction along the second Hopf curve. 
+    \caption{Plot of the Bogdanov--Takens test function along the second Hopf curve. 
     We see that surface $\omega=0$ is intersected transversally two times
     while continuing the Hopf curve.}
     \label{sm:fig:triNeuronBAMNeuralNetworkModelTestfunction}
@@ -1692,7 +1692,7 @@ on the second Hopf branch. The last line extracts the parameters used for plotti
 \subsection{Bifurcation plot}
 We are now in the position to recreate the bifurcation plot as shown in the main text. There, we
 left out the predictors for the codimension one equilibria bifurcation curves and changed the color
-of the computed codimension one equilibria curves to gray. In this way focus will be on
+of the computed codimension one equilibria curves to gray. In this way, focus will be on
 the homoclinic curves. The code below produces (a figure similar to)
 \cref{sm:fig:triNeuronBAMNeuralNetworkModelCompareParameters}.
 \inputminted[firstline=213, lastline=243]{MATLAB}{\pathToDDEBifToolDemos/BAM_neural_network_model/BAMnn.m}
@@ -1727,7 +1727,7 @@ To obtain an expression of the continued homoclinic orbits,
 we plot the solutions on the various homoclinic branches in phase-space.
 The code below produces (a figure similar to)
 \cref{sm:fig:triNeuronBAMNeuralNetworkModelOrbitsPhaseSpace}.
-In the top left plot the homoclinic orbits connected to the origin are shown. However,
+In the top left plot, the homoclinic orbits connected to the origin are shown. However,
 we see that this does not provide much insight. 
 One way to visualize homoclinic solutions is by inspection the
 profiles of the solutions. This will be done in the next section.
@@ -1795,7 +1795,7 @@ code below produces (a figure similar to)
     \caption{
         Branch of periodic solutions emanating from the last point on the first
         Hopf branch emanating from the transcritical Bogdanov--Takens point in
-        \cref{sm:eq:tri_neuron_BAM-u}. The last point on the perioidic solution
+        \cref{sm:eq:tri_neuron_BAM-u}. The last point on the periodic solution
         branch is colored red, at which the periodic orbits have converged to
         a homoclinic orbit.
     }
@@ -1858,7 +1858,7 @@ the newly obtained homoclinic bifurcation curve.
 \subsection{Convergence plot}
 \label{sm:sec:tri_neuron_BAM:convergence_plot}
 Using the function from \cref{sm:lst:convergence_plot}, we create a log-log
-convergence plot comparing the convergence order of the first and thrid order
+convergence plot comparing the convergence order of the first and third order
 homoclinic asymptotics from \cref{btdde:sec:transcritical_bt_homoclinic_asymptotics}.
 The code below yields \cref{sm:fig:triNeuralBAMNetworkModelConvergencePlot}.
 \inputminted[firstline=531, lastline=542]{MATLAB}{\pathToDDEBifToolDemos/BAM_neural_network_model/BAMnn.m}
@@ -1982,7 +1982,7 @@ After running the above code, we should obtain a similar plot as in
 \cref{sm:fig:triNeuralBAMNetworkSimulationPeriodic}.
 
 \subsubsection{Stability of the center manifold}
-To confirm \cref{sm:lemma:triNeuralBAMNetworkModelEigenvalues} nummerically we
+To confirm \cref{sm:lemma:triNeuralBAMNetworkModelEigenvalues} numerically, we
 consider again
 \cref{sm:eq:triNeuralBAMNetworkModelFunctions,sm:eq:triNeuralBAMNetworkModelFixedParameters}.
 The code below plots the left and right-hand sides of
@@ -1995,7 +1995,7 @@ two points of intersection.
     \includetikzscaled{triNeuralBAMNetworkModelStabilityDeterminingFunction}
     \caption{Plot of the left and right-hand sides of
     \cref{sm:eq:triNeuralBAMNetworkModel:tan}. Points of intersection are
-    canditates for the center manifold to lose its stability.}
+    candidates for the center manifold to lose its stability.}
     \label{sm:fig:triNeuralBAMNetworkStabilityDeterminingFunction}
 \end{figure}
 Using the function \mintinline{julia}{roots} from the package {\tt IntervalRootFinding.jl}
@@ -2033,12 +2033,11 @@ The centermanifold is locally attractive for 0 < τ < 13.230934887939895.
     \label{sm:fig:triNeuralBAMNetworkModelEigenvalues}
 \end{figure}
 \subsubsection{Calculate and plot stability at Bogdanov--Takens point}
-We fininsh this demonstration by confirming the stability
+We finish this demonstration by confirming the stability
 of the transcritical Bogdanov--Takens point at $\tau = 13.230934887939895$
 obtained in the previous section. In \cref{sm:fig:triNeuralBAMNetworkModelEigenvalues}
 we have plotted the eigenvalues. We indeed see that at $\tau = 13.230934887939895$
-the center manifold looses stability. Lastly, we also varified in the code
-below that the the eiganvalues with positive imaginary part on the imaginary axis
-is approximatly equal to the expression for $\omega$ obtained in \cref{sm:eq:BAM_omega}. 
+the center manifold loses stability. Lastly, we also verified in the code
+below that the eigenvalues with positive imaginary part on the imaginary axis
+is approximately equal to the expression for $\omega$ obtained in \cref{sm:eq:BAM_omega}. 
 \inputminted[firstline=459, lastline=467]{julia}{\pathToJuliaFiles/triNeuralBAMNetworkModel_simulation_article.jl}
-
